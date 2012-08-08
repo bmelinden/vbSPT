@@ -14,7 +14,7 @@ end
 %       rowNormalize for VB HMM rate estimates    %
 % =============================================== %
 %                                                 %
-% Copyright (C) 2012 Martin Lindén                %
+% Copyright (C) 2012 Martin Lind??n              %
 %                                                 %
 %        E-mail: bmelinden@gmail.com              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
