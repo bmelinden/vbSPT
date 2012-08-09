@@ -6,9 +6,6 @@ function [data, trajLengths] = MakeTrajectories(timeStep, CellL, CellR, trajLeng
 % 'simCellHMM' to generate the single trajectories.
 %
 % F.P. 2012-04-25
-%  
-% Change log:
-% 
 
 %% initiate
 

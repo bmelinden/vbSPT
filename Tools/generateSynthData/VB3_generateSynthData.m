@@ -35,14 +35,6 @@ function finalTraj=VB3_generateSynthData(varargin)
 % 'parallel'    : if given use parallel computing.
 %
 % F.P. 2012-07-03
-%
-%
-% Change log:
-% F.P. 2012-07-04 : Added functionality that it saves in a subfolder to the
-%                 script with index that avoids overwriting data.
-% F.P. 2012-07-08 : Added so that a steady state occupancy is used if an
-%                 empty argument is given for occProb.
-% F.Pf 2012-07-10 : Added 'parallel' as an option.
 
 tgenData=tic;
 

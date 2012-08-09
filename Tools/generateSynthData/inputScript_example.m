@@ -3,10 +3,6 @@
 %
 %
 % F.P. 2012-07-04
-%
-% Change log:
-%
-
 
 %% Define misc parameters
 
