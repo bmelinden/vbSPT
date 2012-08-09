@@ -1,4 +1,4 @@
-% Matrlab script to compile all c files in this folder.
+% Matlab script to compile all c files in this folder.
 % M.L. 2011
 
 mex -setup

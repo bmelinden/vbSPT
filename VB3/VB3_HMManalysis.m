@@ -11,46 +11,26 @@ function res=VB3_HMManalysis(runinputfile)
 % information is also written to the outputfile specified in the runinput
 % file or options structure. 
 
-%% change-log
-% M.L. 2012-08-09 : Write command line output to a log file next to the
-%                   output file (but with a .log extension instead), and
-%                   made minor changes to the log output.
-%                   logfile stored as opt.logfile
-%                   Explicitely added .mat extension to outputfile   
-% F.P. 2012-07-03 : fixed bug in by expanding the if (w.N>1) statement for
-%                   adding transitions to include the reports if it helped 
-%                   (timer tx0 could be undefined in the reports before)
-% F.P. 2012-07-03 : added saving step prior to bootstrapping and put
-%                   bootstrapping in an external function with no redundancy
-% M.L. 2012-06-29 : added timing of extra transition count convergences
-% M.L. 2012-06-28 : added another search step with extra transition counts
-% F.P. 2012-06-27 : fixed bug when printing dF/abs(F)
-% M.L. 2012-06-27 : added a search step that fills in missing transitions and
-%                   reconverges after no more states can be removed.
-% M.L. 2012-06-18 : created a version with simpler search: only attempts to
-%                   remove the least occupied state
-% M.L. 2012-06-18 : corrected unit error in initial guess for diffusion
-%                   constant
-% M.L. 2012-06-13 : decreased scope of full bottstrap to optimal size +-3,
-%                   and introduced the 'slim' option to decrease computer
-%                   time and storage footprint of the models.
-% M.L. 2012-06-11 : Save the best model for each size. Merged updated
-%                   variable names. Changed viterbiEstimate ->
-%                   stateEstimate
-% F.P. 2012-06-07 : changed variable names Nmax -> maxHidden, dt ->
-%                   timestep, pathestimate -> viterbiEstimate, BSnum ->
-%                   bootstrapNum and savefile -> outputfile
-% M.L. 2012-05-16 : changed to a deeper greedy serach that tries to remove
-%                   all states before giving up. Also made a more ambitious
-%                   bootstrap, that bootstraps all models sizes, and
-%                   estimates the probability that a certain model is
-%                   optimal.
-% F.P. 2012-04-16 : fixed a bug concerning the bootstrapping arguments
-% M.L. 2012-04-04 : added the possibility to pass an options structure
-%                   instead of a runinput filename.
-% M.L. 2012-03-31 : added some parameter corrections, and forwarded
-%                   convergence criteria to the VBEM iterations.
-
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% VB3_HMManalysis, runs data analysis in the vbSPT package
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% 
+% E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
 %% start of actual code
 tstart=tic;
 %% read analysis parameters
