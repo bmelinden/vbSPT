@@ -242,7 +242,7 @@ toc
 
 p = mfilename('fullpath');
 [p, ~, ~] = fileparts(p);
-oldFold = cd([p filesep 'generated Data' filesep]);
+oldFold = cd([p filesep 'generatedData' filesep]);
 cont = what;
 ind = length(cont.mat)+1;
 savename=sprintf('syntheticData_%02d.mat',ind);
