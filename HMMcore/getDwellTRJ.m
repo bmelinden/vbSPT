@@ -10,28 +10,41 @@ function [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious)
 %            states are divided between the surrounding non-spurious
 %            states. Default: empty.
 
-% M.L. 2010-06-17   : added Dstart,Dend.
-% M.L. 2011-01-21   : added wA
-% M.L. 2012-03-20   : added ability to remove spurious states
-
-
-
-% remove the ignore states
-if(exist('ignore','var') && ~isempty(ignore))
-    t1=find(~ismember(s,ignore),1,'first');
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% getDwellTRJ.m
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lindén, E-mail: bmelinden@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
+%% start of actual code
+% remove the spurious states
+if(exist('spurious','var') && ~isempty(spurious))
+    t1=find(~ismember(s,spurious),1,'first');
     s1=s(t1); % first non-spurious state
     s(1:t1-1)=s1; % first spurious dwell overwritten by next non-spurious state
     
     for t=t1+1:length(s)
-        if(ismember(s(t),ignore)) % then 
-            if(~ismember(s(t-1),ignore)) % then a spurious dwell just started
+        if(ismember(s(t),spurious)) % then 
+            if(~ismember(s(t-1),spurious)) % then a spurious dwell just started
                 t1=t;      % beginning of spurious dwell
                 s1=s(t-1); % remember last genuine state
             end
             % if both s(t) and s(t-1) are spurious, then we should keep
             % looking for the 
         else
-            if(ismember(s(t-1),ignore)) % then a spurious dwell just ended
+            if(ismember(s(t-1),spurious)) % then a spurious dwell just ended
                t2=t-1;
                s2=s(t);
                tmid=floor(0.5*(t1+t2));
@@ -39,7 +52,7 @@ if(exist('ignore','var') && ~isempty(ignore))
                s(tmid+1:t2)=s2; % genuine states
             end
             % if both s(t) and s(t-1) are genuine states, then everything
-            % is find
+            % is fine
         end
     end
     clear s1 s2 t1 t2 tmid
