@@ -39,10 +39,30 @@ function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 % inner loops: VB_forwardbackward.mexXXX VB_wAcount.mexXX, where XXX is a
 % platform dependent extension. Please refer to HMMcore/compile_code.m to
 % (re)compile for your system.
-%
-% M.L. 2012-06-13 
 
-%% process options
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% VB3_VBEMiterator, variational EM iterations in the vbSPT package
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% 
+% E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
+
+%% start of actual code
+% process options
 C.maxIter=1000;
 C.relTolF=1e-8;
 C.tolPar=1e-2;
