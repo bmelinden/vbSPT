@@ -2,14 +2,21 @@ function res=VB3_HMManalysis(runinputfile)
 % res=VB3_HMManalysis(runinputfile)
 %
 % Run the variational HMM analysis specified in the runinputfile, which
-% should be in the current directory.
-% it is also possible to use an options structure, e.g., from
+% should be in the current directory. 
+% It is also possible to use an options structure, e.g., from
 % opt=VB3_getOptions(runinputfile) instead, which might be useful for
-% parameter sweeps.
+% scripting things like parameter sweeps from a single runinput file.
 %
-% M.L. 2012-03-30
+% res : structure containing the result of the analysis. The same
+% information is also written to the outputfile specified in the runinput
+% file or options structure. 
 
-% change-log
+%% change-log
+% M.L. 2012-08-09 : Write command line output to a log file next to the
+%                   output file (but with a .log extension instead), and
+%                   made minor changes to the log output.
+%                   logfile stored as opt.logfile
+%                   Explicitely added .mat extension to outputfile   
 % F.P. 2012-07-03 : fixed bug in by expanding the if (w.N>1) statement for
 %                   adding transitions to include the reports if it helped 
 %                   (timer tx0 could be undefined in the reports before)
@@ -44,12 +51,11 @@ function res=VB3_HMManalysis(runinputfile)
 % M.L. 2012-03-31 : added some parameter corrections, and forwarded
 %                   convergence criteria to the VBEM iterations.
 
-
-
+%% start of actual code
 tstart=tic;
 %% read analysis parameters
 % if an existing file, generate options structure
-if(isstr(runinputfile) && exist(runinputfile)==2)
+if(ischar(runinputfile) && exist(runinputfile)==2)
     opt=VB3_getOptions(runinputfile);
     disp(['Read runinput file ' runinputfile])
 elseif(isstruct(runinputfile))
@@ -57,8 +63,31 @@ elseif(isstruct(runinputfile))
     runinputfile=opt.runinputfile;
     disp(['Read options structure based on runinput file ' runinputfile ])
 end
-disp(['jobID: ' opt.jobID])
-disp('Starting greedy optimization to find best model...')
+
+% add .mat extension to output file if not present
+[outpath,outfile]=fileparts(opt.outputfile);
+opt.outputfile=fullfile(outpath,[outfile '.mat']);
+clear outfile outpath;
+
+% construct log file name from outputfile, with extension .log
+[logpath,logfile]=fileparts(opt.outputfile);
+opt.logfile=fullfile(logpath,[logfile '.log']);
+clear logfile logpath;
+
+% start the diary, and clear old entries (the output is overwritten too). 
+if(exist(opt.logfile,'file'))
+    delete(opt.logfile)
+end
+diary(opt.logfile);
+diary on
+disp('Copyright notice should be printed here!')
+
+disp('----------')
+disp([ datestr(now) ' : Starting greedy optimization to find best model.'])
+disp(['jobID        : ' opt.jobID])
+disp(['runinput file: ' opt.runinputfile])
+disp(['output file  : ' opt.outputfile])
+disp(['log file     : ' opt.logfile])
 disp('----------')
 
 %% start of actual analysis code
@@ -285,7 +314,8 @@ if(opt.parallelize_config)
     eval(opt.parallel_end)
 end
 
-disp(['Finished ' opt.runinputfile ' in ' num2str(toc(tstart)/60) ' min.'])
+disp([datestr(now) ' : Finished ' opt.runinputfile '. Total run time ' num2str(toc(tstart)/60) ' min.'])
+diary off
 end
 
 
