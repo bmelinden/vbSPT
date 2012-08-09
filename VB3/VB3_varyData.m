@@ -22,11 +22,6 @@ function modelRun = VB3_varyData(runinput, varargin)
 %
 %
 % F.P. 2012-06-29
-%
-% Change log:
-%
-%
-
 
 tvaryData=tic;
 %% read input

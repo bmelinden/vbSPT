@@ -1,4 +1,4 @@
-function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
+function [W,C,F]=VB3_VBEMiterator_serial(W,X,varargin)
 %% [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 %
 % Perform VBEM iterations, on the VB structure W, with data (structure)

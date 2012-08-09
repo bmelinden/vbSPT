@@ -14,11 +14,6 @@ function [x,s]=VB3_switching_diffusion_ddim(A,g,T,d)
 % d is the dimension of the output data (default:2)
 %
 % T is the number of time points to simulate.
- 
-
-%% change log
-% M.L. 2012-01-31 : simulate d-dimensional free diffusion
-% M.L. 2011-12-05 : started
 
 %% parameter handling
 if(~exist('d','var') || isempty(d)); d=2;end

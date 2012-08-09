@@ -1,17 +1,14 @@
 function opt=VB3_getOptions(runinputfile)
 % opt=VB3_getOptions(runinputfile)
 %
-% read HMM parameters into an options structure opt.
-% M.L. 2012-03-30
-% F.P. 2012-06-05 Added functionaltity of running a runinput file not in
-% the current path.
-% M.L. 2012-06-07 Tried to tweak path recognition to deal with paths in current directory 
-% ML 2012-06-11: added translations to handle transitions to new variable
-%                names
-% M.L. 2012-06-12 : updated sourcefile -> inputfile
+% convert HMM runinput parameters from a runinput file into an options
+% structure opt. In fact, all variables created by the command
+% eval(runinputfile) are stored in the opt structure. 
+% An (incomplete) sanity check of some parameter values is also performed.
+%
+% M.L. and F.P. 2012
 
-
-% Split the filename
+% Split the runinput filename
 [path, name, ext] = fileparts(runinputfile);
 if(isempty(path))
     path='.';

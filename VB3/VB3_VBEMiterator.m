@@ -35,41 +35,12 @@ function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 %                    memory
 % W.est2           : more memory intensensive estimates
 %
-% this function uses mex files for the computer intensive inner loops:
-% VB_forwardbackward.mexXXX VB_wAcount.mexXX, where XXX is a platform
-% deoendent extension.
-% To (re)compile binaries for your system, issue
-% mex -setup
-% mex('VB_forwardbackward.c',['-' computer('arch')],'-O')
-% mex('VB_wAcount.c',['-' computer('arch')],'-O')
-
-%% change log and notes
-% M.L. 2012-03-31   : handle empty matrices as parameters (-> default
-%                     values).
-% M.L. 2012-03-8    : tried to parallelize the loop m=1:Ntrj, and
-%                     discovered a ~2-fold speedup from just the
-%                     reorganization. Probably better to keep this
-%                     function serial and parallelize an outer loop
-%                     instead.
-% M.L. 2012-02-26   : changed to d-dimensional data (second attempt), and
-%                     then to the shorter model representation. Put this as
-%                     new VB3 iterator, from VB2_VBEMiterator_ddim_short.
-% M.L. 2012-01-27   : cleaning up notations in the code in order to prepare
-%                     for jump to d-dimensional data. 
-% M.L. 2011-12-15   : tested forward-backward against vbFRET
-%                     implementation: same results. Corrected sign error in
-%                     KL-divergence for g. F seems to increase always now.
-%                     Added exit message.
-% M.L. 2011-12-08   : first test: runs, but F does not always increase,
-%                     especially for short trajectories. seem lnZ is the
-%                     culprit?
-% M.L. 2011-12-07   : started this diffusion version, with convergence
-%                     check included. No testing done, some variable
-%                     renaming remains, and the iteration part should
-%                     perhaps be put in a separate subfunction to make the
-%                     code easier to read.
-% M.L. 2012-06-13   : added option to return a slimmed model: the fields
-%                     W.E,  W.est.Ps, and W.est.Ts are removed at the end.
+% This function uses mex files from HMMcore for the computer intensive
+% inner loops: VB_forwardbackward.mexXXX VB_wAcount.mexXX, where XXX is a
+% platform dependent extension. Please refer to HMMcore/compile_code.m to
+% (re)compile for your system.
+%
+% M.L. 2012-06-13 
 
 %% process options
 C.maxIter=1000;

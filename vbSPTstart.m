@@ -1,7 +1,5 @@
 % Add paths that are needed to run the VB3 analysis 
-%
-% F.P. 2012-07-04
-% M.L. 2012-08-08 : slight changes to reflect new folder names
+% F.P. and M.L. 2012-08-08 
 
 dir0=pwd;
 addpath(genpath([dir0 filesep '.' filesep 'HMMcode' filesep 'VB3']))

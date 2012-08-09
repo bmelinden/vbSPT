@@ -4,13 +4,12 @@ function W1=VB3_sortModel(W,ind)
 % sort the states of the VB3 model W in order ind, where in is a
 % permutation of 1:W.N. If ind is not given, the model is sorter in order
 % of increasing most likely diffusion constant, 
-% W.est.DdtMode=W.est.DdtMode=W.M.c/4./(W.M.n+1).
+% W.est.DdtMode=W.M.c/4./(W.M.n+1)
 %
 % Only the M,PM, and est fields are sorted, other fields must be recreated
 % by running further VB iterations.
 
-%% change log
-% M.L. 2012-04-14   : started
+% M.L. 2012-04-14
 
 %% check parameters
 if(~exist('ind','var')|| isempty(ind))

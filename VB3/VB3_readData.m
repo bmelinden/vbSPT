@@ -2,14 +2,10 @@ function X=VB3_readData(opt)
 % X=VB3_readData(opt)
 % 
 % read diffusion data set as specified in the options structure opt, from
-% e.g., opt=VB3_getOptions(runinputfile).
-
-% change-log
-% M.L. 2012-04-17   : added option to exclude short trajectories by reading
-%                     the variable trjLmin from the options structure. Good
-%                     for test runs.
-% M.L. 2012-06-12   : changed sourcefile -> inputfile
-
+% e.g., opt=VB3_getOptions(runinputfile). Only trajectories longer than
+% opt.trjLmin are returned. 
+%
+% M.L. 2012-04-17
 
 foo=load(opt.inputfile,opt.trajectoryfield);
 

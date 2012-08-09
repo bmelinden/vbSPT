@@ -1,15 +1,10 @@
-function res=VB3_getResult(runinput)
+function res=VB3_getResult(runinputfile)
 % res=VB3_getResult(runinputfile)
 %
-% Find saved outputfile from a runinput file, and load the analysis
-% results.
-
-% M.L. 2012-06-12
-% 
-% Change log:
-% F.P. 2012-07-04 : Prints the important results to the Matlab prompt
-% M.L. 2012-06-14 : handle opt structure as input
+% Find saved outputfile from a runinput file, load the analysis
+% results, and print a short description to the command line.
 %
+% M.L. and F.P. 2012-07-14
 
 if(isstruct(runinput))
     opt=runinput;

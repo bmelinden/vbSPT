@@ -1,6 +1,7 @@
 function w=VB3_reorder(w0,ind)
-% permute the state indices in mode w0, and return PM and fields.
-
+% permute the state indices in model w0, and return PM and fields.
+%
+% M.L. 2012
 w.dim=w0.dim;
 w.N=w0.N;
 

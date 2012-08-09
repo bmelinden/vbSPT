@@ -1,5 +1,5 @@
 function bootstrap=VB3_bsResult(runinput, varargin)
-%% res=VB3_bsResult(runinputfile)
+% res=VB3_bsResult(runinputfile,option1,option2,...)
 %
 % Run bootstrapping on the HMM analysis result specified in the runinputfile, which
 % should be in the current directory.
@@ -19,13 +19,6 @@ function bootstrap=VB3_bsResult(runinput, varargin)
 %
 %
 % F.P. 2012-06-29
-
-% change-log
-% F.P. 2012-07-03 : adapted to being run from HMM_analysis and adding
-%                   saving and overwriting as an option
-% F.P. 2012-07-02 : Removed bootstrapping redundancy for the best global model.
-
-
 
 tbootstrap=tic;
 %% read bootstrapping input

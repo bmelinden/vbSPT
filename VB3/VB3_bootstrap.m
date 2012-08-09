@@ -28,10 +28,8 @@ function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
 % Wmean, Wstd: bootstrap average and standard deviation models, taken
 %              elements-wise for some chosen fields. Only M and est fields
 %              are analyzed.
-
-%% change-log
-% M.L. 2012-04-14 : started
-% M.L. 2012-05-16 : added the possibility to reuse old bootstrap indices 
+%
+% M.L. 2012-05-16
 
 %% parameters
 hasindices=false;

@@ -1,10 +1,8 @@
 function W=VB3_createPrior(opt,N)
 % W=V3_createPrior(opt,N)
+%
 % creates a model structure W with N states, and prior distributions
-% according to the runinput options opt.
-
-% ML 2012-06-11 : updated variable names
-% ML 2012-06-20 : check for too short prior dwell time
+% according to the options structure opt.
 
 timestep=opt.timestep;              % sampling time step
 At0=opt.prior_tD/timestep;          % prior mean dwell time
