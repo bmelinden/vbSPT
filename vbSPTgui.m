@@ -1,50 +1,31 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                 %
-%      GUI for VB-HMM analysis                    %
-% ==================================              %
-%                                                 %
-%  Developed by: Fredrik Persson & Martin Linden  %
-%                                                 %
-%    Copyright 2011 GNU GPL License               %
-%                                                 %
-%                                                 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%    This file is part of VB-HMM SPT software.
+% vbSPTgui(~,varargin)
 %
-%     VB-HMM SPT is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
+% Provides a graphical user interface for the vbSPT software.
+
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% vbSPTgui.m, provides a GUI for the vbSPT package
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% 
+% E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
 %
-%     VB-HMM SPT is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-%
-%     You should have received a copy of the GNU General Public License
-%     along with SMT.  If not, see <http://www.gnu.org/licenses/>.
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
+%% start of actual code
 
-%%%%%%%%%%%%%%%%%%
-% Main window    %
-% ============== %
-%%%%%%%%%%%%%%%%%%
+function vbSPTgui(~,varargin)
 
-% 2012-04-26 FP 
-%
-% 2012-06-11 ML : changed viterbiEstimate -> stateEstimate
-% 2012-06-12 FP : Added functionality for relative paths based on the
-%                 scripts location and changed layout etc
-% 2012-06-13 FP : Added paths for core analysis files and also settings for
-%                 initial guesses and prior distributions. Also changed
-%                 layout.
-% 2012-06-14 FP : Added info boxes and a comment on the calculation of
-%                 priors in the generated script.
-% 2012-06-28 FP : Changed the prior settings for tD and tD strength
-% 2012-07-04 FP : Added options for visualising results etc
-
-
-function VBgui(~,varargin)
 
 % Find folder where this file is and add subfolders to the Matlab path
 p = mfilename('fullpath');
@@ -187,7 +168,7 @@ w = pos(3);
 bw = 90; bh = 25;
 
 % Positions for the buttons
-x1 = 20; x2 = 20+(bw/2); x3 = 20+(2*bw); x4=20+(3.1*bw); x5 = w-(75);
+x0 = 20; x1 = 70; x2 = 20+(1.1*bw); x3 = 20+(2.15*bw); x4=20+(3.2*bw); x5 = w-(70);
 
 % Close button
 uicontrol(...
@@ -249,6 +230,19 @@ uicontrol(...
     'Position',[x1 10 bw/2 bh],...
     'Enable', 'on',...
     'Callback',{@SaveScriptButton});
+
+% Show a license box.
+uicontrol(...
+    'Parent',hObject,...
+    'Units','pixels',...
+    'Style','pushbutton',...
+    'TooltipString','Show an about box.',...
+    'String','About',...
+    'FontName', varargin{end} ,...
+    'FontSize',varargin{end-1},...
+    'Position',[x0 10 bw/2 bh],...
+    'Enable', 'on',...
+    'Callback',{@AboutButton});
 
 end
 
@@ -990,6 +984,16 @@ RunScript;
 
 end
 
+function AboutButton(~, varargin)
+
+msgbox(sprintf(...
+['\nvbSPT, vbSPTgui.m \n\n' 'Copyright (C) 2012 Martin Linden and Fredrik Persson \n\n' ...
+ 'This program comes with ABSOLUTELY NO WARRANTY. \n' ...
+ 'This is free software, and you are welcome to redistribute it \n' ...
+ 'under certain conditions. See license.txt for details. \n\n ']));
+
+end
+
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -1246,6 +1250,7 @@ oldFold = cd(pathname);
 opt = VB3_getOptions(filename);
 try
     VB3_getResult(opt);
+    displayHMMmodel(opt)
 catch err
     % ignore if called when loading new data
     if nargin>0
