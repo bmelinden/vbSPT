@@ -1,50 +1,32 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                                                 %
-%      GUI for VB-HMM analysis                    %
-% ==================================              %
-%                                                 %
-%  Developed by: Fredrik Persson & Martin Linden  %
-%                                                 %
-%    Copyright 2011 GNU GPL License               %
-%                                                 %
-%                                                 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%    This file is part of VB-HMM SPT software.
+
+
+function vbSPTgui(~,varargin)
+% vbSPTgui(~,varargin)
 %
-%     VB-HMM SPT is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
+% Initiates a graphical user interface for the vbSPT software.
+
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% vbSPTgui.m, provides a graphical user inferface for the vbSPT package
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lind?n and Fredrik Persson
+% 
+% E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
 %
-%     VB-HMM SPT is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-%
-%     You should have received a copy of the GNU General Public License
-%     along with SMT.  If not, see <http://www.gnu.org/licenses/>.
-
-%%%%%%%%%%%%%%%%%%
-% Main window    %
-% ============== %
-%%%%%%%%%%%%%%%%%%
-
-% 2012-04-26 FP 
-%
-% 2012-06-11 ML : changed viterbiEstimate -> stateEstimate
-% 2012-06-12 FP : Added functionality for relative paths based on the
-%                 scripts location and changed layout etc
-% 2012-06-13 FP : Added paths for core analysis files and also settings for
-%                 initial guesses and prior distributions. Also changed
-%                 layout.
-% 2012-06-14 FP : Added info boxes and a comment on the calculation of
-%                 priors in the generated script.
-% 2012-06-28 FP : Changed the prior settings for tD and tD strength
-% 2012-07-04 FP : Added options for visualising results etc
-
-
-function VBgui(~,varargin)
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
+%% start of actual code
 
 % Find folder where this file is and add subfolders to the Matlab path
 p = mfilename('fullpath');
