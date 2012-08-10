@@ -9,7 +9,7 @@ function res=VB3_getResult(runinputfile)
 % VB3_getResult.m, loads analysis results for the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,10 +26,10 @@ function res=VB3_getResult(runinputfile)
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 %% start of actual code
 
-if(isstruct(runinput))
-    opt=runinput;
+if(isstruct(runinputfile))
+    opt=runinputfile;
 else    
-    opt=VB3_getOptions(runinput);
+    opt=VB3_getOptions(runinputfile);
 end
 
 res=load(opt.outputfile);

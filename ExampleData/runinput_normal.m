@@ -5,14 +5,9 @@
 % needed, and start the analysis with 
 % >> result=VB3_HMManalysis('runinputfilename')
 %
-% M.L. 2012-04-17
+% M.L. F.P. 2012-04-17
 
-% change-log
-% F.P. 2012-04-16 : cleaned up outdated information
-% M.L. 2012-05-16 : added fullBoostrap option, to bootstrap all model sizes.
-% M.L. 2012-06-11 : updated variable names
-% M.L. 2012-06-12 : updated sourcefile -> inputfile
-% F.P. 2012-07-03 : updated outdated comments etc
+
 
 
 % Where to load the data and save the result
@@ -44,7 +39,7 @@ trjLmin=2;  % trajectories with fewer than trjLmin positions are excluded from
             % included for testing purposes).
 
 % Convergence and things to compute:
-runs=10;    % number of attempts at each model size (make a multiple of 
+runs=20;    % number of attempts at each model size (make a multiple of 
             % number of cores when running in parallel)
 maxHidden=10;    % maximum number of hidden states to consider. 
             % Aim for ~2 times the number of hidden states.

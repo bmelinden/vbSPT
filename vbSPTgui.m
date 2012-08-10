@@ -1,17 +1,13 @@
-
-
-
-function vbSPTgui(~,varargin)
 % vbSPTgui(~,varargin)
 %
-% Initiates a graphical user interface for the vbSPT software.
+% Provides a graphical user interface for the vbSPT software.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% vbSPTgui.m, provides a graphical user inferface for the vbSPT package
+% vbSPTgui.m, provides a GUI for the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind?n and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,6 +23,9 @@ function vbSPTgui(~,varargin)
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 %% start of actual code
+
+function vbSPTgui(~,varargin)
+
 
 % Find folder where this file is and add subfolders to the Matlab path
 p = mfilename('fullpath');
@@ -169,7 +168,7 @@ w = pos(3);
 bw = 90; bh = 25;
 
 % Positions for the buttons
-x1 = 20; x2 = 20+(bw/2); x3 = 20+(2*bw); x4=20+(3.1*bw); x5 = w-(75);
+x0 = 20; x1 = 70; x2 = 20+(1.1*bw); x3 = 20+(2.15*bw); x4=20+(3.2*bw); x5 = w-(70);
 
 % Close button
 uicontrol(...
@@ -231,6 +230,19 @@ uicontrol(...
     'Position',[x1 10 bw/2 bh],...
     'Enable', 'on',...
     'Callback',{@SaveScriptButton});
+
+% Show a license box.
+uicontrol(...
+    'Parent',hObject,...
+    'Units','pixels',...
+    'Style','pushbutton',...
+    'TooltipString','Show an about box.',...
+    'String','About',...
+    'FontName', varargin{end} ,...
+    'FontSize',varargin{end-1},...
+    'Position',[x0 10 bw/2 bh],...
+    'Enable', 'on',...
+    'Callback',{@AboutButton});
 
 end
 
@@ -972,6 +984,16 @@ RunScript;
 
 end
 
+function AboutButton(~, varargin)
+
+msgbox(sprintf(...
+['\nvbSPT, vbSPTgui.m \n\n' 'Copyright (C) 2012 Martin Linden and Fredrik Persson \n\n' ...
+ 'This program comes with ABSOLUTELY NO WARRANTY. \n' ...
+ 'This is free software, and you are welcome to redistribute it \n' ...
+ 'under certain conditions. See license.txt for details. \n\n ']));
+
+end
+
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -1228,6 +1250,7 @@ oldFold = cd(pathname);
 opt = VB3_getOptions(filename);
 try
     VB3_getResult(opt);
+    displayHMMmodel(opt)
 catch err
     % ignore if called when loading new data
     if nargin>0

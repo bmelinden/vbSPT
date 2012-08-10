@@ -1,15 +1,12 @@
-%%%% simulation parameter file %%%%
-% this is an HMM analysis runinput file, made to run fast for
-% debugging/testing purposes.
-%
-% M.L. 2012-05-23
 
-% change-log
-% F.P. 2012-04-16 : cleaned up outdated information
-% M.L. 2012-05-16 : added fullBoostrap option, to bootstrap all model sizes.
-% M.L. 2012-06-11 : updated variable names
-% M.L. 2012-06-12 : updated sourcefile -> inputfile
-% F.P. 2012-07-03 : updated outdated comments etc
+%% simulation parameter file %%
+% this is an example of an HMM analysis runinput file, which specifies
+% everything the code needs to know about how to analyz a particular data
+% set. To run the HMM analysis, copy this file and edit the vaiables as
+% needed, and start the analysis with 
+% >> result=VB3_HMManalysis('runinputfilename')
+%
+% M.L. F.P. 2012-04-17
 
 
 % Where to load the data and save the result
