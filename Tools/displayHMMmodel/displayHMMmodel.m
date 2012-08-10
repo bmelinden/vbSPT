@@ -1,12 +1,14 @@
-
-
 function displayHMMmodel(runinput)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % File for getting out and graphically representing HMM model results from
-% VB3
+% VB3. 
+% runiput can be a runinput file, an options structure, or empty, in which
+% case the user is asked to select a result file (the one specified by
+% opt.outputfile). 
 % FP 2012-04-13
 
+VB3_license('displayHMMmodel')
 
 if(nargin==0)
     clear all

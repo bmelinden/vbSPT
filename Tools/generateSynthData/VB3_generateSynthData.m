@@ -38,6 +38,7 @@ function finalTraj=VB3_generateSynthData(varargin)
 
 tgenData=tic;
 
+VB3_license('VB3_generateSynthData')
 
 
 %% define default geometry

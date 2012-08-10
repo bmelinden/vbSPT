@@ -3,9 +3,10 @@ function displayHMM_noOpt(model)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % File for getting out and graphically representing HMM model results from
-% VB3
+% VB3. Input model is a vbSPT model object.
 % FP 2012-04-13
 
+VB3_license('displayHMM_noOpt')
 
 % Set parameters
 timeStep = 3e-3; % s     

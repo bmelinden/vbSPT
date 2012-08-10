@@ -60,8 +60,7 @@ if(exist(opt.logfile,'file'))
 end
 diary(opt.logfile);
 diary on
-disp('Copyright notice should be printed here!')
-
+VB3_license('VB3_HMManalysis')
 disp('----------')
 disp([ datestr(now) ' : Starting greedy optimization to find best model.'])
 disp(['jobID        : ' opt.jobID])
