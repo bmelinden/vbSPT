@@ -26,7 +26,9 @@ function VB3_license(funcName)
 %% start of actual code
 
 fprintf(['vbSPT, ' funcName ', Copyright (C) 2012 Martin Linden and Fredrik Persson \n',...
-'This program comes with ABSOLUTELY NO WARRANTY; for details see license.txt. \n']);
+'This program comes with ABSOLUTELY NO WARRANTY. \n',...
+'This is free software, and you are welcome to redistribute it \n',...
+'under certain conditions. See license.txt for details. \n']);
 
 end
 
