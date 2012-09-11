@@ -34,7 +34,7 @@ trajLengths(find(trajLengths <= shortestTraj)) = [];
 %% Define states (max 5)
 
 % Occupancy:
-occProb = [];  % This setting will make sure a steady state occupation is used.
+occProb = [];  % Leaving this setting as '[]' will ensure a steady state occupation.
 
 % Diffusion coeffs:
 D1 = 1.0      % um2/s

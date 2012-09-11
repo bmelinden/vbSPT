@@ -11,13 +11,18 @@ function [data, trajLengths] = MakeTrajectories(timeStep, CellL, CellR, trajLeng
 
 data = cell(1, length(trajLengths));
 
+%% Convert transition matrix to transition rates
+transRate = transMat./step_T;
+% Remove the diagonal since it corresponds to 'self-transition'
+transRate(~~eye(size(transMat))) = 0;
+
 %% Start and generate trajectories
 parfor j = 1:length(trajLengths)
     % Choose starting state for the trajectory
     state = find(rand<=cumsum(occProb),1);
     
     % Pass it on
-    [TimePoints, Traj, n, state] = simCell(CellL, CellR, diffCoeff, transMat, trajLengths(j), timeStep, state, locAccuracy);
+    [TimePoints, Traj, n, state] = simCell(CellL, CellR, diffCoeff, transRate, trajLengths(j), timeStep, state, locAccuracy);
     j
 
     data{j} = Traj;
