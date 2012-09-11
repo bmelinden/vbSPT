@@ -20,14 +20,14 @@ cylL = 2000 % nm
 cylRadius = 400  % nm
 
 % Define trajectory parameters
-numTraj = 500
+numTraj = 20000
 avTrajLength = 10
 stdTrajLength = 5
-shortestTraj = 3
+shortestTraj = 2
 
 % generate trajectory lengths
 trajLengths = ceil(ones(1,numTraj) .* avTrajLength + stdTrajLength .* randn(1, numTraj));
-trajLengths(find(trajLengths <= shortestTraj)) = [];
+trajLengths(find(trajLengths < shortestTraj)) = [];
 
 % one can also insert an arbitrary vector of trajectory lengths here as well.
 
