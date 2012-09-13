@@ -28,7 +28,7 @@ function modelRun = VB3_varyData(runinput, varargin)
 % VB3_varyData, test inference robustness, in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,6 +124,11 @@ end
 
 %% split up data and run
 
+% If not randomly picking the data points then no need for multiple runs
+if ~do_random
+    runs = 1;
+end
+
 wModels = cell(1, length(sampleSize));
 modelRun = cell(1, runs);
 
@@ -135,6 +140,8 @@ end
 matlabpool open
 
 for ind = 1:runs
+    disp(['Run: ' num2str(ind) ' of ' num2str(runs)]);
+    
 parfor k=1:length(sampleSize)
     % Sample the data
     if do_random
@@ -159,7 +166,11 @@ end
 matlabpool close
 
 if do_save
-    saveName = [opt.outputfile, '_varData.mat'];
+    if do_random
+        saveName = [opt.outputfile, '_varDataRandom.mat'];
+    else
+        saveName = [opt.outputfile, '_varDataNotRandom.mat'];
+    end
     if runs==1;
         save(saveName, 'wModels')
     else
