@@ -16,7 +16,7 @@ function res=VB3_HMManalysis(runinputfile)
 % VB3_HMManalysis, runs data analysis in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,7 +158,7 @@ parfor iter=1:opt.runs
                     %disp(['Iter ' int2str(iter) ': simple removal did not help. Trying to add some extra transitions'])
                     w=VB3_createPrior(opt,w0.N-1);
                     w.M=VB3_removeState(w0,h(k));
-                    od=max(max((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
+                    od=mean(mean((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
                     w.M.wA= diag(diag(w.M.wA))+od*(1-eye(w.N));
                     if(isfield(w,'E')) % make sure that the new M field is used
                         w=rmfield(w,'E');
@@ -197,7 +197,7 @@ parfor iter=1:opt.runs
             if(w0.N>1)
                 tx0=tic;
                 w=w0;
-                od=max(max((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
+                od=mean(mean((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
                 w.M.wA= diag(diag(w.M.wA))+od*(1-eye(w.N));
                 if(isfield(w,'E')) % make sure that the new M field is used
                     w=rmfield(w,'E');
