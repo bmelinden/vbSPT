@@ -107,7 +107,7 @@ k = k.*timestep;
 transMat = [1-sum(k(1,:)), k(1, 1:end);
             k(2, 1), 1-sum(k(2,:)), k(2, 2:end);
             k(3, 1:2), 1-sum(k(3,:)), k(3, 3:end);
-            k(4, 1:3), 1-sum(k(4,:)), k(4, end);
+            k(4, 1:3), 1-sum(k(4,:)), k(4, 4:end);
             k(5, 1:4), 1-sum(k(5,:)), k(5, 5:end);
             k(6, 1:end), 1-sum(k(6,:))];
            
