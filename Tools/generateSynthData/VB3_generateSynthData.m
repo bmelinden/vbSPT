@@ -127,7 +127,7 @@ if(nargin>1)        % parse options
         elseif(strcmpi(option,'locAccuracy'))
             if(~isempty(varargin{k+1}))
                 locAccuracy=varargin{k+1};
-                if(~isnumeric(locAccuracy) || locAccuracy<=0)
+                if(~isnumeric(locAccuracy) || locAccuracy<0)
                     error('VB3_synthData: locAccuracy option must be followed by a positive number.')
                 end
             end

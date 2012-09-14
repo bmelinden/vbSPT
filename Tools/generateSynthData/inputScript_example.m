@@ -5,7 +5,8 @@
 % F.P. 2012-07-04
 
 %% Define misc parameters
-
+diary('VB3_generateSynthData.log');
+diary on
 % Choose if to use parallel computing
 do_parallel = true;
 
@@ -30,7 +31,7 @@ trajLengths(find(trajLengths < shortestTraj)) = [];
 
 % one can also insert an arbitrary vector of trajectory lengths here as well.
 
-%% Define states (max 5)
+%% Define states (max 6)
 
 % Occupancy:
 occProb = [];  % Leaving this setting as '[]' will ensure a steady state occupation.
@@ -62,36 +63,36 @@ end
 % or by writing up transition rates as below.
 
 % Transition rates:
-k12 = 15     % s^-1 
-k13 = 0     % s^-1
-k14 = 0     % s^-1 
-k15 = 0     % s^-1 
-k16 = 0     % s^-1 
-k21 = 30     % s^-1 
-k23 = 0     % s^-1 
-k24 = 0     % s^-1 
-k25 = 0     % s^-1
-k26 = 0     % s^-1 
-k31 = 0     % s^-1 
-k32 = 0     % s^-1
-k34 = 0     % s^-1 
-k35 = 0     % s^-1
-k36 = 0     % s^-1 
-k41 = 0     % s^-1 
-k42 = 0     % s^-1
-k43 = 0     % s^-1 
-k45 = 0     % s^-1
-k46 = 0     % s^-1 
-k51 = 0     % s^-1 
-k52 = 0     % s^-1
-k53 = 0     % s^-1 
-k54 = 0     % s^-1
-k56 = 0     % s^-1
-k61 = 0     % s^-1 
-k62 = 0     % s^-1
-k63 = 0     % s^-1 
-k64 = 0     % s^-1
-k65 = 0     % s^-1
+k12 = 15;     % s^-1 
+k13 = 0;     % s^-1
+k14 = 0;     % s^-1 
+k15 = 0;     % s^-1 
+k16 = 0;     % s^-1 
+k21 = 30;     % s^-1 
+k23 = 0;     % s^-1 
+k24 = 0;     % s^-1 
+k25 = 0;     % s^-1
+k26 = 0;     % s^-1 
+k31 = 0;     % s^-1 
+k32 = 0;     % s^-1
+k34 = 0;     % s^-1 
+k35 = 0;     % s^-1
+k36 = 0;     % s^-1 
+k41 = 0;     % s^-1 
+k42 = 0;     % s^-1
+k43 = 0;     % s^-1 
+k45 = 0;     % s^-1
+k46 = 0;     % s^-1 
+k51 = 0;     % s^-1 
+k52 = 0;     % s^-1
+k53 = 0;     % s^-1 
+k54 = 0;     % s^-1
+k56 = 0;     % s^-1
+k61 = 0;     % s^-1 
+k62 = 0;     % s^-1
+k63 = 0;     % s^-1 
+k64 = 0;     % s^-1
+k65 = 0;     % s^-1
 
 
 k = [k12 k13 k14 k15 k16;...
@@ -117,6 +118,11 @@ clear k1* k2* k3* k4* k5* k6*
 transMat(length(D)+1:end, :) = [];
 transMat(:, length(D)+1:end) = [];
 
+disp('Transition probability matrix [/timestep]');
+transMat
+disp('Transition rate matrix [/s]');
+transMat/timestep
+
 
 %% Call the main function which generates the trajectories
 
@@ -129,4 +135,4 @@ else
 
 end
 
-
+diary off;
