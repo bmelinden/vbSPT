@@ -5,25 +5,24 @@
 % F.P. 2012-07-04
 
 %% Define misc parameters
-diary('VB3_generateSynthData.log');
-diary on
+
 % Choose if to use parallel computing
 do_parallel = true;
 
 % Define timestep
-timestep = 0.003  % s
+timestep = 0.003;  % s
 
 % Define localization accuracy
-locAccuracy = 0.020 % um
+locAccuracy = 0.020; % um
 
 % Define cell geometry parameters
-cylL = 2000 % nm
-cylRadius = 400  % nm
+cylL = 2000; % nm
+cylRadius = 400;  % nm
 
 % Define trajectory parameters
-numTraj = 20000
-avTrajLength = 10
-shortestTraj = 2
+numTraj = 500;
+avTrajLength = 10;
+shortestTraj = 2;
 
 % generate trajectory lengths
 trajLengths = ceil(exprnd(ones(1, numTraj).*avTrajLength));
@@ -37,12 +36,12 @@ trajLengths(find(trajLengths < shortestTraj)) = [];
 occProb = [];  % Leaving this setting as '[]' will ensure a steady state occupation.
 
 % Diffusion coeffs:
-D1 = 1.0      % um2/s
-D2 = 3.0    % um2/s
-D3 = 0      % um2/s
-D4 = 0      % um2/s
-D5 = 0      % um2/s
-D6 = 0      % um2/s
+D1 = 1.0;      % um2/s
+D2 = 3.0;    % um2/s
+D3 = 0;      % um2/s
+D4 = 0;      % um2/s
+D5 = 0;      % um2/s
+D6 = 0;      % um2/s
 D = [D1 D2 D3 D4 D5 D6];  % um2/s
 clear D1 D2 D3 D4 D5 D6
 D(find(D==0)) = [];
@@ -95,33 +94,31 @@ k64 = 0;     % s^-1
 k65 = 0;     % s^-1
 
 
-k = [k12 k13 k14 k15 k16;...
-    k21 k23 k24 k25 k26;...
-    k31 k32 k34 k35 k36;...
-    k41 k42 k43 k45 k46;...
-    k51 k52 k53 k54 k56;...
-    k61 k62 k63 k64 k65]; % s^-1 
-% Make into transitionprobability / timestep
-k = k.*timestep;
+transRate = [0 k12 k13 k14 k15 k16;...
+    k21 0 k23 k24 k25 k26;...
+    k31 k32 0 k34 k35 k36;...
+    k41 k42 k43 0 k45 k46;...
+    k51 k52 k53 k54 0 k56;...
+    k61 k62 k63 k64 k65 0]; % s^-1 
 
-%make transition matrix
-transMat = [1-sum(k(1,:)), k(1, 1:end);
-            k(2, 1), 1-sum(k(2,:)), k(2, 2:end);
-            k(3, 1:2), 1-sum(k(3,:)), k(3, 3:end);
-            k(4, 1:3), 1-sum(k(4,:)), k(4, 4:end);
-            k(5, 1:4), 1-sum(k(5,:)), k(5, 5:end);
-            k(6, 1:end), 1-sum(k(6,:))];
+% fix diagonal so each state sums up to 0
+transRate(~~eye(size(transRate))) = -sum(transRate, 2);
+
+% Make into transitionprobability / timestep
+transMat = expm(transRate.*timestep);
            
 clear k1* k2* k3* k4* k5* k6*
 
-% Remove the tranistions belonging to states that should not exist
+% Remove the transitions belonging to states that should not exist
+transRate(length(D)+1:end, :) = [];
+transRate(:, length(D)+1:end) = [];
 transMat(length(D)+1:end, :) = [];
 transMat(:, length(D)+1:end) = [];
 
-disp('Transition probability matrix [/timestep]');
-transMat
-disp('Transition rate matrix [/s]');
-transMat/timestep
+% disp('Transition probability matrix [/timestep]:');
+% transMat
+% disp('Transition rate matrix [/s]:');
+% transRate
 
 
 %% Call the main function which generates the trajectories
@@ -135,4 +132,3 @@ else
 
 end
 
-diary off;

@@ -58,102 +58,116 @@ TimePoints = zeros(N,1);
 %% Generate the trajectory
 % Loop over all trajectory steps
 for n = 1:N
-
+    
     while t < (t_old+stepT)
-
+        
         %% Calculate rates and waiting times
         % Diffusion
-        rate_D = (6*diffCoeff(state)/dl^2);
+        x = pos(1);
+        y = pos(2);
+        z = pos(3);
+        dpos = [0 0 0];
+        
+        % Positive x direction
+        if (x+dl)>0 && (x+dl)<L && (z)^2+y^2<R^2        % In the pipe section
+            rate_Dx1 = diffCoeff(state)/dl^2;
+        elseif (x+dl)<0 && (z)^2+y^2+(x+dl)^2<R^2       % in the left end cap
+            rate_Dx1 = diffCoeff(state)/dl^2;
+        elseif (x+dl)>L && (z)^2+y^2+((x+dl)-L)^2<R^2   % in the right end cap
+            rate_Dx1 = diffCoeff(state)/dl^2;
+        else
+            rate_Dx1 = 0;
+        end
+        % Negative x direction
+        if (x-dl)>0 && (x-dl)<L && (z)^2+y^2<R^2        % In the pipe section
+            rate_Dx2 = diffCoeff(state)/dl^2;
+        elseif (x-dl)<0 && (z)^2+y^2+(x-dl)^2<R^2       % in the left end cap
+            rate_Dx2 = diffCoeff(state)/dl^2;
+        elseif (x-dl)>L && (z)^2+y^2+((x-dl)-L)^2<R^2   % in the right end cap
+            rate_Dx2 = diffCoeff(state)/dl^2;
+        else
+            rate_Dx2 = 0;
+        end
+        
+        % Positive y direction
+        if x>0 && x<L && (z)^2+(y+dl)^2<R^2
+            rate_Dy1 = diffCoeff(state)/dl^2;
+        elseif x<0 && (z)^2+(y+dl)^2+x^2<R^2
+            rate_Dy1 = diffCoeff(state)/dl^2;
+        elseif x>L && (z)^2+(y+dl)^2+(x-L)^2<R^2
+            rate_Dy1 = diffCoeff(state)/dl^2;
+        else
+            rate_Dy1 = 0;
+        end
+        % Negative y direction
+        if x>0 && x<L && (z)^2+(y-dl)^2<R^2
+            rate_Dy2 = diffCoeff(state)/dl^2;
+        elseif x<0 && (z)^2+(y-dl)^2+x^2<R^2
+            rate_Dy2 = diffCoeff(state)/dl^2;
+        elseif x>L && (z)^2+(y-dl)^2+(x-L)^2<R^2
+            rate_Dy2 = diffCoeff(state)/dl^2;
+        else
+            rate_Dy2 = 0;
+        end
+        
+        % Positive z direction
+        if x>0 && x<L && (z+dl)^2+y^2<R^2
+            rate_Dz1 = diffCoeff(state)/dl^2;
+        elseif x<0 && (z+dl)^2+y^2+x^2<R^2
+            rate_Dz1 = diffCoeff(state)/dl^2;
+        elseif x>L && (z+dl)^2+y^2+(x-L)^2<R^2
+            rate_Dz1 = diffCoeff(state)/dl^2;
+        else
+            rate_Dz1 = 0;
+        end
+        % Negative z direction
+        if x>0 && x<L && (z-dl)^2+y^2<R^2
+            rate_Dz2 = diffCoeff(state)/dl^2;
+        elseif x<0 && (z-dl)^2+y^2+x^2<R^2
+            rate_Dz2 = diffCoeff(state)/dl^2;
+        elseif x>L && (z-dl)^2+y^2+(x-L)^2<R^2
+            rate_Dz2 = diffCoeff(state)/dl^2;
+        else
+            rate_Dz2 = 0;
+        end
+        
+        % Diffusion rates
+        rate_D = [rate_Dx1, rate_Dx2, rate_Dy1, rate_Dy2, rate_Dz1, rate_Dz2];
         % Transitions between states
-        rate_Trans = sum(transRate(state, :));
-        % Additional misc rates
-        rate_Misc = 0;
-        rates = [rate_D, rate_Trans, rate_Misc];
+        rate_Trans = transRate(state, :);
+        % All rates
+        rates = [rate_D, rate_Trans];
         rate_tot = sum(rates);
+        
         
         dt = -log(rand)/rate_tot;
         t = t+dt;
         
         %% Perform action
-        
         action = find(rand<=cumsum(rates)/rate_tot, 1);
         
         switch action
-            case 1  
-                %% Diffusion
-                
-                % Generate random direction
-                direction = ceil(rand*6);
-                x = pos(1);
-                y = pos(2);
-                z = pos(3);
-                dpos = [0 0 0];
-                switch direction
-                    case 1
-                        if x>0 && x<L && (z+dl)^2+y^2<R^2
-                            dpos = [0 0 dl];
-                        elseif x<0 && (z+dl)^2+y^2+x^2<R^2
-                            dpos = [0 0 dl];
-                        elseif x>L && (z+dl)^2+y^2+(x-L)^2<R^2
-                            dpos = [0 0 dl];
-                        end
-                    case 2
-                        if x>0 && x<L && (z-dl)^2+y^2<R^2
-                            dpos = [0 0 -dl];
-                        elseif x<0 && (z-dl)^2+y^2+x^2<R^2
-                            dpos = [0 0 -dl];
-                        elseif x>L && (z-dl)^2+y^2+(x-L)^2<R^2
-                            dpos = [0 0 -dl];
-                        end
-                    case 3
-                        if x>0 && x<L && (z)^2+(y+dl)^2<R^2
-                            dpos = [ 0 dl 0];
-                        elseif x<0 && (z)^2+(y+dl)^2+x^2<R^2
-                            dpos = [ 0 dl 0];
-                        elseif x>L && (z)^2+(y+dl)^2+(x-L)^2<R^2
-                            dpos = [ 0 dl 0];
-                        end
-                    case 4
-                        if x>0 && x<L && (z)^2+(y-dl)^2<R^2
-                            dpos = [ 0 -dl 0];
-                        elseif x<0 && (z)^2+(y-dl)^2+x^2<R^2
-                            dpos = [ 0 -dl 0];
-                        elseif x>L && (z)^2+(y-dl)^2+(x-L)^2<R^2
-                            dpos = [ 0 -dl 0];
-                        end
-                    case 5
-                        if (x+dl)>0 && (x+dl)<L && (z)^2+y^2<R^2
-                            dpos = [dl 0 0];
-                        elseif (x+dl)<0 && (z)^2+y^2+(x+dl)^2<R^2
-                            dpos = [dl 0 0];
-                        elseif (x+dl)>L && (z)^2+y^2+((x+dl)-L)^2<R^2
-                            dpos = [dl 0 0];
-                        end
-                    case 6
-                        if (x-dl)>0 && (x-dl)<L && (z)^2+y^2<R^2
-                            dpos = [-dl 0 0];
-                        elseif (x-dl)<0 && (z)^2+y^2+(x-dl)^2<R^2
-                            dpos = [-dl 0 0];
-                        elseif (x-dl)>L && (z)^2+y^2+((x-dl)-L)^2<R^2
-                            dpos = [-dl 0 0];
-                        end
-                end
-                
-                % Update position
-                pos = pos+dpos;
-                
+            case 1
+                dpos(1) = dl;
             case 2
-                %% Transition
-                
-                new_state = find(rand<=(cumsum(transRate(state,:))./(sum(transRate(state,:)))), 1);
-                state = new_state;
-                
+                dpos(1) = -dl;
             case 3
-                %% Misc
-                
-                % Nothing so far
-                
+                dpos(2) = dl;
+            case 4
+                dpos(2) = -dl;
+            case 5
+                dpos(3) = dl;
+            case 6
+                dpos(3) = -dl;
+            otherwise
+                new_state = find(rand<=(cumsum(rate_Trans./(sum(rate_Trans)))), 1);
+                state = new_state;
+%                  disp(['State changed at time ' num2str(t)]);
         end
+        
+        % update position
+        pos = pos+dpos;
+        
         
     end
     

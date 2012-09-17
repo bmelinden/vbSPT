@@ -40,14 +40,26 @@ tgenData=tic;
 
 VB3_license('VB3_generateSynthData')
 
+%% Define filenames and paths
+p = mfilename('fullpath');
+[p, ~, ~] = fileparts(p);
+resPath = [p filesep 'generatedData' filesep];
+oldFold = cd(resPath);
+cont = what;
+ind = length(cont.mat)+1;
+cd(oldFold);
+saveMatname=sprintf('syntheticData_%02d.mat',ind);
+saveLogname=[resPath sprintf('syntheticDataLog_%02d.log',ind)];
 
-%% define default geometry
+diary(saveLogname);
+diary on
 
-CylinderL = 2000 % nm (length of cylindrical part only)
-Radius = 400  % nm    (spherical end caps, and cylinder radius)
+%% Define default geometry
 
-%% read input
+CylinderL = 2000; % nm (length of cylindrical part only)
+Radius = 400;  % nm    (spherical end caps, and cylinder radius)
 
+%% Check input
 % if an existing file, generate options structure
 if(ischar(varargin{1}) && exist(varargin{1}, 'file')==2)
     runinputfile = varargin{1};
@@ -63,7 +75,8 @@ elseif(isstruct(varargin{1}))
 else
     runinputExists = false;
 end
-%% load data and read options
+
+%% Initiate variables
 if runinputExists
     
     res=load(opt.outputfile, 'Wbest');
@@ -76,7 +89,7 @@ if runinputExists
     locAccuracy = 0; %[nm]
     transMat = Wbest.est.Amean; % [/timestep]
     occProb = Wbest.est.Ptot;
-    Dapp = Wbest.est.DdtMean./timeStep;
+    Dapp = Wbest.est.DdtMean./timestep;
     if max(Dapp)<100    % if small assume its in um^2/s
         Dapp = Dapp*1e6;% convert to nm^2/s
     end
@@ -95,6 +108,7 @@ runs = 1;
 do_steadystate = false;
 do_parallel = false;
 
+%% Read options
 if(nargin>1)        % parse options
     % argument counter
     if runinputExists 
@@ -194,27 +208,69 @@ if(nargin>1)        % parse options
     end
 end
 
-% Use steady state occupancy if desired
+%% Use steady state occupancy if desired
 if do_steadystate
     occProb = transMat^1000;
-    occProb = occProb(1,:)
+    occProb = occProb(1,:);
 end
 
+%% Check for strange values
 if(timestep==0 | sum(sum(transMat))==0 | sum(occProb)==0 | sum(Dapp)==0 | sum(trajLengths)==0) 
     error('Not a valid input, either a runinputfile/struct has to be the first argument or all options must be specified.');
 end
 
 
-% Convert transMat to dwelltimes
-dwellTimes=1./(1-diag(transMat))'
+%% Convert transMat to dwelltimes
+dwellTimes=1./(1-diag(transMat))';
 
-% Convert apparent diffusion to actual diffusion to go into the simulation
+%% Convert transition matrix to transition rates
+flag = 0;
+try 
+    [transRate, flag] = logm(transMat);
+    transRate = transRate./timestep;
+    if flag ~= 0 || ~isreal(transRate) 
+        warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
+            'logm did not work properly. Using a simple 1st order approximation.']);
+        transRate = transMat./timestep;
+    end
+catch err
+    warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
+        'logm did not work properly. Using a simple 1st order approximation.']);
+    disp(err.message);
+    transRate = transMat./timestep;
+end
+
+% Set the diagonal elements to 0 since it corresponds to 'self-transition'
+transRateMod = transRate;
+transRateMod(~~eye(size(transMat))) = 0;
+
+%% Convert apparent diffusion to actual diffusion to go into the simulation
 diffCoeff = Dapp-locAccuracy^2/timestep;
 
-% Plot the trajectory length distribution
+%% Plot the trajectory length distribution
 figure(1);
 clf
 hist(trajLengths,0:100);
+
+%% List the parameters
+CylinderL
+Radius
+timestep
+locAccuracy
+numTraj = length(trajLengths)
+avTrajLength = mean(trajLengths)
+shortestTraj = min(trajLengths)
+longestTraj = max(trajLengths)
+Dapp
+occProb
+dwellTimes
+disp('transMat (transition probabilities) [timestep^-1]:');
+transMat
+disp('transRate after conversion from transMat [s^-1]:');
+transRate
+disp('transMat after converted back using expm (transition probabilities) [timestep^-1]:');
+transMat2 = expm(transRate.*timestep)
+
 
 %% Make the trajectories
 % check if matlabpool is open, if yes close it
@@ -230,18 +286,17 @@ end
 
 for m=1:runs
 tic    
-[finalTraj, ~] = MakeTrajectories(timestep, CylinderL, Radius, trajLengths, diffCoeff, transMat, occProb, locAccuracy);
+[finalTraj, ~] = MakeTrajectories(timestep, CylinderL, Radius, trajLengths, diffCoeff, transRateMod, occProb, locAccuracy);
 toc
 
-p = mfilename('fullpath');
-[p, ~, ~] = fileparts(p);
-oldFold = cd([p filesep 'generatedData' filesep]);
-cont = what;
-ind = length(cont.mat)+1;
-savename=sprintf('syntheticData_%02d.mat',ind);
-save(savename)
-cd(oldFold);
+cd(resPath);
+if runs > 1
+save([saveMatname '_run' num2str(m)]);
 pause(1)
+else
+   save(saveMatname); 
+end
+cd(oldFold);
 end
 
 % close parallel computing
@@ -250,4 +305,6 @@ matlabpool close
 end
 
 disp(['Finished generating synthetic data in ' num2str(toc(tgenData)/60) ' min.']);
+
+diary off;
 end
