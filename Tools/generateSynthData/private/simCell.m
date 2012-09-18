@@ -175,7 +175,7 @@ for n = 1:N
     % Add localization error and possibly position error due to discretization
     % Positioning error not included since it would change the app Diff a
     % bit.
-    pos = pos+locAccuracy.*randn(1,3)%+(randn(1,3)-0.5)*stepSize;
+    pos = pos+locAccuracy.*randn(1,3); %+(randn(1,3)-0.5)*stepSize;
     
     Traj(n, :) = [pos, state];
     

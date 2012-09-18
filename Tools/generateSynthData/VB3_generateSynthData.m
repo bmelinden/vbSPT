@@ -219,12 +219,10 @@ if(nargin>1)        % parse options
     end
 end
 
-
 %% Check for strange values
-if(timestep==0 | sum(sum(transMat))==0 | sum(occProb)==0 | sum(Dapp)==0 | sum(trajLengths)==0) 
+if(timestep==0 | sum(sum(transMat))==0 | sum(Dapp)==0 | sum(trajLengths)==0) 
     error('Not a valid input, either a runinputfile/struct has to be the first argument or all options must be specified.');
 end
-
 
 %% Convert apparent diffusion to actual diffusion to go into the simulation
 diffCoeff = Dapp-locAccuracy^2/timestep;
@@ -272,6 +270,7 @@ clf
 hist(trajLengths,0:100);
 
 %% List the parameters
+runs
 CylinderL
 Radius
 timestep
@@ -290,6 +289,7 @@ disp('transRate after conversion from transMat [s^-1]:');
 transRate
 disp('transMat after converted back using expm (transition probabilities) [timestep^-1]:');
 transMat2
+
 
 %% Make the trajectories
 % check if matlabpool is open, if yes close it
