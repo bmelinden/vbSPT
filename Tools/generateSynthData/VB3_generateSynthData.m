@@ -15,6 +15,8 @@ function finalTraj=VB3_generateSynthData(varargin)
 % options:
 % 'runs'       : if given, determine how many datasets to be generated with
 %               the same input parameters.
+% 'singleTraj' : if given, only one trajectory will be run and directly through
+%               simCell, which is much faster than via MakeTrajectories.
 % 'timestep'   : should be given in [s].
 % 'stepSize'   : the spatial discretization grid size. Default is 5 nm.
 % 'locAccuracy': should be given in [nm]. Default = 0. It dose actually not
@@ -110,6 +112,7 @@ end
 runs = 1;
 do_steadystate = false;
 do_parallel = false;
+do_single = false;
 
 %% Read options
 if(nargin>1)        % parse options
@@ -124,6 +127,9 @@ if(nargin>1)        % parse options
         option=varargin{k};
         if(strcmpi(option,'parallel'))
             do_parallel = true;
+            k=k+1;
+        elseif(strcmpi(option,'singleTraj'))
+            do_single = true;
             k=k+1;
         elseif(strcmpi(option,'timestep'))
             if(~isempty(varargin{k+1}))
@@ -275,6 +281,9 @@ hist(trajLengths,0:100);
 
 %% List the parameters
 runs
+do_steadystate
+do_parallel
+do_single
 CylinderL
 Radius
 timestep
@@ -308,9 +317,14 @@ matlabpool open
 end
 
 for m=1:runs
+    disp(['Run ' num2str(m)]);
 tic    
-[finalTraj, ~] = MakeTrajectories(CylinderL, Radius, diffCoeff, transRateMod, trajLengths, timestep, stepSize, locAccuracy, occProb);
-toc   
+if ~do_single
+    [finalTraj, ~] = MakeTrajectories(CylinderL, Radius, diffCoeff, transRateMod, trajLengths, timestep, stepSize, locAccuracy, occProb);
+else
+    [~, finalTraj{1}, ~, ~] = simCell(CylinderL, Radius, diffCoeff, transRateMod, trajLengths(1), timestep, stepSize, locAccuracy, find(rand<=(cumsum(occProb./(sum(occProb)))), 1));
+end
+toc
 
 cd(resPath);
 if runs > 1
