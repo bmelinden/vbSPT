@@ -65,6 +65,10 @@ TimePoints = zeros(N,1);
 %% Generate the trajectory
 % Loop over all trajectory steps
 Ddt_sum=0;
+tfrac=0;dTfrac=0.05;
+if(N<50)
+    tfrac=2; % only write out progress for fairly long trajectories
+end
 for n = 1:N
     
     while t < (t_old+stepT)
@@ -176,7 +180,11 @@ for n = 1:N
     m = n;
     t_old = t_old+stepT;
 
-    %disp(num2str([t pos]))
+    if(n/N-tfrac>dTfrac)
+        disp(['finished : ' num2str(100*n/N) ' %'])
+        tfrac=n/N;
+    end
+   
 end
 
 %% Add localization limitations
