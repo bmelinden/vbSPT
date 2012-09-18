@@ -1,6 +1,6 @@
-function [data, trajLengths] = MakeTrajectories(timeStep, CellL, CellR, trajLengths, diffCoeff, transRate, occProb, locAccuracy)
+function [data, trajLengths] = MakeTrajectories(CellL, CellR, diffCoeff, transRate, trajLengths, timeStep, stepSize, locAccuracy, occProb)
 
-%% [data, trajLengths] = MakeTrajectories(timeStep, CellL, CellR, trajLengths, diffCoeff, transMat, occProb, locAccuracy)
+%% [data, trajLengths] = MakeTrajectories(CellL, CellR, diffCoeff, transRate, trajLengths, timeStep, stepSize, locAccuracy, occProb)
 %
 % Starts trajectories in states according to the occupancy probability and calls
 % 'simCellHMM' to generate the single trajectories.
@@ -18,7 +18,7 @@ for trajNr = 1:length(trajLengths)
     state = find(rand<=cumsum(occProb),1);
     
     % Pass it on
-    [~, Traj, n, ~] = simCell(CellL, CellR, diffCoeff, transRate, trajLengths(trajNr), timeStep, state, locAccuracy);
+    [~, Traj, n, ~] = simCell(CellL, CellR, diffCoeff, transRate, trajLengths(trajNr), timeStep, stepSize, locAccuracy, state);
     
     data{trajNr} = Traj;
     trajLengths(trajNr) = n;

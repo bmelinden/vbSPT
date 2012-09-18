@@ -1,7 +1,7 @@
 
-function [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, state, locAccuracy)
+function [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 
-%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, state, locAccuracy)
+%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, state, locAccuracy)
 % 
 % Generates a trajectory within a confined E. coli like geometry. The
 % starting state of the trajectory is given and the initial position is
@@ -41,7 +41,7 @@ end
 
 %% Define variables
 dt = 0;         % Timesteps (will follow a exp distribution)
-dl = 5;     % Spatial discretisation of 5 nm
+stepSize = 5;     % Spatial discretisation of 5 nm
 t_old = 0;
 t = 0;
 m = 1;
@@ -69,64 +69,64 @@ for n = 1:N
         dpos = [0 0 0];
         
         % Positive x direction
-        if (x+dl)>0 && (x+dl)<L && (z)^2+y^2<R^2        % In the pipe section
-            rate_Dx1 = diffCoeff(state)/dl^2;
-        elseif (x+dl)<0 && (z)^2+y^2+(x+dl)^2<R^2       % in the left end cap
-            rate_Dx1 = diffCoeff(state)/dl^2;
-        elseif (x+dl)>L && (z)^2+y^2+((x+dl)-L)^2<R^2   % in the right end cap
-            rate_Dx1 = diffCoeff(state)/dl^2;
+        if (x+stepSize)>0 && (x+stepSize)<L && (z)^2+y^2<R^2        % In the pipe section
+            rate_Dx1 = diffCoeff(state)/stepSize^2;
+        elseif (x+stepSize)<0 && (z)^2+y^2+(x+stepSize)^2<R^2       % in the left end cap
+            rate_Dx1 = diffCoeff(state)/stepSize^2;
+        elseif (x+stepSize)>L && (z)^2+y^2+((x+stepSize)-L)^2<R^2   % in the right end cap
+            rate_Dx1 = diffCoeff(state)/stepSize^2;
         else
             rate_Dx1 = 0;
         end
         % Negative x direction
-        if (x-dl)>0 && (x-dl)<L && (z)^2+y^2<R^2        % In the pipe section
-            rate_Dx2 = diffCoeff(state)/dl^2;
-        elseif (x-dl)<0 && (z)^2+y^2+(x-dl)^2<R^2       % in the left end cap
-            rate_Dx2 = diffCoeff(state)/dl^2;
-        elseif (x-dl)>L && (z)^2+y^2+((x-dl)-L)^2<R^2   % in the right end cap
-            rate_Dx2 = diffCoeff(state)/dl^2;
+        if (x-stepSize)>0 && (x-stepSize)<L && (z)^2+y^2<R^2        % In the pipe section
+            rate_Dx2 = diffCoeff(state)/stepSize^2;
+        elseif (x-stepSize)<0 && (z)^2+y^2+(x-stepSize)^2<R^2       % in the left end cap
+            rate_Dx2 = diffCoeff(state)/stepSize^2;
+        elseif (x-stepSize)>L && (z)^2+y^2+((x-stepSize)-L)^2<R^2   % in the right end cap
+            rate_Dx2 = diffCoeff(state)/stepSize^2;
         else
             rate_Dx2 = 0;
         end
         
         % Positive y direction
-        if x>0 && x<L && (z)^2+(y+dl)^2<R^2
-            rate_Dy1 = diffCoeff(state)/dl^2;
-        elseif x<0 && (z)^2+(y+dl)^2+x^2<R^2
-            rate_Dy1 = diffCoeff(state)/dl^2;
-        elseif x>L && (z)^2+(y+dl)^2+(x-L)^2<R^2
-            rate_Dy1 = diffCoeff(state)/dl^2;
+        if x>0 && x<L && (z)^2+(y+stepSize)^2<R^2
+            rate_Dy1 = diffCoeff(state)/stepSize^2;
+        elseif x<0 && (z)^2+(y+stepSize)^2+x^2<R^2
+            rate_Dy1 = diffCoeff(state)/stepSize^2;
+        elseif x>L && (z)^2+(y+stepSize)^2+(x-L)^2<R^2
+            rate_Dy1 = diffCoeff(state)/stepSize^2;
         else
             rate_Dy1 = 0;
         end
         % Negative y direction
-        if x>0 && x<L && (z)^2+(y-dl)^2<R^2
-            rate_Dy2 = diffCoeff(state)/dl^2;
-        elseif x<0 && (z)^2+(y-dl)^2+x^2<R^2
-            rate_Dy2 = diffCoeff(state)/dl^2;
-        elseif x>L && (z)^2+(y-dl)^2+(x-L)^2<R^2
-            rate_Dy2 = diffCoeff(state)/dl^2;
+        if x>0 && x<L && (z)^2+(y-stepSize)^2<R^2
+            rate_Dy2 = diffCoeff(state)/stepSize^2;
+        elseif x<0 && (z)^2+(y-stepSize)^2+x^2<R^2
+            rate_Dy2 = diffCoeff(state)/stepSize^2;
+        elseif x>L && (z)^2+(y-stepSize)^2+(x-L)^2<R^2
+            rate_Dy2 = diffCoeff(state)/stepSize^2;
         else
             rate_Dy2 = 0;
         end
         
         % Positive z direction
-        if x>0 && x<L && (z+dl)^2+y^2<R^2
-            rate_Dz1 = diffCoeff(state)/dl^2;
-        elseif x<0 && (z+dl)^2+y^2+x^2<R^2
-            rate_Dz1 = diffCoeff(state)/dl^2;
-        elseif x>L && (z+dl)^2+y^2+(x-L)^2<R^2
-            rate_Dz1 = diffCoeff(state)/dl^2;
+        if x>0 && x<L && (z+stepSize)^2+y^2<R^2
+            rate_Dz1 = diffCoeff(state)/stepSize^2;
+        elseif x<0 && (z+stepSize)^2+y^2+x^2<R^2
+            rate_Dz1 = diffCoeff(state)/stepSize^2;
+        elseif x>L && (z+stepSize)^2+y^2+(x-L)^2<R^2
+            rate_Dz1 = diffCoeff(state)/stepSize^2;
         else
             rate_Dz1 = 0;
         end
         % Negative z direction
-        if x>0 && x<L && (z-dl)^2+y^2<R^2
-            rate_Dz2 = diffCoeff(state)/dl^2;
-        elseif x<0 && (z-dl)^2+y^2+x^2<R^2
-            rate_Dz2 = diffCoeff(state)/dl^2;
-        elseif x>L && (z-dl)^2+y^2+(x-L)^2<R^2
-            rate_Dz2 = diffCoeff(state)/dl^2;
+        if x>0 && x<L && (z-stepSize)^2+y^2<R^2
+            rate_Dz2 = diffCoeff(state)/stepSize^2;
+        elseif x<0 && (z-stepSize)^2+y^2+x^2<R^2
+            rate_Dz2 = diffCoeff(state)/stepSize^2;
+        elseif x>L && (z-stepSize)^2+y^2+(x-L)^2<R^2
+            rate_Dz2 = diffCoeff(state)/stepSize^2;
         else
             rate_Dz2 = 0;
         end
@@ -148,17 +148,17 @@ for n = 1:N
         
         switch action
             case 1
-                dpos(1) = dl;
+                dpos(1) = stepSize;
             case 2
-                dpos(1) = -dl;
+                dpos(1) = -stepSize;
             case 3
-                dpos(2) = dl;
+                dpos(2) = stepSize;
             case 4
-                dpos(2) = -dl;
+                dpos(2) = -stepSize;
             case 5
-                dpos(3) = dl;
+                dpos(3) = stepSize;
             case 6
-                dpos(3) = -dl;
+                dpos(3) = -stepSize;
             otherwise
                 new_state = find(rand<=(cumsum(rate_Trans./(sum(rate_Trans)))), 1);
                 state = new_state;
@@ -172,6 +172,10 @@ for n = 1:N
     end
     
     %% Read out parameters
+    % Add localization error and possibly position error due to discretization
+    % Positioning error not included since it would change the app Diff a
+    % bit.
+    pos = pos+locAccuracy.*randn(1,3)%+(randn(1,3)-0.5)*stepSize;
     
     Traj(n, :) = [pos, state];
     
@@ -180,11 +184,7 @@ for n = 1:N
     t_old = t_old+stepT;
 end
 
-%% Add localization limitations
-for j = 1:m
-    newpos = Traj(j,1:3)+locAccuracy.*randn(1,3);
-    Traj(j, 1:3) = newpos;
-end
+
 
 end
 

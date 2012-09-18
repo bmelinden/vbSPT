@@ -16,6 +16,7 @@ function finalTraj=VB3_generateSynthData(varargin)
 % 'runs'       : if given, determine how many datasets to be generated with
 %               the same input parameters.
 % 'timestep'   : should be given in [s].
+% 'stepSize'   : the spatial discretization grid size. Default is 5 nm.
 % 'locAccuracy': should be given in [nm]. Default = 0. It dose actually not
 %               add to the diffusion constant that is set (which is the 
 %               apperent diffusion) but merely removes its average
@@ -87,6 +88,7 @@ if runinputExists
     % initiate options
     timestep = opt.timestep; % [s]
     locAccuracy = 0; %[nm]
+    stepSize = 5; %[nm]
     transMat = Wbest.est.Amean; % [/timestep]
     occProb = Wbest.est.Ptot;
     Dapp = Wbest.est.DdtMean./timestep;
@@ -97,6 +99,7 @@ if runinputExists
 else
     % initiate options
     timestep = 0; % [s]
+    stepSize = 5; %[nm]
     locAccuracy = 0; %[nm]
     transMat = 0; % [/timestep]
     occProb = 0;
@@ -127,6 +130,14 @@ if(nargin>1)        % parse options
                 timestep=varargin{k+1};
                 if(~isnumeric(timestep) || timestep<=0)
                     error('VB3_synthData: timestep option must be followed by a positive number.')
+                end
+            end
+            k=k+2;
+       elseif(strcmpi(option,'stepSize'))
+            if(~isempty(varargin{k+1}))
+                stepSize=varargin{k+1};
+                if(~isnumeric(stepSize) || stepSize<=0)
+                    error('VB3_synthData: stepSize option must be followed by a positive number.')
                 end
             end
             k=k+2;
@@ -208,11 +219,6 @@ if(nargin>1)        % parse options
     end
 end
 
-%% Use steady state occupancy if desired
-if do_steadystate
-    occProb = transMat^1000;
-    occProb = occProb(1,:);
-end
 
 %% Check for strange values
 if(timestep==0 | sum(sum(transMat))==0 | sum(occProb)==0 | sum(Dapp)==0 | sum(trajLengths)==0) 
@@ -220,15 +226,17 @@ if(timestep==0 | sum(sum(transMat))==0 | sum(occProb)==0 | sum(Dapp)==0 | sum(tr
 end
 
 
-%% Convert transMat to dwelltimes
-dwellTimes=1./(1-diag(transMat))';
+%% Convert apparent diffusion to actual diffusion to go into the simulation
+diffCoeff = Dapp-locAccuracy^2/timestep;
 
 %% Convert transition matrix to transition rates
 flag = 0;
 try 
     [transRate, flag] = logm(transMat);
     transRate = transRate./timestep;
-    if flag ~= 0 || ~isreal(transRate) 
+    % take out off diagonal elements
+    od = transRate(~eye(size(transRate)));
+        if flag ~= 0 || ~isreal(transRate) || sum(sum(transRate, 2))~=0 || ~isempty(od(od<0)) 
         warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
             'logm did not work properly. Using a simple 1st order approximation.']);
         transRate = transMat./timestep;
@@ -244,8 +252,19 @@ end
 transRateMod = transRate;
 transRateMod(~~eye(size(transMat))) = 0;
 
-%% Convert apparent diffusion to actual diffusion to go into the simulation
-diffCoeff = Dapp-locAccuracy^2/timestep;
+
+%% Convert back to transMat (giving the true one corresponding to transRate)
+transMat2 = expm(transRate.*timestep);
+
+%% Calculate dwelltimes
+dwellTimes=1./(1-diag(transMat2))';
+
+%% Use steady state occupancy if desired
+if do_steadystate
+    occProb = transMat2^1000;
+    occProb = occProb(1,:);
+end
+
 
 %% Plot the trajectory length distribution
 figure(1);
@@ -256,6 +275,7 @@ hist(trajLengths,0:100);
 CylinderL
 Radius
 timestep
+stepSize
 locAccuracy
 numTraj = length(trajLengths)
 avTrajLength = mean(trajLengths)
@@ -269,8 +289,7 @@ transMat
 disp('transRate after conversion from transMat [s^-1]:');
 transRate
 disp('transMat after converted back using expm (transition probabilities) [timestep^-1]:');
-transMat2 = expm(transRate.*timestep)
-
+transMat2
 
 %% Make the trajectories
 % check if matlabpool is open, if yes close it
@@ -286,8 +305,8 @@ end
 
 for m=1:runs
 tic    
-[finalTraj, ~] = MakeTrajectories(timestep, CylinderL, Radius, trajLengths, diffCoeff, transRateMod, occProb, locAccuracy);
-toc
+[finalTraj, ~] = MakeTrajectories(CylinderL, Radius, diffCoeff, transRateMod, trajLengths, timestep, stepSize, locAccuracy, occProb);
+toc   
 
 cd(resPath);
 if runs > 1

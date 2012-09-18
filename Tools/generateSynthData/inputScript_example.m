@@ -12,6 +12,9 @@ do_parallel = true;
 % Define timestep
 timestep = 0.003;  % s
 
+% Define spatial discretization step
+stepSize = 5; % nm
+
 % Define localization accuracy
 locAccuracy = 0.020; % um
 
@@ -124,10 +127,10 @@ transMat(:, length(D)+1:end) = [];
 %% Call the main function which generates the trajectories
 
 if do_parallel
-finalTraj = VB3_generateSynthData('timestep', timestep, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+finalTraj = VB3_generateSynthData('timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
     'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
 else
-    finalTraj = VB3_generateSynthData('timestep', timestep, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+    finalTraj = VB3_generateSynthData('timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
     'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy);
 
 end
