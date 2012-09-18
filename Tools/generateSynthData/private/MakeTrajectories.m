@@ -13,7 +13,7 @@ data = cell(1, length(trajLengths));
 
 
 %% Start and generate trajectories
-for trajNr = 1:length(trajLengths)
+parfor trajNr = 1:length(trajLengths)
     % Choose starting state for the trajectory
     state = find(rand<=cumsum(occProb),1);
     
