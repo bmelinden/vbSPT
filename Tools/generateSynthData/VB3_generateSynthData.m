@@ -228,22 +228,26 @@ end
 diffCoeff = Dapp-locAccuracy^2/timestep;
 
 %% Convert transition matrix to transition rates
-flag = 0;
+ef = 0;
 try 
-    [transRate, flag] = logm(transMat);
+    [transRate, ef] = logm(transMat);
     transRate = transRate./timestep;
     % take out off diagonal elements
     od = transRate(~eye(size(transRate)));
-        if flag ~= 0 || ~isreal(transRate) || sum(sum(transRate, 2))~=0 || ~isempty(od(od<0)) 
+    if ef ~= 0 || ~isreal(transRate) || abs(sum(sum(transRate, 2)))>10^(-10) || ~isempty(od(od<0))
         warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
             'logm did not work properly. Using a simple 1st order approximation.']);
         transRate = transMat./timestep;
+        transRate(~~eye(size(transRate))) = 0;
+        transRate(~~eye(size(transRate))) = -sum(transRate, 2);
     end
 catch err
     warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
         'logm did not work properly. Using a simple 1st order approximation.']);
     disp(err.message);
     transRate = transMat./timestep;
+    transRate(~~eye(size(transRate))) = 0;
+    transRate(~~eye(size(transRate))) = -sum(transRate, 2);
 end
 
 % Set the diagonal elements to 0 since it corresponds to 'self-transition'
