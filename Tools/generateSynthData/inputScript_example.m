@@ -26,15 +26,21 @@ cylL = 2000; % nm
 cylRadius = 400;  % nm
 
 % Define trajectory parameters
-numTraj = 500;
-avTrajLength = 10;
-shortestTraj = 2;
+do_single = false;
 
-% generate trajectory lengths
-trajLengths = ceil(exprnd(ones(1, numTraj).*avTrajLength));
-trajLengths(find(trajLengths < shortestTraj)) = [];
-
-% one can also insert an arbitrary vector of trajectory lengths here as well.
+if ~do_single
+    numTraj = 500;
+    avTrajLength = 10;
+    shortestTraj = 2;
+    
+    % generate trajectory lengths
+    trajLengths = ceil(exprnd(ones(1, numTraj).*avTrajLength));
+    trajLengths(find(trajLengths < shortestTraj)) = [];
+    
+    % one can also insert an arbitrary vector of trajectory lengths here as well.
+else
+    trajLengths = [500000];
+end
 
 %% Define states (max 6)
 
@@ -129,12 +135,14 @@ transMat(:, length(D)+1:end) = [];
 
 %% Call the main function which generates the trajectories
 
-if do_parallel
+if do_single
     finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-    'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
+       'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'singleTraj');
+elseif do_parallel
+       finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+       'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
 else
-    finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-    'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy);
-
+       finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+       'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy);
 end
 
