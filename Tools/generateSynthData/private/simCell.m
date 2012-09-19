@@ -179,9 +179,6 @@ for n = 1:N
     % Add localization error and possibly position error due to discretization
     % Positioning error not included since it would change the app Diff a
     % bit.
-    %pos = pos+locAccuracy.*randn(1,3); %+(randn(1,3)-0.5)*stepSize;
-    % ML: the localization error should only be written to the trajectoyr,
-    % not kept for the next simulation step.
     
     Traj(n, :) = [pos+locAccuracy.*randn(1,3), state];
     
