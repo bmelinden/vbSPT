@@ -11,7 +11,7 @@ function est=VB3_parameterEstimates(M)
 
 
 
-
+N=length(M.wPi);
 % global light-weight estimates (always)
 est.Amean=zeros(size(M.wA));
 est.Astd=zeros(size(M.wA));
