@@ -1,7 +1,7 @@
 function [finalTraj, trajL] = chopTrajExp(traj, trajLmean)
 
 % For splitting one long simultaed trajectory into an exponential distribution 
-% of shorter trajectories.
+% of shorter trajectories and randomly shifts them.
 %
 % Input:
 %
@@ -13,7 +13,7 @@ function [finalTraj, trajL] = chopTrajExp(traj, trajLmean)
 %
 
 
-finalTraj = cell(1, 2*length(traj)/trajLmean);
+finalTraj = cell(1, 2*round(length(traj)/trajLmean));
 trajL = zeros(size(finalTraj));
 
 ind = 1;
@@ -35,5 +35,15 @@ end
 % remove empty cells
 finalTraj = finalTraj(~cellfun('isempty', finalTraj));
 trajL(trajL==0) = [];
+
+% randomize the order
+ind = randperm(length(trajL));
+trajL = trajL(ind);
+finalTraj2 = finalTraj;
+for i = 1:length(trajL)
+    
+    finalTraj{i} = finalTraj2{ind(i)};
+
+end
 
 end
