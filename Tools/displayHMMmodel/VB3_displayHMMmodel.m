@@ -1,10 +1,15 @@
-function displayHMMmodel(runinput)
-% displayHMMmodel(runinput)
+function VB3_displayHMMmodel(varargin)
+% VB3_displayHMMmodel(runinput, varargin)
 %
 % File for getting out and graphically representing HMM model results from
-% VB3 given a runinput file or an option struct.
+% VB3.
 %
-
+% options:
+% 'runinput'    : can be a runinput filename, an options structure, or empty, in which
+%               case the user is asked to select a result file (the one specified by
+%               opt.outputfile).
+% 'modelSize'   : if given, the best results for the stated modelsize will be presented 
+%               instead of the globally best model. 
 
 
 %% copyright notice
@@ -30,8 +35,43 @@ function displayHMMmodel(runinput)
 
 VB3_license('displayHMMmodel')
 
-if(nargin==0)
-    clear all
+
+%% Read options
+runinput = 0;
+modelSize = 0;
+
+
+if(nargin>0)        % parse options
+    
+    k=1;        % argument counter
+    kmax=nargin;  % stopping criterion
+    while(k<=kmax)
+        option=varargin{k};
+        if(strcmpi(option,'runinput'))
+            if(~isempty(varargin{k+1}))
+                runinput=varargin{k+1};
+                if (~(isstr(runinput) && exist(runinput)==2) & ~isstruct(runinput))  
+                    error('VB3_displayHMMmodel: runinput option must be followed by either a valid filename or an options struct.')
+                end
+            end
+            k=k+2;
+         elseif(strcmpi(option,'modelSize'))
+            if(~isempty(varargin{k+1}))
+                modelSize=varargin{k+1};
+                if(~isnumeric(modelSize) | round(modelSize)~=modelSize | modelSize<=0)
+                    error('VB3_displayHMMmodel: modelSize option must be followed by a positive integer.')
+                end
+            end
+            k=k+2;
+        else
+            error(['VB3_displayHMMmodel: option ' option ' not recognized.'])
+        end
+    end
+end
+
+%% Load input
+
+if runinput == 0
     
     % Get filename and path with "uigetfile"
     [filename, pathname] = uigetfile({'*.mat'}, 'Select mat file');
@@ -55,13 +95,14 @@ else
         runinputfile=options.runinputfile;
         disp(['Read options structure based on runinput file ' runinputfile ])
     else
-        error(['displayHMMmodel: input ' runinput ' not recognized.']);
+        error(['VB3_displayHMMmodel: input ' runinput ' not recognized.']);
     end
     
     filename = options.outputfile;
     load(filename);
 end
 
+%% Make backwards compatible
 % temporary translations from old (pre 2012-06-11) parameter names
 old={'Nmax','dt','pathestimate','BSnum','savefile','sourcefile'};
 new={'maxHidden','timestep','stateEstimate','bootstrapNum','outputfile','inputfile'};
@@ -76,24 +117,42 @@ end
 
 
 
-% Read in parameters given prior to HMM
+%% Read in parameters given prior to HMM
 timeStep = options.timestep        
 dim = options.dim
 
-% Read in HMM results
-numStates = Wbest.N     % Number of states
- 
-[diffCoeff, ind] = sort(Wbest.est.DdtMean./timeStep/(10^6)); % Mean diff. coeff in um^2/s provided the data is in nm
-diffCoeffStd = Wbest.est.Ddtstd(ind)./timeStep/(10^6);
 
-occTot = Wbest.est.Ptot(ind);       % Total occupation percentage
-dwellTime = Wbest.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state
+%% Read in HMM results
+if modelSize == 0;
+    numStates = Wbest.N     % Number of states
+    
+    [diffCoeff, ind] = sort(Wbest.est.DdtMean./timeStep/(10^6)); % Mean diff. coeff in um^2/s provided the data is in nm
+    diffCoeffStd = Wbest.est.Ddtstd(ind)./timeStep/(10^6);
+    
+    occTot = Wbest.est.Ptot(ind);       % Total occupation percentage
+    dwellTime = Wbest.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state
+    
+    A = Wbest.M.wA - Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
+    A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
+    transitions = A(ind, ind);
+    
+elseif exist('WbestN', 'var') & modelSize<=length(WbestN)
+    numStates = WbestN{modelSize}.N;
+    
+    [diffCoeff, ind] = sort(WbestN{modelSize}.est.DdtMean./timeStep/(10^6)); % Mean diff. coeff in um^2/s provided the data is in nm
+    diffCoeffStd = WbestN{modelSize}.est.Ddtstd(ind)./timeStep/(10^6);
+    
+    occTot = WbestN{modelSize}.est.Ptot(ind);       % Total occupation percentage
+    dwellTime = WbestN{modelSize}.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state
+    
+    A = WbestN{modelSize}.M.wA - WbestN{modelSize}.PM.wA;   %The transition probability matrix with the prior values subtracted
+    A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
+    transitions = A(ind, ind);
+else
+    error(['VB3_displayHMMmodel: Could not find the best model of size ' modelSize '.']);
+end
 
-A = Wbest.M.wA - Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
-A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
-transitions = A(ind, ind);
-
-% Print all the numbers in the Matlab prompt
+%% Print all the numbers in the Matlab prompt
 disp('Diffusion Coeff [um^2/s]:')
 disp(num2str(diffCoeff));
 disp(num2str(diffCoeffStd));
@@ -110,7 +169,7 @@ disp(num2str(transitions));
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parameters for graphical representation
+%% Parameters for graphical representation
 
 separation = 0.3;
 textsep = 0.2;
