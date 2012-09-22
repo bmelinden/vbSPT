@@ -1,7 +1,7 @@
 
 function [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 
-%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, state, locAccuracy)
+%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 % 
 % Generates a trajectory within a confined E. coli like geometry. The
 % starting state of the trajectory is given and the initial position is
