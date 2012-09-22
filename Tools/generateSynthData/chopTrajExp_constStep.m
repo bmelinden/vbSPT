@@ -1,7 +1,9 @@
 function [finalTraj, trajL] = chopTrajExp_constStep(traj,trajLmean,trajLmin)
 % [finalTraj, trajL] = chopTrajExp_constStep(traj,trajLmean,trajLmin)
-% For splitting one long simultaed trajectory into an exponential distribution 
-% of shorter trajectories and randomly shifts them.
+%
+% For splitting one long simulated trajectory into an exponential distribution 
+% of shorter trajectories. All steps are included, which means that the end
+% point of one trajectory is the starting point of the next one.
 %
 % Input:
 %
@@ -36,6 +38,9 @@ while(i2<=size(traj,1) && kk<size(traj,1))
         if(i2<=size(traj,1))
             finalTraj{kk}=traj(i1:i2,:);
             trajL(kk)=dL;
+        elseif(size(traj,1)-i1>=trajLmin)
+            finalTraj{kk}=traj(i1:end,:);
+            trajL(kk)=size(traj,1)-i1;
         end
     end
 end
