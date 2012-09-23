@@ -1,5 +1,5 @@
 function [finalTraj, trajL] = chopTrajExp(traj, trajLmean)
-
+% [finalTraj, trajL] = chopTrajExp(traj, trajLmean)
 % For splitting one long simultaed trajectory into an exponential distribution 
 % of shorter trajectories and randomly shifts them.
 %
