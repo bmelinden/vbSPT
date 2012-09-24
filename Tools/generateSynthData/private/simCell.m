@@ -1,7 +1,7 @@
 
 function [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 
-%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, state, locAccuracy)
+%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 % 
 % Generates a trajectory within a confined E. coli like geometry. The
 % starting state of the trajectory is given and the initial position is
@@ -41,7 +41,7 @@ end
 
 %% Define variables
 dt = 0;         % Timesteps (will follow a exp distribution)
-stepSize = 5;     % Spatial discretisation of 5 nm
+stepSize = stepSize;     % Spatial discretisation of stepSize nm
 t_old = 0;
 t = 0;
 m = 1;
@@ -190,6 +190,3 @@ end
 
 
 end
-
-
-

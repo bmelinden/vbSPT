@@ -14,9 +14,7 @@ function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 % trjLmin: minimum trajectory length (default 2)
 % The current code cannot handle more than 100 states.
 %
-% M.L. 2012-07-05   : started
-
-warning('VB3_getTrjSttats has not been thouroughly tested. Use at your own risk...')
+% M.L. 2012-07-05
 
 %% parameters
 if(~exist('trjLmin','var') || isempty(trjLmin))
