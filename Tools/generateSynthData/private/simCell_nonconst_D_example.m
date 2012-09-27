@@ -17,6 +17,9 @@ locAccuracy=0;
 % simple nucleoid model
 Dfun=@(x,y,z)(1e6*(1-0.9999*((x-L/2).^2/1e3^2+(y.^2+z.^2)/200^2<1)));
 
+% linearly changing:
+% Dfun=@(x,y,z)((1-0.99*(x/(L+R)))*1e6);
+
 % data set parameters
 trajLengths=round(5-10*log(1-rand(1,100)));
 
