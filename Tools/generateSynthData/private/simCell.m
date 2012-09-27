@@ -54,6 +54,7 @@ dpos = [0 0 0]; % Movement
 Traj = zeros(N,4);
 TimePoints = zeros(N,1);
 
+transRate=transRate-diag(diag(transRate)); % remove negative diagonal elements, just to be sure
 
 %% Generate the trajectory
 % Loop over all trajectory steps
