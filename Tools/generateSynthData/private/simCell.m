@@ -136,7 +136,7 @@ for n = 1:N
         % Transitions between states
         rate_Trans = transRate(state, :);
         % All rates
-        rates = [rate_D, rate_Trans]
+        rates = [rate_D, rate_Trans];
         rate_tot = sum(rates);
         
         

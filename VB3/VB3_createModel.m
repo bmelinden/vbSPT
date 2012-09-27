@@ -30,7 +30,7 @@ else
     end
    Ddt=D;
 end
-%clear dt D;
+clear dt D;
 
 lambda=sort(eig(A));
 if(abs(lambda(end)-1)>1e-15) % then there is no proper stationary state
@@ -40,12 +40,17 @@ end
 if(~exist('p0','var') || ~isempty(p0)) % then use stationary state of A
     % compute an equilibration time from second largest eigenvalue
     % at this point, one knows that lambda(end-1)<1
-    if(abs(real(lambda(end-1)))<1)
-        neq=-1/log(abs(real(lambda(end-1))));
-        p0=A^ceil(100*neq);
-        p0=p0(1,:);
+    if(size(A,1)>1)
+        if(abs(real(lambda(end-1)))<1)
+            neq=-1/log(abs(real(lambda(end-1))));
+            p0=A^ceil(100*neq);
+            p0=p0(1,:);
+        else
+            error('VB3_createModel: cannot compute equilibration time for transition matrix')
+            endq
+        end
     else
-        error('VB3_createModel: cannot compute equilibration time for transition matrix')
+        p0=1;
     end
 end
 %clear lambda
@@ -54,6 +59,7 @@ N_Ddt=length(Ddt);
 N_A=size(A);
 N_p0=length(p0);
 if( N_Ddt==N_A(1) && N_A(1)==N_A(2) && N_A(2)==N_p0)
+    N=N_Ddt;
 else
     error('VB3_createModel: incompatible input parameter sizes!')
 end
