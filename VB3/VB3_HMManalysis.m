@@ -226,7 +226,7 @@ parfor iter=1:opt.runs
         end
     end
     
-    disp(['Iter ' int2str(iter) '. Finished greedy search in '  num2str(toc(titer)) ' s.'] )
+    disp(['Iter ' int2str(iter) '. Finished greedy search in '  num2str(toc(titer)) ' s, with ' int2str(w0.N) ' states.'] )
 end
 %% collect best models for all sizes
 INF=[];
