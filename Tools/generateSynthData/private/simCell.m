@@ -7,6 +7,8 @@ function [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, s
 % starting state of the trajectory is given and the initial position is
 % randomly positioned within the geometry.
 
+% remove diagonal entries in transRate matrix
+transRate=transRate-diag(diag(transRate));
 %% initiate with random positions
 % Generate a random x-position
 x = rand*(L+2*R)-R;
@@ -54,6 +56,7 @@ dpos = [0 0 0]; % Movement
 Traj = zeros(N,4);
 TimePoints = zeros(N,1);
 
+transRate=transRate-diag(diag(transRate)); % remove negative diagonal elements, just to be sure
 
 %% Generate the trajectory
 % Loop over all trajectory steps
