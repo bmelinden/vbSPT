@@ -28,6 +28,8 @@ function finalTraj=VB3_generateSynthData(varargin)
 %               the number of hidden states and the ij element gives the 
 %               probability of transitioning from state i to state j during
 %               one timestep. Each row should sum up to 1.
+% 'transRate'  : the transition probability matrix in s^-1. Should not be
+%               used in the call as transMat.
 % 'occProb'    : a 1*N array with the occupancy of state 1 to N. Should sum
 %               up to 1. If an empty array is given then use the steady state 
 %               occupancy calculated from the transfer matrix. 
@@ -104,6 +106,7 @@ else
     stepSize = 5; %[nm]
     locAccuracy = 0; %[nm]
     transMat = 0; % [/timestep]
+    transRate = 0; % [/s]
     occProb = 0;
     Dapp = 0;
     trajLengths = 0;
@@ -113,6 +116,8 @@ runs = 1;
 do_steadystate = false;
 do_parallel = false;
 do_single = false;
+do_transRate = false;
+do_transMat = false;
 
 %% Read options
 if(nargin>1)        % parse options
@@ -182,10 +187,22 @@ if(nargin>1)        % parse options
          elseif(strcmpi(option,'transMat'))
             if(~isempty(varargin{k+1}))
                 transMat=varargin{k+1};
+                do_transMat = true;
                 [m, n] = size(transMat);
                 temp = sum(transMat');
-                if(~isnumeric(transMat) | m~=n | temp~=ones(1,m))
-                    error('VB3_synthData: transMat option must be followed by a square numeric matrix where the rows sum up to 1.')
+                if(~isnumeric(transMat) | m~=n | temp~=ones(1,m)) | do_transRate
+                    error('VB3_synthData: transMat option must be followed by a square numeric matrix where the rows sum up to 1. Also cannot be used in conjunction with transRate option.')
+                end
+            end
+            k=k+2;
+         elseif(strcmpi(option,'transRate'))
+            if(~isempty(varargin{k+1}))
+                transRate=varargin{k+1};
+                do_transRate = true;
+                [m, n] = size(transRate);
+                temp = sum(transRate');
+                if(~isnumeric(transMat) | m~=n | temp~=zeros(1,m)) | do_transMat
+                    error('VB3_synthData: transRate option must be followed by a square numeric matrix where the rows sum up to 0. Also cannot be used in conjunction with transMat option.')
                 end
             end
             k=k+2;
@@ -226,7 +243,7 @@ if(nargin>1)        % parse options
 end
 
 %% Check for strange values
-if(timestep==0 | sum(sum(transMat))==0 | sum(Dapp)==0 | sum(trajLengths)==0) 
+if(timestep==0 | (~do_transMat && ~do_transRate) | sum(Dapp)==0 | sum(trajLengths)==0) 
     error('Not a valid input, either a runinputfile/struct has to be the first argument or all options must be specified.');
 end
 
@@ -234,31 +251,34 @@ end
 diffCoeff = Dapp-locAccuracy^2/timestep;
 
 %% Convert transition matrix to transition rates
-ef = 0;
-try 
-    [transRate, ef] = logm(transMat);
-    transRate = transRate./timestep;
-    % take out off diagonal elements
-    od = transRate(~eye(size(transRate)));
-    if ef ~= 0 || ~isreal(transRate) || abs(sum(sum(transRate, 2)))>10^(-10) || ~isempty(od(od<0))
+
+if ~do_transRate
+    ef = 0;
+    try
+        [transRate, ef] = logm(transMat);
+        transRate = transRate./timestep;
+        % take out off diagonal elements
+        od = transRate(~eye(size(transRate)));
+        if ef ~= 0 || ~isreal(transRate) || abs(sum(sum(transRate, 2)))>10^(-10) || ~isempty(od(od<0))
+            warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
+                'logm did not work properly. Using a simple 1st order approximation.']);
+            transRate = transMat./timestep;
+            transRate(~~eye(size(transRate))) = 0;
+            transRate(~~eye(size(transRate))) = -sum(transRate, 2);
+        end
+    catch err
         warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
             'logm did not work properly. Using a simple 1st order approximation.']);
+        disp(err.message);
         transRate = transMat./timestep;
         transRate(~~eye(size(transRate))) = 0;
         transRate(~~eye(size(transRate))) = -sum(transRate, 2);
     end
-catch err
-    warning(['VB3_generateSynthData: Conversion to transition rate matrix using '...
-        'logm did not work properly. Using a simple 1st order approximation.']);
-    disp(err.message);
-    transRate = transMat./timestep;
-    transRate(~~eye(size(transRate))) = 0;
-    transRate(~~eye(size(transRate))) = -sum(transRate, 2);
 end
 
 % Set the diagonal elements to 0 since it corresponds to 'self-transition'
 transRateMod = transRate;
-transRateMod(~~eye(size(transMat))) = 0;
+transRateMod(~~eye(size(transRate))) = 0;
 
 
 %% Convert back to transMat (giving the true one corresponding to transRate)
@@ -295,6 +315,7 @@ shortestTraj = min(trajLengths)
 longestTraj = max(trajLengths)
 Dapp
 occProb
+disp('Dwelltimes after converted from transRate to transMat using expm [timestep^-1]:');
 dwellTimes
 disp('transMat (transition probabilities) [timestep^-1]:');
 transMat
