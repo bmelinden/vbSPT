@@ -19,7 +19,7 @@ function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % dt : data timestep (default=1, which means that one can omit dt and input
 %      D*dt for the diffusion constants directly)
 
-% M.L. 2012-07-05
+% M.L. 2012-09-24
 
 %% check input parameters and size compatibility
 if(exist('dt','var') && ~isempty(dt) && length(dt)==1 && dt>0)

@@ -35,13 +35,19 @@ function res=VB3_HMManalysis(runinputfile)
 tstart=tic;
 %% read analysis parameters
 % if an existing file, generate options structure
-if(ischar(runinputfile) && exist(runinputfile)==2)
-    opt=VB3_getOptions(runinputfile);
-    disp(['Read runinput file ' runinputfile])
+if(ischar(runinputfile))
+    if(exist(runinputfile)==2)
+        opt=VB3_getOptions(runinputfile);
+        disp(['Read runinput file ' runinputfile])
+    else
+       error(['Cannot find runinput file ' runinputfile '. Please check name and path.'])
+    end
 elseif(isstruct(runinputfile))
     opt=runinputfile;
     runinputfile=opt.runinputfile;
     disp(['Read options structure based on runinput file ' runinputfile ])
+else
+    error('Could not find runinputfile or interpret runinputfile argument.')
 end
 
 % add .mat extension to output file if not present

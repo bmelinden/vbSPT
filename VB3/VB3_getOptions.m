@@ -38,7 +38,10 @@ if(isempty(path))
 else
     warning('VB3_getOptions warning: runinput file not in the current folder,')
 end
-    
+if(ismember('.',name))
+   error(['runinputfile : ' name '. It is currently not possible to handle runinputfile names containing a .'])
+end
+
 % read the raw options from the runinput file
 oldFolder = cd(path);
 eval(name)
