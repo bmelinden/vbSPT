@@ -1,0 +1,91 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage{amsmath}
+\usepackage[numbers,sort&compress,super]{natbib}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{MLHMM}
+\usepackage{upgreek}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[singlelinecheck=off]{caption}
+\graphicspath{{SI_figures/}}
+
+%% these lines makes it possible to cross-reference items in the main
+%% text by commands like \ref{MT:label}
+%\usepackage{xr}
+%\externaldocument[MT:]{Manuscript}
+
+
+%shorthand notation for referencing etc
+\newcommand{\dc}{$~\upmu$m$^2$~s$^{-1} $}
+\newcommand{\eq}[1]{Eq.~\eqref{#1}}
+\newcommand{\fig}[1]{Fig.~\ref{Fig:#1}}
+\newcommand*{\subfig}[2]{Fig.~\ref{Fig:#1}(#2)}
+\newcommand{\FP}[1]{\textcolor{blue}{#1}}
+\newcommand\ST{\rule[-0.75em]{0pt}{2.0em}} % a strut to uncrowd some tables
+
+\newcommand{\FPR}[1]{#1}
+\newcommand{\ML}[1]{#1}
+\newcommand{\MLcolorOn}{}
+\newcommand{\MLcolorOff}{}
+% numbering w prefix
+%\renewcommand{\thesection}{S\arabic{section}}  
+%\renewcommand{\thetable}{S\arabic{table}}  
+%\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+
+\title{vbSPT (Variational Bayes for Single Particle Tracking) -- User-guide and Documentation}
+
+\author{Fredrik Persson\footnote{freddie.persson@gmail.com ; bmelinden@gmail.com},
+Martin Linden$^*$, Cecilia Unoson, and Johan Elf}
+\date{\today}
+
+\begin{document}
+
+\maketitle 
+
+%\section{Methods}
+\section*{About the software}
+vbSPT software is distributed under the GPL license \ldots
+
+If you use it for academic research, please cite the original article
+in your work:\medskip\\
+
+\noindent Fredrik Persson, Martin Lind\'en, Cecilia Unoson, and Johan
+Elf, \emph{Extracting intracellular diffusive states and transition
+  rates from single molecule tracking data}, Journal: TBA.
+
+
+\tableofcontents
+\section{vbSPT software user manual}
+\label{Sec:userManual}
+\input{vbSPT_userManual.tex}
+\newpage
+\section{Tables of variables}
+\input{vbSPT_tables.tex}
+\newpage
+\section{Introduction to the variational algorithm for single particle tracking}
+\label{Sec:statistics}
+\input{vbSPT_statistics.tex}
+%\newpage
+\section{Derivation of the variational algorithm}
+\label{Sec:derivation}
+\input{vbSPT_derivation.tex}
+
+%\section{Controls}
+%\input{SI_controls.tex}
+% 
+%\subsection{Sample preparation}
+%\input{SI_samplePrep.tex}
+
+
+
+
+\newpage
+
+
+
+\bibliographystyle{unsrtnat} \bibliography{VB-HMM}
+\end{document}

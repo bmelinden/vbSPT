@@ -1,0 +1,304 @@
+In this chapter, we describe the statistical method used to analyze
+the data, with more details than the corresponding part of the
+supplementary information of the original paper \cite{Persson2012}.
+
+%A detailed derivation, including translation tables to interpret the
+%analysis code, \FPR{is given in the vbSPT %software
+%documentation \cite{vbSPTdoc}.}
+
+Our approach is to model the state kinetics by a hidden Markov Model
+(HMM) for diffusing particles with memory-less jumps in diffusion
+constants, which we analyze by an approximate approach to a maximum
+evidence model selection, known as variational Bayes or ensemble
+learning \cite{Mackay2003,Bishop2006}. Variational algorithms for HMMs
+have been derived
+earlier \cite{Mackay1997,Ghahramani2002,Beal2003,Bronson2009,Bronson2010},
+and applied successfully in a biophysical setting to \textit{e.g.}
+single molecule FRET data \cite{Bronson2009,Bronson2010}. The main
+advantage of the variational maximum evidence approach over the more
+common maximum likelihood approach to HMMs is the inherent complexity
+control, \textit{i.e.} the ability to not only learn parameter values
+from data, but also to make model selection and learn the number of
+hidden states \cite{Bronson2010}.
+
+
+\subsection{Model selection by maximum evidence}
+In this section, we briefly introduce our model selection criteria,
+maximum evidence.  For simplicity, we use $x$, $s$, $\theta$, and $N$
+to denote tracking data, hidden states corresponding to the data,
+unknown parameters in the model and the number of hidden states,
+respectively. For readers new to Bayesian statistics, we also
+recommend the brief introduction by Eddy \cite{Eddy2004} (or
+textbooks\cite{Mackay2003,Bishop2006}).
+
+A probabilistic model specifies the probability of obtaining the data
+$x$ and hidden states $s$, given a model $N$ and some parameter values
+$\theta$: $p(x,s|\theta,N)$. Our particular model will be specified in
+Sec.~\ref{Sec:esimodel} below.  To use this for Bayesian model
+selection, we treat all variables in this function as random
+variables, use the laws of probability to derive the inverse
+probability $p(N|x)$, which we interpret as a statement about our
+degree of confidence in model $N$ given the data $x$, and prefer the
+most likely model.
+
+This will require us to specify prior distributions, of the form
+$p(\theta,N)$, that express our beliefs about the models and their
+parameters prior to seeing the data $x$.  Indeed, the willingness to
+assign a probability distribution to unknown parameters and treat them
+on an equal footing with other random variables is a characteristic of
+Bayesian statistics.
+
+Returning to the derivation of $p(N|x)$, we start by computing the
+weighted average over all possible hidden states, known as marginalizing
+over them (or, in physics jargon, integrating or summing them out):
+\begin{equation}\label{eq:s_marginalize}
+  p(x|\theta,N)=\sum_s p(x,s|\theta,N).
+\end{equation}
+Using Bayes' rule on $p(x|\theta,N)$, and introducing the
+aforementioned prior distributions, we can derive the joint model and
+parameter probability as
+\begin{equation}\label{eq:posterior}
+p(\theta,N|x)=\frac{p(x|\theta,N)p(\theta,N)}{p(x)},
+\end{equation}
+where the denominator is a normalization constant,
+\begin{equation}
+p(x)=\sum_{N'}\int d\theta' p(x|\theta',N')p(\theta|N')p(N').
+\end{equation}
+Finally, the sought inverse probability is 
+obtained by marginalizing over the parameters,
+\begin{equation}\label{eq:pnx}
+p(N|x)=\frac{\int d\theta p(x|\theta,N)p(\theta,N)}{p(x)}
+=\frac{1}{p(x)}\int d\theta\sum_s p(x,s|\theta,N)p(\theta|N)p(N),
+%}{\sum_{N'}\int d\theta'
+%p(x|\theta',N')p(\theta|N')p(N')},
+\end{equation}
+where we also re-wrote the joint probability in the form
+$p(\theta,N)=p(\theta|N)p(N)$.
+
+If we further assume that $p(N)$ is constant, \textit{i.e.} that all models
+(in some interval $0<N\le N_\text{max}$) are equally probable \emph{a
+priori}, and note that the denominator $p(x)$ is independent of
+parameters and models, then the best model is the one that maximizes the
+numerator in \Eq{eq:pnx}, also known as the \emph{evidence},
+\begin{equation}\label{eq:MEdef}
+N_\text{ME}=
+\mathrm{argmax}_N \int d\theta\sum_s p(x,s|\theta,N)p(\theta|N),
+\end{equation}
+where argmax$_y$ $f(y)$ denotes the value of $y$ that maximizes the
+function $f$. 
+
+%Note that this can be seen as a generalization of a maximum likelihood
+%estimator of a parameter value for a given model, which with analogous
+%notation and assumed a constant prior density $p(\theta)$ can be
+%written
+%\begin{equation}
+%\theta_\text{ML}=\mathrm{argmax}_\theta \sum_s p(x,s|\theta).
+%\end{equation}
+
+%\FPR{ML: Dropped any reference to maximum likelihood. OK?}
+
+\subsection{Variational maximum evidence}
+In practice, the integrals and sums in the evidence are intractable
+for almost all interesting models, and further progress requires good
+approximations and computers. The difficulties resemble those of
+computing partition functions in statistical physics, and the two
+common fallbacks in that field -- Monte Carlo
+simulations \cite{Green1995,Robert2000,Mackay2003} and mean field
+theory \cite{Mackay1997,Mackay2003,Bishop2006} -- work here as well.
+The variational or ensemble learning approach we will follow corresponds to
+mean field theory, where we seek approximations to the
+posterior distribution in \Eq{eq:posterior} in the form
+\begin{equation}
+p(s,\theta|x,N)=\frac{p(s,x|\theta,N)p(\theta|N)}{p(x|N)}
+\approx q(s)q(\theta),
+\end{equation}
+\textit{i.e.}, where the hidden states $s$ and parameter values $\theta$ are
+statistically independent.  A general recipe to derive mean-field-like
+approximations of this type\cite{Mackay2003} is to rewrite the
+logarithm of the evidence as the solution of an optimization problem
+in an arbitrary distribution $q(\theta,s)$ over the unknowns. The
+approximation then consists of optimizing in a restricted space, in
+this case that of separable distributions of the form $q(\theta)q(s)$.
+
+To begin with, we multiply and divide the evidence by $q(\theta,s)$,
+and then make use of Jensen's inequality to write
+\begin{multline}\label{eq:F1}
+\ln p(x|N)=\ln \int d\theta\sum_s 
+    q(\theta,s)\frac{p(x,s|\theta,N)p(\theta|N)}{q(\theta,s)}\\
+    \ge \int d\theta\sum_s q(\theta,s) 
+    \ln \frac{p(x,s|\theta,N)p(\theta|N)}{q(\theta,s)}\\
+    =\int d\theta\sum_s \Big[
+    q(\theta,s) \ln p(x,s|\theta,N)p(\theta|N)
+    -q(\theta,s) \ln q(\theta,s)
+    \Big]\equiv F[q(\theta,s),x].
+\end{multline}
+This inequality is true for any distribution $q(\theta,s)$. Note that
+if we use the calculus of variations to directly optimize $F$ with
+respect to $q(\theta,s)$ subject to a normalization constraint (since
+$q(\theta,s)$ is a probability distribution), we find
+$q^*(\theta,s)=\frac{p(x,s|\theta,N)p(\theta|N)}{p(x|N)}$. Substituting
+back in Eq.~\eqref{eq:F1}, we then get
+$F[q^*,x]=p(x|N)$, \textit{i.e.} the original intractable problem.
+
+To make this a useful approximation, we place restrictions on the
+variational distribution $q(\theta,s)$. Our approximate model
+selection will be to prefer the model for which the tightest bound $F$
+can be found within that restricted function space, and we can also
+use the corresponding optimal distribution $q^*(\theta,s)$ for
+approximate inference about the parameter values and hidden
+states\cite{Mackay2003, Bishop2006}.
+
+A useful restriction is that of separable distribution
+$q(\theta,s)\approx
+q(\theta)q(s)$ \cite{Mackay1997,Beal2003,Bronson2009}, which does give
+a tractable problem. In particular, optimizing with respect to
+$q(\theta)$ and $q(s)$, while using Lagrange multipliers to enforce
+normalization, one can derive the following equations:
+\begin{align}
+  \ln q(\theta)=&-\ln Z_\theta+\ln p(\theta|N)
+  +\mean{\ln p(x,s|\theta,N)}_{q(s)},\label{eq:update1}\\
+  \ln q(s)=&-\ln Z_s+\mean{\ln p(x,s|\theta,N)}_{q(\theta)},\label{eq:update2}
+\end{align}
+where $Z_\theta$ and $Z_s$ are normalization constants, and
+$\mean{\cdot}_{q(\cdot)}$ denotes an average with respect to
+$q(\cdot)$. As it turns out, these averages can be computed for our
+model. Following earlier variational treatments of
+HMMs \cite{Mackay1997,Beal2003,Bronson2009}, we solve these equations
+iteratively, by alternatingly updating $q(s)$ and $q(\theta)$ for fixed
+$q(\theta)$ and $q(s)$, respectively. The resulting algorithm greatly resembles the
+well-known expectation-maximization procedure for maximum-likelihood
+optimization in HMMs \cite{Ghahramani2002} (see
+Sec.~\ref{Sec:derivation} for details).
+
+\subsection{Diffusion model}
+\label{Sec:esimodel}
+We assume that we can track the particles in $d$ dimensions, and call
+$\x_t$ the position at time $t$.  The time between consecutive
+measurements is $\Delta t$, but we are going to use $t$ as an integer
+index as well. We model the position by
+simple diffusion,
+\begin{equation}\label{eq:diff1}
+        \x_{t+1}=\x_t+\sqrt{2D_{s_t}\Delta t}\vec{w}_t,
+\end{equation}
+where $\vec{w}_t$ are independent $d$-dimensional Gaussian variables
+with uncorrelated components of zero mean and unit variance.
+
+Binding and unbinding events are modeled as jumps in the diffusion
+constant $D_{s_t}$, as indicated by the degree of freedom
+\mbox{$s_t\in\{1,2,\ldots N\}$}, where $N$ is the number of diffusive 
+states. This degree of freedom constitutes our hidden state, and we
+model it as a discrete Markov process with a transition matrix
+$\matris{A}$, and initial state probabilities
+$\vec{\pi}$, \textit{i.e.}
+\begin{equation}\label{eq:Aij}
+p(s_1=j)=\pi_j,\quad 
+p(s_t=j|s_{t-1}=i)=A_{ij}\text{, for $t>1$},
+\end{equation}
+where normalization demands
+$\sum_{k=1}^N\pi_k=\sum_{k=1}^NA_{jk}=1$. The number of hidden states
+$N$ is a parameter to be determined from the data.  The vector of
+diffusion constants corresponding to the different hidden states is
+denoted $\vec D=(D_1,D_2,\ldots,D_N)$. We will also use the
+shorthand notation $\x_{1:T}=\{\x_1,\x_2,\ldots , \x_T\}$ and
+$s_{1:T-1}=\{s_1,s_2,\ldots,s_{T-1}\}$ for the positions and hidden
+states of a whole trajectory.\footnote{Since $s_T$ does not influence
+the position data, we exclude it from the model.}
+
+For our analysis, we need expressions for the joint distribution of
+positions, hidden states, and parameters,
+$p(\x_{1:T},s_{1:T-1},\vec{D},\matris{A},\vec\pi|N)$, which can be
+factorized as
+
+\begin{multline}\label{eq:efactor1}
+p(\x_{1:T},s_{1:T-1},\vec{D},\matris{A},\vec\pi|N)
+=p(\x_{1:T}|s_{1:T-1},\vec{D})
+p(s_{1:T-1}|\matris{A},\vec\pi)\\
+\times p(\vec{D}|N)
+p(\matris{A}|N)
+p(\vec\pi|N).
+%p(\vec{D},\matris{A},\vec\pi|N).
+\end{multline}
+
+The first two factors on the above right hand side are specified by
+the model. In particular, the distribution of hidden state sequences
+is
+\begin{equation}\label{smodel1}
+  p(s_{1:T-1}|\matris{A},\vec{\pi})=\pi_{s_1}\prod_{t=1}^{T-2}A_{s_ts_{t+1}}
+  =\prod_{m=1}^N\pi_m^{\delta_{m,s_1}}
+  \prod_{t=1}^{T-2}\prod_{k,j=1}^N A_{kj}^{\delta_{k,s_t}\delta_{j,s_{t+1}}},
+\end{equation}
+and the distribution of positions, conditional on the hidden states, is
+given by 
+\begin{multline}
+  p(\x_{1:T}|s_{1:T-1},\vec
+  D)=p(\x_1)\prod_{t=1}^{T-1}p(\x_{t+1}-\x_t|s_t,\vec D)\\
+  =p(\x_1)\prod_{t=1}^{T-1} \frac{1}{(4\pi D_{s_t}\Delta
+  t)^{d/2}}e^{-\frac{1}{4D_{s_t}\Delta t}\Delta\x_t^2}.
+\end{multline}
+In these equations, $\delta_{j,k}$ is the Kronecker delta. The initial
+position distribution $p(\x_1)$ does not depend on any parameter of
+interest to us here, and we will drop it from the analysis.  It is
+also convenient to introduce the inverse diffusion constant
+$\gamma_j=1/4D_j\Delta t$, and write
+\begin{align}
+    p(\x_{1:T}|s_{1:T-1},\vec\gamma)=&
+    \prod_{t=1}^{T-1}\left(\frac{\gamma_{s_t}}{\pi}\right)^{d/2}
+    e^{-\gamma_{s_t}(\x_{t+1}-\x_t)^2}\nonumber\\
+    =&\prod_{t=1}^{T-1}\prod_{k=1}^N\left(
+    \frac{\gamma_k}{\pi}\right)^{\frac d2\delta_{k,s_t}}
+    e^{-\delta_{k,s_t}\gamma_k(\x_{t+1}-\x_t)^2}. 
+    \label{xmodel1}
+\end{align}
+
+The last three factors in Eq.~\eqref{eq:efactor1} are the prior
+distributions for the parameters, expressing our beliefs about the
+parameter values for different model sizes (values of $N$), before
+seeing the data. For computational convenience, independent
+priors, \textit{e.g.}  $p(\vec{\gamma}|N) p(\matris{A}|N)
+p(\vec\pi|N)$, are used instead of the more general
+$p(\vec{\gamma},\matris{A},\vec\pi|N)$. For the same reason priors
+functional forms are chosen as conjugate priors (see Chap.2.4.2 in
+Bishop\cite{Bishop2006}). As we will see in the derivation below, this
+means gamma distributions for the inverse diffusion constant priors,
+and Dirichlet distributions (a multidimensional version of the beta
+distribution) for the initial state and transition probability priors.
+Within these constraints, we strive to choose uninformative, or weak,
+priors in order to let the data speak for itself as much as possible.
+
+\subsection{Treatment of many trajectories}
+Typical \textit{in vivo} single particle tracking experiments produce
+many rather short trajectories. Most trajectories contain less than 20
+consecutive positions, and probably very few ($\le 2$) transitions. If
+considered in isolation, such trajectories are not very informative,
+and transitions are difficult to identify accurately. To extract
+meaningful information, we need to pool many trajectories. The
+simplest way to do that is to assume that they are statistically
+independent and governed by the same model and parameter
+set, \textit{i.e.}  that all molecules (including those from
+different cells in the same batch) are equivalent and that the
+interaction dynamics do not change over time. In that case, the
+probability distribution for a set of $M$ trajectories is a product of
+single-trajectory densities governed by the same model,
+\begin{equation}\label{eq:pxs}
+p(\{\x^i_{1:T},s^i_{1:T-1}\}_{i=1}^M|\vec{\gamma},\matris{A},\vec\pi,N)
+=\prod_{i=1}^Mp(\x^i_{1:T},s^i_{1:T-1}|\vec{\gamma},\matris{A},\vec\pi,N),
+\end{equation}
+where different trajectories are indicated by the index $i$.
+
+%The independence assupmtion is easy to justify, since each trajectory
+%corresponds to a new flourophore.  The homogeneity assumption is less
+%obvious, and will be explored in further depth among the controls
+%below\footnote{ML: so far, I am hopeful that we will get around to
+%actually doing it, and this footnote is a reminder.}.
+
+
+%Although a detailed derivation of the variational algorithm is
+%deferred until in {\bf X}, we nevertheless quote the variational
+%parameter distributions here, as well as some posterior expectation
+%values we use for to describe the converged model.
+
+%The initial state probability $\vec\pi$ is Dirichlet
+%distributed \cite{wiki:dirichlet} with parameters $\vec
+%w^{(\pi)}=(w_1^{(\pi)},w_2^{(\pi)},\ldots,w_N^{(\pi)})$, i.e.,
+%\begin{equation}
+%\end{equation}
