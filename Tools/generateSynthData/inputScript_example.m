@@ -19,7 +19,7 @@ timestep = 0.003;  % s
 stepSize = 5; % nm
 
 % Define localization accuracy
-locAccuracy = 0.020; % um
+locAccuracy = 20; % nm
 
 % Define cell geometry parameters
 cylL = 2000; % nm

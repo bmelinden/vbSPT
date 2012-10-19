@@ -3,8 +3,9 @@ function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 %
 % Perform VBEM iterations, on the VB structure W, with data (structure)
 % X, until convergence. This version accepts d-dimensional data (T by d
-% matrices), and uses a 'short' model, i.e., hidden states are associated
-% with steps, not positions. 
+% matrices), and uses a 'short forward' model, i.e., hidden states are
+% associated with steps, not positions, and the hidden state at time t is
+% associated with the particle motion on the interval t -> t+dt.
 %
 % options:
 % 'estimate'   : if given, add a field est2, which contains memory and

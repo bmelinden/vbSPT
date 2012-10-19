@@ -35,13 +35,19 @@ function res=VB3_HMManalysis(runinputfile)
 tstart=tic;
 %% read analysis parameters
 % if an existing file, generate options structure
-if(ischar(runinputfile) && exist(runinputfile)==2)
-    opt=VB3_getOptions(runinputfile);
-    disp(['Read runinput file ' runinputfile])
+if(ischar(runinputfile))
+    if(exist(runinputfile)==2)
+        opt=VB3_getOptions(runinputfile);
+        disp(['Read runinput file ' runinputfile])
+    else
+       error(['Cannot find runinput file ' runinputfile '. Please check name and path.'])
+    end
 elseif(isstruct(runinputfile))
     opt=runinputfile;
     runinputfile=opt.runinputfile;
     disp(['Read options structure based on runinput file ' runinputfile ])
+else
+    error('Could not find runinputfile or interpret runinputfile argument.')
 end
 
 % add .mat extension to output file if not present
@@ -65,6 +71,8 @@ disp('----------')
 disp([ datestr(now) ' : Starting greedy optimization to find best model.'])
 disp(['jobID        : ' opt.jobID])
 disp(['runinput file: ' opt.runinputfile])
+disp(['input  file  : ' opt.inputfile])
+disp(['trj field    : ' opt.trajectoryfield])
 disp(['output file  : ' opt.outputfile])
 disp(['log file     : ' opt.logfile])
 disp('----------')
@@ -226,7 +234,7 @@ parfor iter=1:opt.runs
         end
     end
     
-    disp(['Iter ' int2str(iter) '. Finished greedy search in '  num2str(toc(titer)) ' s.'] )
+    disp(['Iter ' int2str(iter) '. Finished greedy search in '  num2str(toc(titer)) ' s, with ' int2str(w0.N) ' states.'] )
 end
 %% collect best models for all sizes
 INF=[];

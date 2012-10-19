@@ -1,12 +1,14 @@
 
 function [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 
-%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, state, locAccuracy)
+%% [TimePoints, Traj, m, state] = simCell(L, R, diffCoeff, transRate, N, stepT, stepSize, locAccuracy, state)
 % 
 % Generates a trajectory within a confined E. coli like geometry. The
 % starting state of the trajectory is given and the initial position is
 % randomly positioned within the geometry.
 
+% remove diagonal entries in transRate matrix
+transRate=transRate-diag(diag(transRate));
 %% initiate with random positions
 % Generate a random x-position
 x = rand*(L+2*R)-R;
@@ -41,7 +43,7 @@ end
 
 %% Define variables
 dt = 0;         % Timesteps (will follow a exp distribution)
-stepSize = 5;     % Spatial discretisation of 5 nm
+stepSize = stepSize;     % Spatial discretisation of stepSize nm
 t_old = 0;
 t = 0;
 m = 1;
@@ -54,6 +56,7 @@ dpos = [0 0 0]; % Movement
 Traj = zeros(N,4);
 TimePoints = zeros(N,1);
 
+transRate=transRate-diag(diag(transRate)); % remove negative diagonal elements, just to be sure
 
 %% Generate the trajectory
 % Loop over all trajectory steps
@@ -136,7 +139,7 @@ for n = 1:N
         % Transitions between states
         rate_Trans = transRate(state, :);
         % All rates
-        rates = [rate_D, rate_Trans]
+        rates = [rate_D, rate_Trans];
         rate_tot = sum(rates);
         
         
@@ -190,6 +193,3 @@ end
 
 
 end
-
-
-
