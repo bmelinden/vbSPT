@@ -121,6 +121,9 @@ end
 timeStep = options.timestep        
 dim = options.dim
 
+%% Read in trajectory lengths
+trajL = Wbest.T;
+avTrajL = mean(trajL);
 
 %% Read in HMM results
 if modelSize == 0;
@@ -153,6 +156,12 @@ else
 end
 
 %% Print all the numbers in the Matlab prompt
+disp('Num. Traj.:')
+disp(num2str(length(trajL)));
+
+disp('Av. Traj. length:')
+disp(num2str(avTrajL));
+
 disp('Diffusion Coeff [um^2/s]:')
 disp(num2str(diffCoeff));
 disp(num2str(diffCoeffStd));
@@ -177,12 +186,15 @@ textindent = 0.1;
 precision = 3;
 
 % Graphical representation for models with 2-4 states
+figure;
+hold on
+text(3, 8.5, strcat('Num. Traj: ', num2str(length(trajL))));
+text(3, 8.2, strcat('Av. Traj. length: ', num2str(avTrajL)));
+
 if numStates == 2
 
     minX = 2; maxX = 8; minY = 2; maxY = 6;
     
-    figure;
-    hold on;
     stateCoord1 = [4 4];
     stateCoord2 = [6 4];
     
@@ -213,8 +225,6 @@ if numStates == 3
     
     minX = 0; maxX = 8; minY = 2; maxY = 8;
     
-    figure;
-    hold on;
     stateCoord1 = [4 6];
     stateCoord2 = [2 4];
     stateCoord3 = [6 4];
@@ -269,8 +279,6 @@ if numStates == 4
     
     minX = 0; maxX = 8; minY = 2; maxY = 8;
     
-    figure;
-    hold on;
     stateCoord1 = [4 6];
     stateCoord2 = [6 6];
     stateCoord3 = [4 4];
