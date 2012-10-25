@@ -1,7 +1,7 @@
-function res=VB3_getResult(runinputfile)
-% res=VB3_getResult(runinputfile)
+function res=VB3_getResult(runinput)
+% res=VB3_getResult(runinput)
 %
-% Find saved outputfile from a runinput file, load the analysis
+% Find saved outputfile from a runinput file or options struct, load the analysis
 % results, and print a short description to the command line.
 
 %% copyright notice
@@ -24,15 +24,30 @@ function res=VB3_getResult(runinputfile)
 %
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
-%% start of actual code
 
-if(isstruct(runinputfile))
-    opt=runinputfile;
-else    
+%% Parse input
+
+% if an existing file, generate options structure
+if(isstr(runinput) && exist(runinput)==2)
+    runinputfile = runinput;
     opt=VB3_getOptions(runinputfile);
+    disp(['Read runinput file ' runinputfile])
+    % if an option struct, read in the runinputfilename
+elseif(isstruct(runinput))
+    opt=runinput;
+    runinputfile=opt.runinputfile;
+    disp(['Read options structure based on runinput file ' runinputfile ])
+else
+    error(['Not a valid input, aborting']);
 end
 
+%% Start of actual code
 res=load(opt.outputfile);
+
+%% Calculate transition matrix
+numStates = res.Wbest.N;
+A = res.Wbest.M.wA - res.Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
+A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
 
 %% Present results in the Matlab prompt
 
@@ -41,13 +56,13 @@ disp(sprintf('\n'));
 disp(['Number of states: ' num2str(res.Wbest.N)]);
 disp(sprintf('\n'));
 disp(['Diffusion rate constants: ']);
-disp(num2str(res.Wbest.est.DdtMean/opt.timestep/1e6, 3));
+disp(num2str(res.Wbest.est.DdtMean/opt.timestep, 3));
 disp(sprintf('\n'));
 disp(['Occupancy: ']);
 disp(num2str(res.Wbest.est.Ptot, 3));
 disp(sprintf('\n'));
 disp(['Transition matrix [per timestep]: ']);
-disp(num2str(res.Wbest.est.Amean, 3));
+disp(num2str(A, 3));
 
 
 end

@@ -1,12 +1,12 @@
 function bootstrap=VB3_bsResult(runinput, varargin)
 % res=VB3_bsResult(runinputfile,option1,option2,...)
 %
-% Run bootstrapping on the HMM analysis result specified in the runinputfile, which
-% should be in the current directory.
-% it is also possible to use an options structure, e.g., from
-% opt=VB3_getOptions(runinputfile) instead, which might be useful for
-% parameter sweeps. Note that bootstrapping parameters have to be set in
-% the options struct or runinputfile before running this function.
+% Run bootstrapping on the HMM analysis result specified in the runinputfile 
+% which should be in the current directory.
+% It is also possible to use an options structure, e.g., from
+% opt=VB3_getOptions(runinputfile) instead. Note that bootstrapping 
+% parameters have to be set in the options struct or runinputfile before 
+% running this function.
 % If called from VB3_HMManalysis as part of the initial
 % analysis 'HMM_analysis' should exist as an option
 %
@@ -22,7 +22,7 @@ function bootstrap=VB3_bsResult(runinput, varargin)
 % VB3_HMManalysis, runs data analysis in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

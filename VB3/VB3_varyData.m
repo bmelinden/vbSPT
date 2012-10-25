@@ -1,13 +1,13 @@
 function modelRun = VB3_varyData(runinput, varargin)
 %% wModels=VB3_varyData(runinput, varargin)
 %
-% Takes a previously used runinputfile or options struct and loads the input data and result 
-% and converge the best models for different number of states with an increasing amount of 
-% input data, randomly sampled from the original input data.
+% Takes a previously used runinputfile or options struct as input. 
+% Converges the best models for different number of states with an increasing amount of 
+% input data, sampled from the original input data.
 % This script uses parallel computing by default to disable it comment out the
 % relevant rows (containing 'matlabpool') in this function.
 %
-% options:
+% Options:
 % 'noRandom'    : if given, the data subset isnt randomly generated but  truncates
 %               from the data array.
 % 'runs'        : an integer defining the number of runs you want. Default
@@ -19,9 +19,7 @@ function modelRun = VB3_varyData(runinput, varargin)
 % 'sampleSize'   : an 1*N numeric array with how big portions of the data
 %               should be analysed. Default is [0.05:0.05:1], i.e.
 %               starting with 5% and increasing 5% until 100%.
-%
-%
-% F.P. 2012-06-29
+
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

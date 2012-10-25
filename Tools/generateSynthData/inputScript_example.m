@@ -2,7 +2,7 @@
 % be passed on as arguments to 'VB3_generateSynthData'.
 %
 %
-% F.P. 2012-07-04
+
 
 %% Define misc parameters
 
@@ -137,12 +137,12 @@ transMat(:, length(D)+1:end) = [];
 
 if do_single
     finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-       'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'singleTraj');
+       'trajLengths', trajLengths, 'Dapp', D, 'transRate', transRate, 'occProb', occProb, 'locAccuracy', locAccuracy, 'singleTraj');
 elseif do_parallel
-       finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-       'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
+    finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+       'trajLengths', trajLengths, 'Dapp', D, 'transRate', transRate, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
 else
-       finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-       'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy);
+    finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+       'trajLengths', trajLengths, 'Dapp', D, 'transRate', transRate, 'occProb', occProb, 'locAccuracy', locAccuracy);
 end
 

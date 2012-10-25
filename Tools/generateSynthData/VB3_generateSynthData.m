@@ -2,9 +2,7 @@ function finalTraj=VB3_generateSynthData(varargin)
 %% finalTraj=VB3_generateSynthData(runinput, varargin)
 %
 % Generates synthetic trajectory data in an E. coli like geometry (can be 
-% specified within this file)data partially based on a HMM model. All parameters
-% from the HMM model except the ones given as options. This version accepts
-% either a runinput file or a struct as the first argument or only options.
+% specified within this file) based on a HMM model.
 % This script uses parallel computing by default to disable it comment out the
 % relevant rows (containing 'matlabpool') in this function.
 % 
@@ -39,8 +37,29 @@ function finalTraj=VB3_generateSynthData(varargin)
 % 'cylinderRadius'   : should be given in [nm]. Default value 400 nm.
 % 'parallel'    : if given use parallel computing.
 %
-% F.P. 2012-07-03
 
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% VB3_varyData, test inference robustness, in the vbSPT package
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% 
+% E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
+
+%% Start of actual code
 tgenData=tic;
 
 VB3_license('VB3_generateSynthData')
@@ -64,43 +83,43 @@ diary on
 CylinderL = 2000; % nm (length of cylindrical part only)
 Radius = 400;  % nm    (spherical end caps, and cylinder radius)
 
-%% Check input
-% if an existing file, generate options structure
-if(ischar(varargin{1}) && exist(varargin{1}, 'file')==2)
-    runinputfile = varargin{1};
-    opt=VB3_getOptions(runinputfile);
-    disp(['Read runinput file ' runinputfile])
-    runinputExists = true;
-    % if an option struct, read in the runinputfilename
-elseif(isstruct(varargin{1}))
-    opt=varargin{1};
-    runinputfile=opt.runinputfile;
-    disp(['Read options structure based on runinput file ' runinputfile ])
-    runinputExists = true;
-else
-    runinputExists = false;
-end
-
-%% Initiate variables
-if runinputExists
-    
-    res=load(opt.outputfile, 'Wbest');
-    
-    Wbest = res.Wbest;
-    clear res;
-    
-    % initiate options
-    timestep = opt.timestep; % [s]
-    locAccuracy = 0; %[nm]
-    stepSize = 5; %[nm]
-    transMat = Wbest.est.Amean; % [/timestep]
-    occProb = Wbest.est.Ptot;
-    Dapp = Wbest.est.DdtMean./timestep;
-    if max(Dapp)<100    % if small assume its in um^2/s
-        Dapp = Dapp*1e6;% convert to nm^2/s
-    end
-    trajLengths = Wbest.T;
-else
+% %% Check input
+% % if an existing file, generate options structure
+% if(ischar(varargin{1}) && exist(varargin{1}, 'file')==2)
+%     runinputfile = varargin{1};
+%     opt=VB3_getOptions(runinputfile);
+%     disp(['Read runinput file ' runinputfile])
+%     runinputExists = true;
+%     % if an option struct, read in the runinputfilename
+% elseif(isstruct(varargin{1}))
+%     opt=varargin{1};
+%     runinputfile=opt.runinputfile;
+%     disp(['Read options structure based on runinput file ' runinputfile ])
+%     runinputExists = true;
+% else
+%     runinputExists = false;
+% end
+% 
+% %% Initiate variables
+% if runinputExists
+%     
+%     res=load(opt.outputfile, 'Wbest');
+%     
+%     Wbest = res.Wbest;
+%     clear res;
+%     
+%     % initiate options
+%     timestep = opt.timestep; % [s]
+%     locAccuracy = 0; %[nm]
+%     stepSize = 5; %[nm]
+%     transMat = Wbest.est.Amean; % [/timestep]
+%     occProb = Wbest.est.Ptot;
+%     Dapp = Wbest.est.DdtMean./timestep;
+%     if max(Dapp)<100    % if small assume its in um^2/s
+%         Dapp = Dapp*1e6;% convert to nm^2/s
+%     end
+%     trajLengths = Wbest.T;
+% else
     % initiate options
     timestep = 0; % [s]
     stepSize = 5; %[nm]
@@ -110,7 +129,7 @@ else
     occProb = 0;
     Dapp = 0;
     trajLengths = 0;
-end
+% end
    
 runs = 1;
 do_steadystate = false;
@@ -122,11 +141,11 @@ do_transMat = false;
 %% Read options
 if(nargin>1)        % parse options
     % argument counter
-    if runinputExists 
-        k=2;
-    else
+%     if runinputExists 
+%         k=2;
+%     else
         k=1;
-    end
+%     end
     kmax=nargin;  % stopping criterion
     while(k<=kmax)
         option=varargin{k};

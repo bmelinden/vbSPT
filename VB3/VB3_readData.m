@@ -1,18 +1,17 @@
-function X=VB3_readData(opt)
-% X=VB3_readData(opt)
+function X=VB3_readData(runinput)
+% X=VB3_readData(runinput)
 % 
-% read diffusion data set as specified in the options structure opt, from
-% e.g., opt=VB3_getOptions(runinputfile). Only trajectories longer than
-% opt.trjLmin are returned. 
+% Read diffusion data set as specified in a runinputfile. It is also possible
+% to use an options structure, e.g., from opt=VB3_getOptions(runinputfile) instead.
+% Only trajectories longer than trjLmin (specified in opt) are returned. 
 %
-% M.L. 2012-04-17
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VB3_readData.m, reads position data fo use with the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,8 +26,23 @@ function X=VB3_readData(opt)
 %
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
-%% start of actual code
 
+%% parse input
+% if an existing file, generate options structure
+if(ischar(runinput) && exist(runinput, 'file')==2)
+    runinputfile = runinput;
+    opt=VB3_getOptions(runinputfile);
+    disp(['Read runinput file ' runinputfile])
+    % if an option struct, read in the runinputfilename
+elseif(isstruct(runinput))
+    opt=runinput;
+    runinputfile=opt.runinputfile;
+    disp(['Read options structure based on runinput file ' runinputfile ])
+else
+    error(['Not a valid input, aborting VB3_readData']);
+end
+
+%% start of actual code
 foo=load(opt.inputfile,opt.trajectoryfield);
 
 if(isfield(opt,'trjLmin'))

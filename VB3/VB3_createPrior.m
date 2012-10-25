@@ -1,15 +1,15 @@
-function W=VB3_createPrior(opt,N)
-% W=V3_createPrior(opt,N)
+function W=VB3_createPrior(runinput,N)
+% W=V3_createPrior(runinput,N)
 %
-% creates a model structure W with N states, and prior distributions
-% according to the options structure opt.
+% Creates a model structure W with N states, and prior distributions
+% according to runinput, either a runinputfile or an options struct.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VB3_createPrior.m, model initialization in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lindén and Fredrik Persson
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,8 +24,20 @@ function W=VB3_createPrior(opt,N)
 %
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
-%% start of actual code
 
+%% Parse input
+% if an existing file, generate options structure
+if(isstr(runinput) && exist(runinput)==2)
+    runinputfile = runinput;
+    opt=VB3_getOptions(runinputfile);
+    % if an option struct, read in the runinputfilename
+elseif(isstruct(runinput))
+    opt=runinput;
+else
+    error(['Not a valid input, aborting VB3_createPrior']);
+end
+
+%% start of actual code
 
 timestep=opt.timestep;              % sampling time step
 At0=opt.prior_tD/timestep;          % prior mean dwell time

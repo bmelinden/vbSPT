@@ -1,15 +1,13 @@
-function VB3_displayHMMmodel(varargin)
-% VB3_displayHMMmodel(runinput, varargin)
+function VB3_displayHMMmodel(runinput)
+% VB3_displayHMMmodel(runinput)
 %
 % File for getting out and graphically representing HMM model results from
-% VB3.
+% vbSPT. It can take either a runinputfile or options struct. If no
+% argument is given then you get to choose the result file you want from an
+% 'Open file' dialogue. It shows the result for the globally best model,
+% however in the code you can set what modelsize should be shown.
 %
-% options:
-% 'runinput'    : can be a runinput filename, an options structure, or empty, in which
-%               case the user is asked to select a result file (the one specified by
-%               opt.outputfile).
-% 'modelSize'   : if given, the best results for the stated modelsize will be presented 
-%               instead of the globally best model. 
+
 
 
 %% copyright notice
@@ -33,57 +31,18 @@ function VB3_displayHMMmodel(varargin)
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
-VB3_license('displayHMMmodel')
+VB3_license('VB3_displayHMMmodel')
 
 
-%% Read options
-runinput = 0;
+%% Options
 modelSize = 0;
 
 
-if(nargin>0)        % parse options
-    
-    k=1;        % argument counter
-    kmax=nargin;  % stopping criterion
-    while(k<=kmax)
-        option=varargin{k};
-        if(strcmpi(option,'runinput'))
-            if(~isempty(varargin{k+1}))
-                runinput=varargin{k+1};
-                if (~(isstr(runinput) && exist(runinput)==2) & ~isstruct(runinput))  
-                    error('VB3_displayHMMmodel: runinput option must be followed by either a valid filename or an options struct.')
-                end
-            end
-            k=k+2;
-         elseif(strcmpi(option,'modelSize'))
-            if(~isempty(varargin{k+1}))
-                modelSize=varargin{k+1};
-                if(~isnumeric(modelSize) | round(modelSize)~=modelSize | modelSize<=0)
-                    error('VB3_displayHMMmodel: modelSize option must be followed by a positive integer.')
-                end
-            end
-            k=k+2;
-        else
-            error(['VB3_displayHMMmodel: option ' option ' not recognized.'])
-        end
-    end
-end
 
 %% Load input
 
-if runinput == 0
+if exists('runinput', 'var')
     
-    % Get filename and path with "uigetfile"
-    [filename, pathname] = uigetfile({'*.mat'}, 'Select mat file');
-    if ( filename == 0 )
-        disp('Error! No (or wrong) file selected!')
-        return
-    end
-    
-    % Load the mat file
-    full_filename = [ pathname, filename ];
-    load(full_filename);
-else
     % if an existing file, generate options structure
     if(isstr(runinput) && exist(runinput)==2)
         runinputfile = runinput;
@@ -100,6 +59,19 @@ else
     
     filename = options.outputfile;
     load(filename);
+
+else
+        
+    % Get filename and path with "uigetfile"
+    [filename, pathname] = uigetfile({'*.mat'}, 'Select mat file');
+    if ( filename == 0 )
+        disp('Error! No (or wrong) file selected!')
+        return
+    end
+    
+    % Load the mat file
+    full_filename = [ pathname, filename ];
+    load(full_filename);
 end
 
 %% Make backwards compatible
@@ -188,8 +160,8 @@ precision = 3;
 % Graphical representation for models with 2-4 states
 figure;
 hold on
-text(3, 8.5, strcat('Num. Traj: ', num2str(length(trajL))));
-text(3, 8.2, strcat('Av. Traj. length: ', num2str(avTrajL)));
+text(2, 1.5, strcat('Num. Traj: ', num2str(length(trajL))));
+text(2, 1.2, strcat('Av. Traj. length: ', num2str(avTrajL)));
 
 if numStates == 2
 

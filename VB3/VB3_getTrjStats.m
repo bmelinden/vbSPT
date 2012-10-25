@@ -2,10 +2,13 @@ function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 % [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 % assemble optimal model from data with known hidden state sequence.
 %
+% Input:
 % X     : cell vector with trajectory data. In each cell, the first
 %         dim columns are position data, and column stateColumn are the
 %         hidden state sequence. dim=0 means no position stats are
 %         collected.
+%
+% Output:
 % M     : M-field of the model resulting from the data and hidden state
 %         sequence in X.
 % two extra variables are computed:
@@ -14,7 +17,7 @@ function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 % trjLmin: minimum trajectory length (default 2)
 % The current code cannot handle more than 100 states.
 %
-% M.L. 2012-07-05
+
 
 %% parameters
 if(~exist('trjLmin','var') || isempty(trjLmin))
