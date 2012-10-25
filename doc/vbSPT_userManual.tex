@@ -4,11 +4,30 @@ In this section, we introduce the developed vbSPT software and how to use it.
 It is computationally very demanding to identify the model that describes thousands of trajectories the best. For this reason it is strongly recommended  that the analysis of data sets with more than 1000 trajectories are run on a very good computer. For example, a typical analysis with 10000-15000 trajectories including bootstrapping takes 2-10~h on a 2 x Intel® Xeon® X5650 (6 core, 2.66 GHz, 12MB L3) machine running MATLAB verR2012a. It should be noted that this version is capable of working with 12 parallel nodes, while previous versions only work with 8, setting a limit on the actual number of usable cores in the computer. However, the test example (see Sec.~\ref{Sec:testRun}) should produce a result in less than 10~min also on a conventional desktop or laptop computer. 
 
 \subsection{Installation}
-To install the vbSPT software, uncompress the vbSPT.zip file into a dedicated folder. The files under 'HMMcode/HMMcore' might need to be recompiled, depending on what system you are running. To do this, make sure you have a compiler installed on you system (for a list of compatible compilers see http://www.mathworks.se/support/compilers/). Then go to the folder 'HMMcore' and run the script \texttt{compile\_code}.
+To install the vbSPT software, uncompress the vbSPT.zip file into a
+dedicated folder, which we will call \texttt{vbRoot/} in these
+notes. The files under \mbox{\texttt{vbRoot/HMMcore/}} might need to
+be recompiled, depending on what system you are running. To do this,
+make sure you have a C compiler installed on you system (for a list of
+compatible compilers see
+\mbox{http://www.mathworks.se/support/compilers/}). Then go to the
+folder \texttt{vbRoot/HMMcore/} and run the script
+\texttt{compile\_code}.
 
-It is recommended to add the folder ('HMMcode'), and the subfolders 'Tools', 'HMMcore', and 'VB3' to the Matlab path. This can be done by executing the script 'VB3start.m' present in the 'HMMcode' folder. If it is not added to the Matlab path it has to be called from the same folder or with its path. Instructions for how to add these folders permanently to your Matlab path can be found in the Matlab documentation.
+It is recommended to add the \texttt{vbRoot/} folder and the subfolders
+\texttt{Tools}, \texttt{HMMcore/}, and \texttt{VB3/} to the Matlab
+path. This can be done by executing the matlab script
+\texttt{vbSPTstart} in the folder \texttt{vbRoot/}. If it is not added
+to the Matlab path it has to be called from the same folder or with
+its path. Instructions for how to add these folders permanently to
+your Matlab path can be found in the Matlab documentation.
 
-It is also recommended to start using a static folder structure for the analysis to keep it simple and benefit from the use of relative paths (used in the GUI). The proposed structure consist of two subfolders (\textit{e.g.} 'InputData' and 'Results') located in a folder containing the runinputfiles that defines the analysis parameters.
+It is also recommended to start using a static folder structure for
+the analysis to keep it simple and benefit from the use of relative
+paths (used in the GUI). The proposed structure consist of two
+subfolders (\textit{e.g.} \texttt{InputData/} and \texttt{Results/})
+located in a folder containing the runinputfiles that defines the
+analysis parameters.
 
 \subsection{Test runs}
 \label{Sec:testRun}
