@@ -1,14 +1,17 @@
 % An example script of putting together indata in different ways that should 
 % be passed on as arguments to 'VB3_generateSynthData'.
 %
-%
 % F.P. 2012-07-04
-%
+
 % Change log:
-%
+% M.L. 2012-10-25: changed to exponential distribution, and added a line to
+% write the results to disk (testdata_VB3_HMM.mat)
 
-
+clear
 %% Define misc parameters
+
+% file in which to save the data
+savefile='testdata_VB3_HMM.mat';
 
 % Choose if to use parallel computing
 do_parallel = true;
@@ -26,13 +29,17 @@ cylRadius = 400  % nm
 % Define trajectory parameters
 numTraj = 500
 avTrajLength = 10
-stdTrajLength = 5
 shortestTraj = 2
 
-% generate trajectory lengths
-trajLengths = ceil(ones(1,numTraj) .* avTrajLength + stdTrajLength .* randn(1, numTraj));
-trajLengths(find(trajLengths <= shortestTraj)) = [];
-
+% generate trajectories with exponential length distribution and minimum
+% length shortestTraj
+trajLengths = zeros(1,numTraj);
+for k=1:numTraj
+   while(trajLengths(k)<shortestTraj)
+      trajLengths(k)=ceil(-avTrajLength*log(1-rand));
+   end
+end
+clear k
 % one can also insert an arbitrary vector of trajectory lengths here as well.
 
 %% Define states (max 5)
@@ -117,4 +124,5 @@ else
 
 end
 
+save(savefile)
 
