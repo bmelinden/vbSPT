@@ -82,9 +82,10 @@ It should be noted that the \texttt{runinput\_short.m} runinputfile
 specifies an analysis of the data that actually ignores a large part
 of the trajectories, by having a minimum trajectory length of 7.  A
 larger analysis, that could take 30~min and 1~h on a laptop, can be
-started by running \texttt{VB3\_HMManalysis('runinput.m')}. However,
-due to the small amount of data in the example data sets, one cannot
-expect splendid numerical agreement with the input parameters.
+started by running
+\texttt{R=VB3\_HMManalysis('runinput\_normal.m')}. However, due to the
+small amount of data in the example data sets, one cannot expect
+splendid numerical agreement with the input parameters.
 
 \subsection{Analysis input}
 The analysis takes two kinds of input:
@@ -160,5 +161,21 @@ running \texttt{help scriptname} from the Matlab prompt.
   therefore be modified prior to running this script.
 \end{itemize}
 
+\subsection{A note on units}
+The testdata as well as the real data analyzed in the original paper,
+measured lengths in nm and time in seconds, and hence we divide
+diffusion constants by $10^6$ to convert them to the more convenient
+units of \dc. The GUI allows the user some choice in specifying what
+units to use, and then writes the runinput file accordingly.
+
+The analysis software in itself does not know about units however, and
+will analyze data in arbitrary units in a consistent manner.  The unit
+of time is specified in the \textbf{timestep} parameter of the
+runinput file (see next section), while the length unit is set by the
+data. Hence, the user must make sure that diffusion constants in the
+runinput file (for initial guesses and priors) are given in the same
+unit system.
+ 
 \subsection{More information}
-For more information about any .m file, run \texttt{help filename} in the Matlab prompt, where filename should start with 'VB3\_'.
+For more information about any .m file, run \texttt{help filename} in
+the Matlab prompt, where filename should start with 'VB3\_'.
