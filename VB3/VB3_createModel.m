@@ -1,7 +1,7 @@
 function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % 
-% create a VB3 model from parameters and strength. The function either
+% Creates a VB3 model from parameters and strength. The function either
 % returns an M-field, or (if an input model W0 is given), adds the M-field
 % to an input model. The model parameters are chosen so that the
 % vatiational mean values coincide with the input parameters. This is good
@@ -20,6 +20,32 @@ function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % dt : data timestep (default=1, which means that one can omit dt and input
 %      D*dt for the diffusion constants directly)
 
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% VB3_createModel, creates a VB3 model from parameters and strengths.
+% =========================================================================
+% 
+% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% 
+% E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
+%
+%  Additional permission under GNU GPL version 3 section 7
+%  
+%  If you modify this Program, or any covered work, by linking or combining it
+%  with Matlab or any Matlab toolbox, the licensors of this Program grant you 
+%  additional permission to convey the resulting work.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
 
 %% check input parameters and size compatibility
 if(exist('dt','var') && ~isempty(dt) && length(dt)==1 && dt>0)

@@ -28,6 +28,12 @@ function VB3_displayHMMmodel(runinput)
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
 % Public License for more details.
 %
+%  Additional permission under GNU GPL version 3 section 7
+%  
+%  If you modify this Program, or any covered work, by linking or combining it
+%  with Matlab or any Matlab toolbox, the licensors of this Program grant you 
+%  additional permission to convey the resulting work.
+%
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
@@ -41,8 +47,20 @@ modelSize = 0;
 
 %% Load input
 
-if exists('runinput', 'var')
+if(nargin==0)
+    clear all
     
+    % Get filename and path with "uigetfile"
+    [filename, pathname] = uigetfile({'*.mat'}, 'Select mat file');
+    if ( filename == 0 )
+        disp('Error! No (or wrong) file selected!')
+        return
+    end
+    
+    % Load the mat file
+    full_filename = [ pathname, filename ];
+    load(full_filename);
+else
     % if an existing file, generate options structure
     if(isstr(runinput) && exist(runinput)==2)
         runinputfile = runinput;
@@ -59,19 +77,6 @@ if exists('runinput', 'var')
     
     filename = options.outputfile;
     load(filename);
-
-else
-        
-    % Get filename and path with "uigetfile"
-    [filename, pathname] = uigetfile({'*.mat'}, 'Select mat file');
-    if ( filename == 0 )
-        disp('Error! No (or wrong) file selected!')
-        return
-    end
-    
-    % Load the mat file
-    full_filename = [ pathname, filename ];
-    load(full_filename);
 end
 
 %% Make backwards compatible
@@ -92,6 +97,11 @@ end
 %% Read in parameters given prior to HMM
 timeStep = options.timestep        
 dim = options.dim
+if options.init_D(1)>100
+    LscaleFactor = 1e6;
+else
+    LscaleFactor = 1;
+end
 
 %% Read in trajectory lengths
 trajL = Wbest.T;
@@ -101,8 +111,8 @@ avTrajL = mean(trajL);
 if modelSize == 0;
     numStates = Wbest.N     % Number of states
     
-    [diffCoeff, ind] = sort(Wbest.est.DdtMean./timeStep/(10^6)); % Mean diff. coeff in um^2/s provided the data is in nm
-    diffCoeffStd = Wbest.est.Ddtstd(ind)./timeStep/(10^6);
+    [diffCoeff, ind] = sort(Wbest.est.DdtMean./timeStep/LscaleFactor); % Mean diff. coeff in um^2/s provided the data is in nm
+    diffCoeffStd = Wbest.est.Ddtstd(ind)./timeStep/LscaleFactor;
     
     occTot = Wbest.est.Ptot(ind);       % Total occupation percentage
     dwellTime = Wbest.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state
@@ -114,8 +124,8 @@ if modelSize == 0;
 elseif exist('WbestN', 'var') & modelSize<=length(WbestN)
     numStates = WbestN{modelSize}.N;
     
-    [diffCoeff, ind] = sort(WbestN{modelSize}.est.DdtMean./timeStep/(10^6)); % Mean diff. coeff in um^2/s provided the data is in nm
-    diffCoeffStd = WbestN{modelSize}.est.Ddtstd(ind)./timeStep/(10^6);
+    [diffCoeff, ind] = sort(WbestN{modelSize}.est.DdtMean./timeStep/LscaleFactor); % Mean diff. coeff in um^2/s provided the data is in nm
+    diffCoeffStd = WbestN{modelSize}.est.Ddtstd(ind)./timeStep/LscaleFactor;
     
     occTot = WbestN{modelSize}.est.Ptot(ind);       % Total occupation percentage
     dwellTime = WbestN{modelSize}.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state

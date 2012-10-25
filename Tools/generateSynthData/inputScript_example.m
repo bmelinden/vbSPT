@@ -33,11 +33,18 @@ if ~do_single
     avTrajLength = 10;
     shortestTraj = 2;
     
-    % generate trajectory lengths
-    trajLengths = ceil(exprnd(ones(1, numTraj).*avTrajLength));
-    trajLengths(find(trajLengths < shortestTraj)) = [];
+    % generate trajectories with exponential length distribution and minimum
+    % length shortestTraj
+    trajLengths = zeros(1,numTraj);
+    for k=1:numTraj
+        while(trajLengths(k)<shortestTraj)
+            trajLengths(k)=ceil(-avTrajLength*log(1-rand));
+        end
+    end
+    clear k
     
     % one can also insert an arbitrary vector of trajectory lengths here as well.
+    %%%%%%%%%%%%%%%%
 else
     trajLengths = [500000];
 end

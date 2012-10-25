@@ -1,7 +1,7 @@
 % Wrapper script for generating synthetic data with space dependent
 % diffusion constant. Will overwrite results by name savename 
 
-M.L. 2012-09-17
+
 
 %% simulation parameters
 L=2000;

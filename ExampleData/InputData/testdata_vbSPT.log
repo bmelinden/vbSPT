@@ -1,0 +1,106 @@
+
+runs =
+
+     1
+
+
+do_steadystate =
+
+     1
+
+
+do_parallel =
+
+     1
+
+
+do_single =
+
+     0
+
+
+CylinderL =
+
+        2000
+
+
+Radius =
+
+   400
+
+
+timestep =
+
+    0.0030
+
+
+stepSize =
+
+     5
+
+
+locAccuracy =
+
+    20
+
+
+numTraj =
+
+   500
+
+
+avTrajLength =
+
+   11.1260
+
+
+shortestTraj =
+
+     2
+
+
+longestTraj =
+
+    53
+
+
+Dapp =
+
+     1000000     3000000
+
+
+occProb =
+
+    0.6667    0.3333
+
+Dwelltimes after converted from transRate to transMat using expm [timestep^-1]:
+
+dwellTimes =
+
+   23.7560   11.8780
+
+transMat (transition probabilities) [timestep^-1]:
+
+transMat =
+
+     0
+
+transRate after conversion from transMat [s^-1]:
+
+transRate =
+
+   -15    15
+    30   -30
+
+transMat after converted back using expm (transition probabilities) [timestep^-1]:
+
+transMat2 =
+
+    0.9579    0.0421
+    0.0842    0.9158
+
+Starting matlabpool using the 'local' configuration ... connected to 2 labs.
+Run 1
+Elapsed time is 89.659262 seconds.
+Sending a stop signal to all the labs ... stopped.
+Finished generating synthetic data in 1.6108 min.

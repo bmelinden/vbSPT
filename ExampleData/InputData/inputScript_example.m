@@ -3,15 +3,15 @@
 %
 % F.P. 2012-07-04
 
-% Change log:
-% M.L. 2012-10-25: changed to exponential distribution, and added a line to
-% write the results to disk (testdata_VB3_HMM.mat)
 
 clear
 %% Define misc parameters
 
 % file in which to save the data
-savefile='testdata_VB3_HMM.mat';
+savefile='testdata_vbSPT.mat';
+
+% Choose how many runs to do
+runs = 1;
 
 % Choose if to use parallel computing
 do_parallel = true;
@@ -19,8 +19,11 @@ do_parallel = true;
 % Define timestep
 timestep = 0.003  % s
 
+% Define spatial discretization step
+stepSize = 5; % nm
+
 % Define localization accuracy
-locAccuracy = 0.020 % um
+locAccuracy = 20; % nm
 
 % Define cell geometry parameters
 cylL = 2000 % nm
@@ -42,19 +45,20 @@ end
 clear k
 % one can also insert an arbitrary vector of trajectory lengths here as well.
 
-%% Define states (max 5)
+%% Define states (max 6)
 
 % Occupancy:
-occProb = [];  % This setting will make sure a steady state occupation is used.
+occProb = [];  % Leaving this setting as '[]' will ensure a steady state occupation.
 
 % Diffusion coeffs:
-D1 = 1.0      % um2/s
-D2 = 3.0    % um2/s
-D3 = 0      % um2/s
-D4 = 0      % um2/s
-D5 = 0      % um2/s
-D = [D1 D2 D3 D4 D5];  % um2/s
-clear D1 D2 D3 D4 D5
+D1 = 1.0;      % um2/s
+D2 = 3.0;    % um2/s
+D3 = 0;      % um2/s
+D4 = 0;      % um2/s
+D5 = 0;      % um2/s
+D6 = 0;      % um2/s
+D = [D1 D2 D3 D4 D5 D6];  % um2/s
+clear D1 D2 D3 D4 D5 D6
 D(find(D==0)) = [];
 
 if ~isempty(occProb) && length(D)~=length(occProb)
@@ -73,56 +77,71 @@ end
 % or by writing up transition rates as below.
 
 % Transition rates:
-k12 = 15     % s^-1 
-k13 = 0     % s^-1
-k14 = 0     % s^-1 
-k15 = 0     % s^-1 
-k21 = 30     % s^-1 
-k23 = 0     % s^-1 
-k24 = 0     % s^-1 
-k25 = 0     % s^-1
-k31 = 0     % s^-1 
-k32 = 0     % s^-1
-k34 = 0     % s^-1 
-k35 = 0     % s^-1
-k41 = 0     % s^-1 
-k42 = 0     % s^-1
-k43 = 0     % s^-1 
-k45 = 0     % s^-1
-k51 = 0     % s^-1 
-k52 = 0     % s^-1
-k53 = 0     % s^-1 
-k54 = 0     % s^-1
+k12 = 15;     % s^-1 
+k13 = 0;     % s^-1
+k14 = 0;     % s^-1 
+k15 = 0;     % s^-1 
+k16 = 0;     % s^-1 
+k21 = 30;     % s^-1 
+k23 = 0;     % s^-1 
+k24 = 0;     % s^-1 
+k25 = 0;     % s^-1
+k26 = 0;     % s^-1 
+k31 = 0;     % s^-1 
+k32 = 0;     % s^-1
+k34 = 0;     % s^-1 
+k35 = 0;     % s^-1
+k36 = 0;     % s^-1 
+k41 = 0;     % s^-1 
+k42 = 0;     % s^-1
+k43 = 0;     % s^-1 
+k45 = 0;     % s^-1
+k46 = 0;     % s^-1 
+k51 = 0;     % s^-1 
+k52 = 0;     % s^-1
+k53 = 0;     % s^-1 
+k54 = 0;     % s^-1
+k56 = 0;     % s^-1
+k61 = 0;     % s^-1 
+k62 = 0;     % s^-1
+k63 = 0;     % s^-1 
+k64 = 0;     % s^-1
+k65 = 0;     % s^-1
 
 
-k = [k12 k13 k14 k15; k21 k23 k24 k25; k31 k32 k34 k35; k41 k42 k43 k45; k51 k52 k53 k54]; % s^-1 
+transRate = [0 k12 k13 k14 k15 k16;...
+    k21 0 k23 k24 k25 k26;...
+    k31 k32 0 k34 k35 k36;...
+    k41 k42 k43 0 k45 k46;...
+    k51 k52 k53 k54 0 k56;...
+    k61 k62 k63 k64 k65 0]; % s^-1 
+
+% fix diagonal so each state sums up to 0
+transRate(~~eye(size(transRate))) = -sum(transRate, 2);
+
 % Make into transitionprobability / timestep
-k = k.*timestep;
-
-%make transition matrix
-transMat = [1-sum(k(1,:)), k(1, 1:4);
-            k(2, 1), 1-sum(k(2,:)), k(2, 2:4);
-            k(3, 1:2), 1-sum(k(3,:)), k(3, 3:4);
-            k(4, 1:3), 1-sum(k(4,:)), k(4, 4);
-            k(4, 1:4), 1-sum(k(5,:))];
+transMat = expm(transRate.*timestep);
            
-clear k1* k2* k3* k4* k5*
+clear k1* k2* k3* k4* k5* k6*
 
-% Remove the tranistions belonging to states that should not exist
+% Remove the transitions belonging to states that should not exist
+transRate(length(D)+1:end, :) = [];
+transRate(:, length(D)+1:end) = [];
 transMat(length(D)+1:end, :) = [];
 transMat(:, length(D)+1:end) = [];
+
 
 
 %% Call the main function which generates the trajectories
 
 if do_parallel
-finalTraj = VB3_generateSynthData('timestep', timestep, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-    'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
+    finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+       'trajLengths', trajLengths, 'Dapp', D, 'transRate', transRate, 'occProb', occProb, 'locAccuracy', locAccuracy, 'parallel');
 else
-    finalTraj = VB3_generateSynthData('timestep', timestep, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
-    'trajLengths', trajLengths, 'Dapp', D, 'transMat', transMat, 'occProb', occProb, 'locAccuracy', locAccuracy);
-
+    finalTraj = VB3_generateSynthData('runs', runs, 'timestep', timestep, 'stepSize', stepSize, 'cylinderLength', cylL, 'cylinderRadius', cylRadius,...
+       'trajLengths', trajLengths, 'Dapp', D, 'transRate', transRate, 'occProb', occProb, 'locAccuracy', locAccuracy);
 end
+
 
 save(savefile)
 

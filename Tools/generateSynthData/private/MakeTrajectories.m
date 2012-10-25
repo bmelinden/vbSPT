@@ -3,9 +3,9 @@ function [data, trajLengths] = MakeTrajectories(CellL, CellR, diffCoeff, transRa
 %% [data, trajLengths] = MakeTrajectories(CellL, CellR, diffCoeff, transRate, trajLengths, timeStep, stepSize, locAccuracy, occProb)
 %
 % Starts trajectories in states according to the occupancy probability and calls
-% 'simCellHMM' to generate the single trajectories.
+% 'simCell' to generate the single trajectories.
 %
-% F.P. 2012-04-25
+
 
 %% initiate
 

@@ -18,7 +18,13 @@
 % This program is distributed in the hope that it will be useful, but
 % WITHOUT ANY WARRANTY; without even the implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-% Public License for more details.
+% % Public License for more details.
+% 
+% Additional permission under GNU GPL version 3 section 7
+% 
+% If you modify this Program, or any covered work, by linking or combining it
+% with Matlab or any Matlab toolbox, the licensors of this Program grant you 
+% additional permission to convey the resulting work.
 %
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
@@ -591,7 +597,7 @@ uicontrol(...	% Popup meny
     'FontName', varargin{end} ,...
     'FontSize',varargin{end-1},...
     'Callback',{},...
-    'Enable', 'off',...
+    'Enable', 'on',...
     'Position',[x1+2*ew y1 1.5*ew lh]);
 
 % Timestep
@@ -874,7 +880,7 @@ end
 function LoadButton(~,varargin)
 
 LoadData;
-ShowResult('fromLoadButton');
+%ShowResult('fromLoadButton');
 
 end
 
@@ -889,7 +895,7 @@ function InputButton(~,varargin)
 % Get filename and path with "uigetfile"
 [filename, pathname] = uigetfile({'*.mat'}, 'Select struct file (.mat)');
 if ( filename == 0 )
-    warndlg('VBgui : No file selected!');
+    warndlg('vbSPTgui : No file selected!');
     return
 end
 
@@ -909,7 +915,7 @@ if strcmp(scriptFolder, '-')
 elseif ~strcmp(input_full_filename, relPath)
     set(findobj('Tag','mR_SP_inputname'),'String',relPath);
 else
-    warndlg('VBgui : The input and output files must be located in a subfolder to the script. Try rechoosing the input and outputfiles.');
+    warndlg('vbSPTgui : The input and output files must be located in a subfolder to the script. Try rechoosing the input and outputfiles.');
     return
 end
 
@@ -933,7 +939,7 @@ else
 end
 
 if ( filename == 0 )
-    warndlg('VBgui : No file selected!');
+    warndlg('vbSPTgui : No file selected!');
     return
 end
 
@@ -948,7 +954,7 @@ if strcmp(scriptFolder, '-')
 elseif ~strcmp(output_full_filename, relPath)
     set(findobj('Tag','mR_SP_outputname'),'String',relPath);
 else
-    warndlg('VBgui : The input and output files must be located in a subfolder to the script. Try rechoosing the input and outputfiles.');
+    warndlg('vbSPTgui : The input and output files must be located in a subfolder to the script. Try rechoosing the input and outputfiles.');
     return
 end
 
@@ -962,7 +968,7 @@ trajfield = get(findobj('Tag','mR_SP_trajfield_2'),'String');
 trajfield = trajfield{get(findobj('Tag','mR_SP_trajfield_2'),'Value')};
 
 if strcmp(trajfield, '-') || strcmp(filename, '-')
-    warndlg('VBgui : Input file and/or trajectory field has not been chosen yet.');
+    warndlg('vbSPTgui : Input file and/or trajectory field has not been chosen yet.');
     return;
 else
     % Put in the Job ID in the GUI.
@@ -990,7 +996,11 @@ msgbox(sprintf(...
 ['\nvbSPT, vbSPTgui.m \n\n' 'Copyright (C) 2012 Martin Linden and Fredrik Persson \n\n' ...
  'This program comes with ABSOLUTELY NO WARRANTY. \n' ...
  'This is free software, and you are welcome to redistribute it \n' ...
- 'under certain conditions. See license.txt for details. \n\n ']));
+ 'under certain conditions. See license.txt for details. \n\n '...
+ 'Additional permission under GNU GPL version 3 section 7 \n\n'...
+ 'If you modify this Program, or any covered work, by linking or combining \n'...
+ 'it with Matlab or any Matlab toolbox, the licensors of this Program grant \n'...
+ 'you additional permission to convey the resulting work. \n\n']));
 
 end
 
@@ -1014,7 +1024,7 @@ else
 end
 
 if filename == 0
-    warndlg('VBgui : No file selected!');
+    warndlg('vbSPTgui : No file selected!');
     return
 end
 
@@ -1033,14 +1043,14 @@ scriptFolder = get(findobj('Tag','mR_PP_scriptFolder_2'),'String');
 if totPath(1) == '.' &&  ~strcmp(scriptFolder, '-')
     totPath = strrep(totPath, ['.' filesep], get(findobj('Tag','mR_PP_scriptFolder_2'),'String'));    
 elseif totPath(1) == '.' &&  strcmp(scriptFolder, '-')
-    warndlg('VBgui : Relative paths without defined script folder.');
+    warndlg('vbSPTgui : Relative paths without defined script folder.');
     return 
 end
 
 relPath = strrep(totPath, pathname, ['.' filesep]);
 
 if strcmp(relPath, totPath)
-    warndlg('VBgui : The input and output files must be located in a subfolder to the script.');
+    warndlg('vbSPTgui : The input and output files must be located in a subfolder to the script.');
     return
 else
     set(findobj('Tag','mR_SP_inputname'),'String', relPath);
@@ -1052,14 +1062,14 @@ if totPath(1) == '.' &&  ~strcmp(scriptFolder, '-')
     totPath = strrep(totPath, ['.' filesep], get(findobj('Tag','mR_PP_scriptFolder_2'),'String'));
     relPath = strrep(totPath, pathname, ['.' filesep]);
 elseif totPath(1) == '.' &&  strcmp(scriptFolder, '-')
-    warndlg('VBgui : Relative paths without defined script folder.');
+    warndlg('vbSPTgui : Relative paths without defined script folder.');
     return
 end
 
 relPath = strrep(totPath, pathname, ['.' filesep]);
 
 if strcmp(relPath, totPath)
-    warndlg('VBgui : The input and output files must be located in a subfolder to the script.');
+    warndlg('vbSPTgui : The input and output files must be located in a subfolder to the script.');
     return
 else
     set(findobj('Tag','mR_SP_outputname'),'String', relPath);
@@ -1070,11 +1080,22 @@ end
 % prior_D = sqrt(str2num(get(findobj('Tag','mR_PP_diffRange_2'),'String'))*str2num(get(findobj('Tag','mR_PP_diffRange_4'),'String')))*1e6;        % in nm^2/s
 % prior_tD = sqrt(str2num(get(findobj('Tag','mR_PP_dwelltimeRange_2'),'String'))*str2num(get(findobj('Tag','mR_PP_dwelltimeRange_4'),'String'))); % in seconds
 
+% Choose lengthscale of the input data
+val = get(findobj('Tag', 'mR_PP_lUnit_2'),'Value');
+if val == 1
+    LscaleFactor = '1e6';
+elseif val == 2
+    LscaleFactor = num2str(1);
+else
+    warndlg('vbSPTgui : The length scale factor is causing trouble.');
+    return
+end
+
 % Get a fileID to write to the file. Will overwrite any existing file...
 fID = fopen(filename, 'w');
 
 if ~(str2num(get(findobj('Tag','mR_PP_dwelltimeRange_2'),'String')) > 1)
-    warndlg('VBgui : To low value on the lower dwelltime initial guess (<= 1) ! Value reset to 2');
+    warndlg('vbSPTgui : To low value on the lower dwelltime initial guess (<= 1) ! Value reset to 2');
     set(findobj('Tag','mR_PP_dwelltimeRange_2'),'String', '2');
 end
 
@@ -1083,7 +1104,7 @@ field = get(findobj('Tag','mR_SP_trajfield_2'),'String');
 field = field{get(findobj('Tag','mR_SP_trajfield_2'),'Value')};
 
 fprintf(fID, '%s\r\n',...
-    '%% VB-HMM analysis parameter file generated by VBgui %%',...
+    '%% VB-HMM analysis parameter file generated by vbSPTgui %%',...
     '',...
     '% Fredrik Persson & Martin Linden 2012-06-13',...
     '',...
@@ -1108,7 +1129,7 @@ fprintf(fID, '%s\r\n',...
     ['jobID = ', '''', get(findobj('Tag','mR_PP_jobID_2'),'String'), '''', ';'],...
     '',...
     '% Data properties',...
-    ['timestep = ', get(findobj('Tag','mR_PP_timestep_2'),'String'), ';'],...
+    ['timestep = ', get(findobj('Tag','mR_PP_timestep_2'),'String'), ';     % in [s]'],...
     ['dim = ', num2str(get(findobj('Tag','mR_PP_dim_2'),'Value')), ';'],...
     ['trjLmin = ', get(findobj('Tag','mR_SP_minTraj_2'),'String'), ';'],...
     '',...
@@ -1119,7 +1140,7 @@ fprintf(fID, '%s\r\n',...
     '% Evaluate extra estimates including Viterbi paths',...
     ['stateEstimate = ', num2str(get(findobj('Tag','mR_SP_viterbi_1'),'Value')), ';'],...
     '',...
-    'maxIter = [];    % maximum number of VB iterations ([]: use default values)',...
+    'maxIter = [];    % maximum number of VB iterations ([]: use default values).',...
     'relTolF = 1e-8;  % convergence criterion for relative change in likelihood bound.',...
     'tolPar = [];     % convergence criterion for M-step parameters (leave non-strict).',...
     '',...
@@ -1128,18 +1149,18 @@ fprintf(fID, '%s\r\n',...
     ['fullBootstrap = ', num2str(get(findobj('Tag','mR_SP_fullBootstrap_1'),'Value')), ';'],...
     '',...
     '% Limits for initial conditions',...
-    ['init_D = [', get(findobj('Tag','mR_PP_diffRange_2'),'String'), ', ', get(findobj('Tag','mR_PP_diffRange_4'),'String'), ']*1e6;   % interval for diffusion constant initial guess in nm^2/s.'],...
-    ['init_tD = [', get(findobj('Tag','mR_PP_dwelltimeRange_2'),'String'), ', ', get(findobj('Tag','mR_PP_dwelltimeRange_4'),'String'), ']*timestep;     % interval for mean dwell time initial guess in s.'],...
+    ['init_D = [', get(findobj('Tag','mR_PP_diffRange_2'),'String'), ', ', get(findobj('Tag','mR_PP_diffRange_4'),'String'), ']*', LscaleFactor, ';   % interval for diffusion constant initial guess [length^2/time] in same length units as the input data.'],...
+    ['init_tD = [', get(findobj('Tag','mR_PP_dwelltimeRange_2'),'String'), ', ', get(findobj('Tag','mR_PP_dwelltimeRange_4'),'String'), ']*timestep;     % interval for mean dwell time initial guess in [s].'],...
     '% It is recommended to keep the initial tD guesses on the lower end of the expected spectrum.',...
     '',...
     '% Prior distributions',...
     '% The priors are generated by taking the geometrical average of the initial guess range.',...
-    '% units: same time units as timestep, same length unit as input data',...
-    'prior_piStrength = 5;  % prior strength of initial state distribution (assumed uniform)',...
-    'prior_D = 1e6;         % prior diffusion constant in nm^2/s',...
-    'prior_Dstrength = 5;   % strength of diffusion constant prior, number of pseudocounts (positive)',...
-    'prior_tD = 10*timestep;      % prior dwell time in seconds',...
-    'prior_tDstrength = 2*prior_tD/timestep;  % transition rate strength (number of pseudocounts). Recommended to be at least 2*prior_tD/timestep',...
+    '% units: same time units as timestep, same length unit as input data.',...
+    'prior_piStrength = 5;  % prior strength of initial state distribution (assumed uniform) in pseudocounts.',...
+    ['prior_D = ', LscaleFactor, ';         % prior diffusion constant [length^2/time] in same length units as the input data.'],...
+    'prior_Dstrength = 5;   % strength of diffusion constant prior, number of pseudocounts (positive).',...
+    'prior_tD = 10*timestep;      % prior dwell time in [s].',...
+    'prior_tDstrength = 2*prior_tD/timestep;  % transition rate strength (number of pseudocounts). Recommended to be at least 2*prior_tD/timestep.',...
     '');
 
 fclose(fID);
@@ -1157,7 +1178,7 @@ function LoadData(varargin)
 % Get filename and path with "uigetfile"
 [filename, pathname] = uigetfile({'*.m'}, 'Select script file (.m)');
 if ( filename == 0 )
-     warndlg('VBgui : No file selected!');
+     warndlg('vbSPTgui : No file selected!');
     return
 end
 
@@ -1193,7 +1214,7 @@ try
     prior_tDstrength;
 
 catch err
-    warndlg(['VBgui : ' filename ' does not appear to be a valid runinputfile with all required variables, aborting.']);
+    warndlg(['vbSPTgui : ' filename ' does not appear to be a valid runinputfile with all required variables, aborting.']);
     return;
 end
 
@@ -1209,7 +1230,7 @@ try
     fields = {vars.name};
     fieldNum = find(ismember(fields, trajectoryfield)==1);
 catch err
-    warndlg(['VBgui : ' inputfilename ' could not be found, aborting.']);
+    warndlg(['vbSPTgui : ' inputfilename ' could not be found, aborting.']);
     return;
 end
     
@@ -1234,10 +1255,17 @@ set(findobj('Tag', 'mR_PP_dim_2'), 'Value', dim);
 set(findobj('Tag', 'mR_PP_jobID_2'), 'String', jobID);
 set(findobj('Tag', 'mR_PP_scriptName_2'), 'String', filename);
 set(findobj('Tag', 'mR_PP_scriptFolder_2'), 'String', pathname);
-set(findobj('Tag', 'mR_PP_diffRange_2'), 'String', num2str(init_D(1)/1e6));
-set(findobj('Tag', 'mR_PP_diffRange_4'), 'String', num2str(init_D(2)/1e6));
-set(findobj('Tag', 'mR_PP_dwelltimeRange_2'), 'String', num2str(init_tD(1)));
-set(findobj('Tag', 'mR_PP_dwelltimeRange_4'), 'String', num2str(init_tD(2)));
+if init_D(1)>100
+    set(findobj('Tag', 'mR_PP_diffRange_2'), 'String', num2str(init_D(1)/1e6));
+    set(findobj('Tag', 'mR_PP_diffRange_4'), 'String', num2str(init_D(2)/1e6));
+    set(findobj('Tag', 'mR_PP_lUnit_2'),'Value', 1);
+else
+    set(findobj('Tag', 'mR_PP_diffRange_2'), 'String', num2str(init_D(1)));
+    set(findobj('Tag', 'mR_PP_diffRange_4'), 'String', num2str(init_D(2)));
+    set(findobj('Tag', 'mR_PP_lUnit_2'),'Value', 2);
+end
+set(findobj('Tag', 'mR_PP_dwelltimeRange_2'), 'String', num2str(init_tD(1)/timestep));
+set(findobj('Tag', 'mR_PP_dwelltimeRange_4'), 'String', num2str(init_tD(2)/timestep));
 
 
 clear all;
@@ -1256,13 +1284,13 @@ oldFold = cd(pathname);
 opt = VB3_getOptions(filename);
 try
     VB3_getResult(opt);
-    displayHMMmodel(opt)
+    VB3_displayHMMmodel(opt)
 catch err
     % ignore if called when loading new data
     if nargin>0
         return
     else
-        warndlg(['VBgui : ' opt.outputfile ' could not be found, aborting.']);
+        warndlg(['vbSPTgui : ' opt.outputfile ' could not be found, aborting.']);
         return;
     end
 end
