@@ -48,7 +48,7 @@ modelSize = 0;
 %% Load input
 
 if(nargin==0)
-    clear all
+%     clear all
     
     % Get filename and path with "uigetfile"
     [filename, pathname] = uigetfile({'*.mat'}, 'Select mat file');

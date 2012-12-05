@@ -60,6 +60,7 @@ end
 % extract the relevant columns
 X=cell(1,length(foo.(opt.trajectoryfield)));
 k=0;
+
 for m=1:length(foo.(opt.trajectoryfield))
     if(size(foo.(opt.trajectoryfield){m}(:,1:opt.dim),1)>=Lmin)
         k=k+1;

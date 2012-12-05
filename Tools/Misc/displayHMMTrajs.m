@@ -8,13 +8,13 @@
 clear all
 
 %Define variables
-start = 2000;
-stop =  3000;
-minTraj = 7;
+start = 0;
+stop =  0;
+minTraj = 1;
 discrete = 1;  % 0/1
 viterbi = 0;   % 0/1
-bgTraj = 1;    % 0/1
-trueSimData = 1; % 0/1
+bgTraj = 0;    % 0/1
+trueSimData = 0; % 0/1
 
 % Get filename and path with "uigetfile"
 [filename, pathname] = uigetfile({'*.mat'}, 'Select HMM .mat file');
@@ -31,7 +31,7 @@ a = load(full_filename);
 D_states = a.Wbest.est.DdtMean/a.options.timestep;
 
 % Read in the trajectory data
-a.options.dim = 4;
+a.options.dim = 2;
 X = VB3_readData(a.options);
 
 hand = figure('Name','HMM analysis result');
