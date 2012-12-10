@@ -1,5 +1,5 @@
 function finalTraj=VB3_generateSynthData(varargin)
-%% finalTraj=VB3_generateSynthData(runinput, varargin)
+%% finalTraj=VB3_generateSynthData(varargin)
 %
 % Generates synthetic trajectory data in an E. coli like geometry (can be 
 % specified within this file) based on a HMM model.
@@ -89,53 +89,16 @@ diary on
 CylinderL = 2000; % nm (length of cylindrical part only)
 Radius = 400;  % nm    (spherical end caps, and cylinder radius)
 
-% %% Check input
-% % if an existing file, generate options structure
-% if(ischar(varargin{1}) && exist(varargin{1}, 'file')==2)
-%     runinputfile = varargin{1};
-%     opt=VB3_getOptions(runinputfile);
-%     disp(['Read runinput file ' runinputfile])
-%     runinputExists = true;
-%     % if an option struct, read in the runinputfilename
-% elseif(isstruct(varargin{1}))
-%     opt=varargin{1};
-%     runinputfile=opt.runinputfile;
-%     disp(['Read options structure based on runinput file ' runinputfile ])
-%     runinputExists = true;
-% else
-%     runinputExists = false;
-% end
-% 
-% %% Initiate variables
-% if runinputExists
-%     
-%     res=load(opt.outputfile, 'Wbest');
-%     
-%     Wbest = res.Wbest;
-%     clear res;
-%     
-%     % initiate options
-%     timestep = opt.timestep; % [s]
-%     locAccuracy = 0; %[nm]
-%     stepSize = 5; %[nm]
-%     transMat = Wbest.est.Amean; % [/timestep]
-%     occProb = Wbest.est.Ptot;
-%     Dapp = Wbest.est.DdtMean./timestep;
-%     if max(Dapp)<100    % if small assume its in um^2/s
-%         Dapp = Dapp*1e6;% convert to nm^2/s
-%     end
-%     trajLengths = Wbest.T;
-% else
-    % initiate options
-    timestep = 0; % [s]
-    stepSize = 5; %[nm]
-    locAccuracy = 0; %[nm]
-    transMat = 0; % [/timestep]
-    transRate = 0; % [/s]
-    occProb = 0;
-    Dapp = 0;
-    trajLengths = 0;
-% end
+% initiate options
+timestep = 0; % [s]
+stepSize = 5; %[nm]
+locAccuracy = 0; %[nm]
+transMat = 0; % [/timestep]
+transRate = 0; % [/s]
+occProb = 0;
+Dapp = 0;
+trajLengths = 0;
+
    
 runs = 1;
 do_steadystate = false;

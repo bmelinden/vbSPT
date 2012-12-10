@@ -1,13 +1,17 @@
 % Wrapper script for generating synthetic data with space dependent
-% diffusion constant. Will overwrite results by name savename 
+% diffusion constant. Will overwrite results by name 'savename'. 
 
 
 
 %% simulation parameters
+% Cell dimensions
 L=2000;
 R=400;
+% Sampling interval
 stepT=0.3e-3;
-N=1000;
+% trajectory lengths
+trajLengths=round(5-10*log(1-rand(1,100)));
+% Localization accuracy
 locAccuracy=0;
 
 savename = 'genData';
@@ -23,9 +27,6 @@ Dfun=@(x,y,z)(1e6*(1-0.9999*((x-L/2).^2/1e3^2+(y.^2+z.^2)/200^2<1)));
 
 % linearly changing:
 % Dfun=@(x,y,z)((1-0.99*(x/(L+R)))*1e6);
-
-% data set parameters
-trajLengths=round(5-10*log(1-rand(1,100)));
 
 
 %% simulate!

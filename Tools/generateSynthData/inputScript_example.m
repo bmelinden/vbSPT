@@ -1,7 +1,7 @@
 % An example script of putting together indata in different ways that should 
 % be passed on as arguments to 'VB3_generateSynthData'.
 %
-%
+
 
 
 %% Define misc parameters

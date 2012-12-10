@@ -7,7 +7,7 @@ function [finalTraj, trajL] = chopTrajExp_constStep(traj,trajLmean,trajLmin)
 %
 % Input:
 %
-% traj          : A trajectory array where each line corresponds to a
+% traj          : A trajectory cell array where each line corresponds to a
 %               position. Number of columns is arbitrary. 
 % trajLmean     : The mean of the exponential distribution that the 
 %               trajectories should be split into.

@@ -2,9 +2,11 @@ vbSPT is a program suite for analysis of single particle diffusion
 trajectories, where the diffusion constants switch randomly according
 to a discrete Markov process. The program runs on Matlab, but uses
 compiled C-code to speed up the most computer intensive loops.
+The latest version of the software as well as a forum for discussion and 
+questions can be found at 'sourceforge.net/projects/vbspt/'.
 
  ========================================================================= 
- Copyright (C) 2012 Martin Lindén and Fredrik Persson
+ Copyright (C) 2012 Martin Lind??n and Fredrik Persson
  
  E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
  =========================================================================
