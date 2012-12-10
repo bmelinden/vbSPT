@@ -3,16 +3,11 @@
 % from membrane bound ones: there are more cytoplasm per projected xy-area
 % in the middle of the cell, but more membrane area per projected area near
 % the edges. 
-%For the Hfq data with and without Rif, all states look cytoplasmic.
 %
-% M.L. 2012-04-26
 
 
 if(1) % read data
-    opt=VB3_getOptions('runinput_Exp3_120416_35iter');
-    %opt=VB3_getOptions('runinput_Exp2_120126_35iter');
-    opt=VB3_getOptions('runinput_All_120416_35iter.m');
-    opt=VB3_getOptions('runinput_All_Rif__120127');
+    opt=VB3_getOptions('runinput.m');
     opt2=opt;opt2.dim=2;
     X=VB3_readData(opt2);
     hmm=load(opt.savefile);
