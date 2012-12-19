@@ -8,3 +8,5 @@ addpath(genpath([dir0 filesep '.' filesep 'Tools']))
 addpath([dir0 filesep '.'])
 disp('Added local vbSPT paths')
 disp('---------------------')
+
+clear dir0
