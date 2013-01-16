@@ -10,9 +10,6 @@ questions can be found at 'sourceforge.net/projects/vbspt/'.
  
  E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
  =========================================================================
- The program is developed in the Elf lab at Uppsala University and the 
- Lindén lab at Stockholm University. Development is funded by ERC grants
- to Johan Elf and Wenner-Gren grants to Martin Lindén.
 
  This program is free software: you can redistribute it and/or modify it
  under the terms of the GNU General Public License as published by the
