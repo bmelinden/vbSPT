@@ -1,5 +1,5 @@
-function [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious)
-% [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious)
+function [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious,Nmax)
+% [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious,Nmax)
 % converts a state trajectory s into a list of sojourn states STATE, and a
 % list of dwell times DWELL.
 % dwell m occurred from index Dstart(m) to index Dend(m)
@@ -9,13 +9,15 @@ function [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious)
 % spurious : (optional) list of spurious states in the data. Dwells with spurious
 %            states are divided between the surrounding non-spurious
 %            states. Default: empty.
+% Nmax     : (optional) Specifies the number of states. If not given, then
+%            Nmax=max(s) is used.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % getDwellTRJ.m
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n, E-mail: bmelinden@gmail.com
+% Copyright (C) 2013 Martin Linden, E-mail: bmelinden@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This program is free software: you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the
@@ -71,6 +73,10 @@ DWELL=[];
 Dstart=1;
 Dend=[];
 N=max(s);
+if(exist('Nmax') && ~isempty(Nmax) && Nmax>N ) % enforce a higher number of states
+    N=Nmax;
+end
+    
 wA=zeros(N,N);
 for k=2:length(s)
     wA(s(k-1),s(k))=wA(s(k-1),s(k))+1;
