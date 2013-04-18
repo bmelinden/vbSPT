@@ -1,27 +1,45 @@
 We now derive the core elements of the variational algorithm for
 single trajectories, following earlier Variational Bayesian/Ensemble
 learning treatments of HMMs\cite{Bronson2010,Mackay1997,Beal2003}.  To
-start with, we will feed the model,
-Eqs. (\ref{eq:efactor1}-\ref{xmodel1}),
+make it easier to choose prior distributions however, we
+reparameterize the transition matrix to separate out dwell time
+distributions, and write
+\begin{equation}
+A_{ij}=\delta_{ij}a_i+(1-\delta_{ij})(1-a_i)B_{ij}=
+a_i^{\delta_{ij}}(1-a_i)^{1-\delta_{ij}}B_{ij}^{1-\delta_{ij}},
+\end{equation}
+with constraints
+\begin{equation}
+0\le a_j\le 1,\quad B_{ii}=0,\quad \sum_{j\ne i}B_{ij}=1.
+\end{equation}
+
+
+To start with, we will feed the model
+Eqs. (\ref{eq:efactor1}-\ref{xmodel1}), and with the new
+parameterization,
 \begin{multline}
-\tag{\ref{eq:efactor1}}
+\label{eq:efactor1b}
 p(\x_{1:T},s_{1:T-1},\vec{\gamma},\matris{A},\vec\pi|N)\\
 =p(\x_{1:T}|s_{1:T-1},\vec{\gamma})
-p(s_{1:T-1}|\matris{A},\vec\pi)p(\vec{\gamma}|N)p(\matris{A}|N)p(\vec\pi|N),
+p(s_{1:T-1}|\matris{B},\vec{a},\vec\pi)
+p(\vec{\gamma}|N)p(\matris{B}|N)p(\vec{a}|N)p(\vec\pi|N),
 \end{multline}
 \begin{align}
-\tag{\ref{smodel1}}
-  p(s_{1:T-1}|\matris{A},\vec{\pi})=&
+\label{smodel1b}
+  p(s_{1:T-1}|\matris{B},\vec a,\vec{\pi})=&
   \prod_{m=1}^N\pi_m^{\delta_{m,s_1}}
-  \prod_{t=1}^{T-1}\prod_{k,j=1}^N A_{kj}^{\delta_{k,s_t}\delta_{j,s_{t+1}}},\\
-    \tag{\ref{xmodel1}}
+  \prod_{t=1}^{T-1}\prod_{k,j=1}^N 
+  \left(a_k^{\delta_{kj}}(1-a_k)^{1-\delta_{kj}}
+  B_{kj}^{1-\delta_{kj}}\right)^{\delta_{k,s_t}\delta_{j,s_{t+1}}},\\
+    \label{xmodel1b}
     p(\x_{1:T}|s_{1:T-1},\vec\gamma)=&
     \prod_{t=1}^{T-1}\prod_{k=1}^N\left(
     \frac{\gamma_k}{\pi}\right)^{\frac d2\delta_{k,s_t}}
     e^{-\delta_{k,s_t}\gamma_k(\x_{t+1}-\x_t)^2}. 
 \end{align}
 into the mean-field machinery of Eqs.~\eqref{eq:update1}
-and \eqref{eq:update2} (with $\theta=\vec{\gamma},\matris{A},\vec{\pi}$,),
+and \eqref{eq:update2} (with
+$\theta=\vec{\gamma},\matris{B},\vec{a},\vec{\pi}$,),
 \begin{align}
   \ln q(\theta)=&-\ln Z_\theta+\ln p(\theta|N)
   +\mean{\ln p(x,s|\theta,N)}_{q(s)},\tag{\ref{eq:update1}}\\
@@ -37,27 +55,34 @@ and finally describe how to compute the lower bound $F$ after a
 completed E-step.
 
 \subsection{Parameters}
-We have three types of parameters,
-$\theta=(\vec\pi,\matris{A},\vec \gamma)$, and it will turn out that
+We have four types of parameters,
+$\theta=(\vec\pi,\matris{B},\vec a,\vec \gamma)$, and it will turn out that
 if we choose priors that factorize in a clever way,
 \begin{equation}\label{pfactorization}
-p(\theta|N)=p(\vec{\gamma},\vec{\pi},\matris{A}|N)=p(\vec\pi|N)\prod_jp(\gamma_j|N)p(A_{j,:}|N),
+p(\theta|N)=p(\vec{\gamma},\vec{\pi},\matris{A}|N)
+=p(\vec\pi|N)\prod_jp(\gamma_j|N)p(B_{j,:}|N)p(a_j|N),
 \end{equation}
-where $A_{j,:}$ means row $j$ of $\matris{A}$, then the variational
+where $B_{j,:}$ means row $j$ of $\matris{B}$, then the variational
 distributions factorize in the same way, which simplifies the
 computations. Hence, if we substitute factorized priors of this form,
-plus Eqs.~\eqref{smodel1} and \eqref{xmodel1}, into the parameter
+plus Eqs.~\eqref{smodel1b} and \eqref{xmodel1b}, into the parameter
 distribution equation, Eq.~\eqref{eq:update1}, we get the following
 variational distribution for the parameters:
 \begin{multline}\label{Maverage}
-  \ln q(\vec{\pi},\matris{A},\vec{\gamma})=
+  \ln q(\vec{\pi},\matris{B},\vec a,\vec{\gamma})=
   -\ln Z_\theta  
-    +\ln p(\matris{A}|N)+\ln p(\vec{\pi}|N)
-    +\mean{\ln p(s_{1:T-1}|\matris{A},\vec{\pi)}}_{q(s_{1:T-1})}\\
+    +\ln p(\matris{B}|N)+\ln p(\vec{a}|N)+\ln p(\vec{\pi}|N)\\
+    +\mean{\ln p(s_{1:T-1}|\matris{B},\vec a,\vec{\pi)}}_{q(s_{1:T-1})}
   +\ln p(\gamma|N)+\mean{\ln p(\x_{1:T}|s_{1:T-1},\vec{\gamma})}_{q(s_{1:T-1})}\\
-  =-\ln Z +\sum_{j=1}^N\Big[\mean{\delta_{j,s_1}}_{q(s_{1:T-1})}\ln\pi_j+\ln p(\pi_j)\Big]\\
+  =-\ln Z_\theta 
+  +\sum_{j=1}^N\Big[\mean{\delta_{j,s_1}}_{q(s_{1:T-1})}\ln\pi_j+\ln p(\pi_j)\Big]\\
   +\sum_{j=1}^N\sum_{t=1}^{T-2}\bigg(
-    \ln p(A_{j,:})+\sum_{k=1}^N\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s_{1:T-1})}\ln A_{j,k}
+  \ln p(B_{j,:})+\sum_{k=1}^N(1-\delta_{jk})
+  \mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s_{1:T-1})}\ln B_{jk}
+    \bigg)\\
+  +\sum_{j=1}^N\sum_{t=1}^{T-2}\bigg(\ln p(a_j)
+  +\sum_{k=1}^N\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s_{1:T-1})}
+  \Big(\delta_{jk}\ln a_j+(1-\delta_{jk})\ln (1-a_j)\Big)
     \bigg)\\%  -\ln p(\x_1)\\
   +\sum_{j=1}^N\Bigg[\sum_{t=1}^{T-1}
   \bigg(
@@ -66,65 +91,76 @@ variational distribution for the parameters:
   \bigg)+\ln p(\gamma_j)\Bigg].
 \end{multline}
 From this, we can read out the functional form of the variational
-distribution, which factorize in the same was as the prior. However, we must
-still choose prior distributions. We adopt a particularly simple form
-known as conjugate priors\cite{Mackay1997,Beal2003}, which enables
-a simple interpretation of the prior distribution in terms of
-fictitious 'pseudo'-observations.
+distribution, which factorize in the same was as the prior. We choose
+conjugate priors\cite{Mackay1997,Beal2003}, which enables a simple
+interpretation of the prior distribution in terms of fictitious
+'pseudo'-observations.
 
 \paragraph{Initial state and transition rates:}
-Following earlier work\cite{Mackay1997,Beal2003,Bronson2009}, we
-choose Dirichlet (a multivariate version of the $\beta$ distribution) priors for the initial state distribution and for
-each row of the transition rate matrix\cite{wiki:dirichlet}. This
-makes the variational distributions Dirichlet distributions as well
-(the Dirichlet distribution is its own conjugate). The Dirichlet
-density function, in this case for $\vec\pi$, is
+Following earlier
+work\cite{Mackay1997,Beal2003,Bronson2009,Persson2013}, we choose
+Dirichlet (a multivariate version of the beta
+distribution\cite{wiki:dirichlet}) priors for the initial state
+distribution and for each row of the transition matrix $\matris{B}$,
+and beta distributions for the elements of $\vec a$. This makes the
+variational distributions Dirichlet and beta distributions as well
+(they are their own conjugates). The Dirichlet density function, in
+this case for $\vec\pi$, is
 \begin{equation}\label{eq:p0pi}
-        q(\vec\pi)=\Dir(\vec\pi|\vec{w}^{(\vec{\pi})})=\frac{1}{B(\vec w^{(\vec\pi)})}\prod_j \pi_j^{(w_j^{(\vec\pi)}-1)},
+        q(\vec\pi)=\Dir(\vec\pi|\vec{w}^{(\vec{\pi})})=\frac{1}{B(\vec
+        w^{(\vec\pi)})}\prod_j \pi_j^{(w_j^{(\vec\pi)}-1)},
 \end{equation}
 with the constraints $0\le \pi_j\le1$ and $\sum_j\pi_j=1$, and
 normalization constant $B(\vec
-w^{(\vec\pi)})=\prod_j\Gamma(w_j^{(\vec\pi)})/\Gamma(\sum_kw_k^{(\vec\pi)})$\cite{wiki:dirichlet}. Inspection
-of Eq.~\eqref{Maverage} reveals that
+w^{(\vec\pi)})=\prod_j\Gamma(w_j^{(\vec\pi)})/\Gamma(\sum_kw_k^{(\vec\pi)})$\cite{wiki:dirichlet},
+and the beta distribution is the special case of two components $a_j$
+and $1-a_j$.  Inspection of Eq.~\eqref{Maverage} reveals that
 \begin{align}\label{VBM_pi}
   q(\vec{\pi})=&\Dir(\vec{\pi}|\vec{w}^{(\vec{\pi})}),&
   w_j^{(\vec{\pi})}=&\tilde w_j^{(\vec{\pi})}+\mean{\delta_{j,s_1}}_{q(s)}
 \\
-\label{VBM_A}
-  q(\matris{A})=&\prod_j
-  \Dir(A_{j,:}|w_{j,:}^{(\matris{A})}),&
+\label{VBM_B}
+  q(\matris{B})=&\prod_j
+  \Dir(B_{j,:}|w_{j,:}^{(\matris{A})}),&
   w_{jk}^{(\matris{A})}=&\tilde w_{jk}^{(\matris{A})}
-  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s)},
+  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s)},\\
+\label{VBM_a}
+  q(\vec{a})=&\prod_j
+  \beta(a_j|w_{jj}^{(\matris{A})},w_{j0}^{(\matris{A})}-w_{jj}^{(\matris{A})}),&
+  w_{j0}^{(\matris{A})}=&\sum_{k}w_{jk}^{(\matris{A})}
 \end{align}
 where $\tilde w_j^{(\vec{\pi})}$ and $\tilde w_{jk}^{(\matris{A})}$
-are the Dirichlet parameters of the prior distributions. Note how the
-prior parameters simply add to the data-dependent terms. This means
-that the prior distributions can be understood in terms of
-'pseudo-counts', imaginary observations prior to seeing the data in
-question. The total number of counts (for each distribution) is called
-the prior strength.
-
-The following averages\cite{Beal2003}: will turn out to be useful:
+are pseudocounts in the prior distributions.  The total number of
+counts (for each distribution) is called the prior strength. Note that
+$B_{jj}=0$, hence $w_{jj}^{(\matris{A})}$ does not contribute to
+$q(\matris{B})$.  The following averages\cite{Beal2003} will turn out
+to be useful:
 \begin{align}
   \mean{\ln \pi_i}_{q(\vec{\pi})}=&\psi(w_i^{(\vec{\pi})})-\psi(w_0^{(\vec{\pi})}),
-  &w_0^{(\vec{\pi})}&=\sum_{i=1}^Nw_i^{(\vec{\pi})},\label{lnpiaverage}\\
-  \mean{\ln A_{kj}}_{q(\matris{A})}=&\psi(w_{kj}^{(\matris{A})})
-    -\psi(w_{k0}^{(\matris{A})}),
-  &w_{k0}^{(\matris{A})}=&\sum_{j=1}^Nw_{kj}^{(\matris{A})},\\
+  &w_0^{(\vec{\pi})}=&\sum_{i=1}^Nw_i^{(\vec{\pi})},\label{lnpiaverage}\\
+  \mean{\ln a_k}_{q(\vec{a})}=&\psi(w_{kk}^{(\matris{A})})-\psi(w_{k0}^{(\matris{A})}),\\
+  \mean{\ln (1-a_k)}_{q(\vec{a})}=&\psi(w_{k0}^{(\matris{A})}-w_{kk}^{(\matris{A})})-\psi(w_{k0}^{(\matris{A})}),\\
+  \mean{\ln B_{kj}}_{q(\matris{A})}=&\psi(w_{kj}^{(\matris{A})})
+    -\psi(w_{k0}^{(\matris{A})}-w_{kk}^{(\matris{A})}),
+\end{align}
+\begin{align}
   \pi^*_{i\;q(\vec\pi)}=&\frac{w_i^{(\vec\pi)}-1}{w_0^{(\vec\pi)}-N}, &
-  A^*_{jk\;q(\matris{A})}=&\frac{w_{jk}^{(\matris{A})}-1}{w_0^{(\matris{A})}-N},\label{Dirmode}\\
-  \mean{\pi_i}_{q(\vec{\pi})}=&\frac{w_i^{(\vec\pi)}}{w_0^{(\vec\pi)}}, &
-    \mean{A_{jk}}_{q(\matris{A})}=&\frac{w_{jk}^{(\matris{A})}}{w_0^{(\matris{A})}},\label{Dirmean}\\
+  \mean{\pi_i}_{q(\vec{\pi})}=&\frac{w_i^{(\vec\pi)}}{w_0^{(\vec\pi)}}, \\
+  a^*_{i\;q(\vec\pi)}=&\frac{w_{ii}^{(\matris{A})}-1}{w_{i0}^{(\matris{A})}-2}, &
+  \mean{a_i}_{q(\vec{\pi})}=&\frac{w_{ii}^{(\matris{A})}}{w_{i0}^{(\matris{A})}},\\
+  %\\&w_{k0}^{(\matris{A})}=&\sum_{j=1}^Nw_{kj}^{(\matris{A})},\\
+%  \mean{\ln A_{kj}}_{q(\matris{A})}=&\psi(w_{kj}^{(\matris{A})})
+%    -\psi(w_{k0}^{(\matris{A})}),
+%  &w_{k0}^{(\matris{A})}=&\sum_{j=1}^Nw_{kj}^{(\matris{A})},\\
+  B^*_{jk\;q(\matris{A})}=&\frac{w_{jk}^{(\matris{A})}-1}{w_{j0}^{(\matris{A})}-w_{jj}^{(\matris{A})}-N+1}&
+  \mean{B_{jk}}_{q(\matris{B})}=&\frac{w_{jk}^{(\matris{A})}}{w_{j0}^{(\matris{A})}-w_{jj}^{(\matris{A})}}\\
   \Var[\pi_i]_{q(\vec{\pi})}=&
   \frac{w_i^{(\vec\pi)}(w_0^{(\vec\pi)}-w_i^{(\vec\pi)})}{
-    (w_0^{(\vec\pi)})^2(w_0^{(\vec\pi)}+1)},&
-    \Var[A_{jk}]_{q(\matris{A})}=&\frac{w_{jk}^{(\matris{A})}(w_0^{(\matris{A})}
-      -w_{jk}^{(\matris{A})})}{
-    (w_0^{(\matris{A})})^2(w_0^{(\matris{A})}+1)}.\label{Dirvar}
+    (w_0^{(\vec\pi)})^2(w_0^{(\vec\pi)}+1)}
 \end{align}
 Here, $\psi$ is the digamma function, and $\theta^*_{q(\cdot)}$
 denotes the mode (point of maximum density) of the parameter $\theta$
-in the distribution $q(\cdot)$.
+in the distribution $q(\cdot)$. {\bf ML got this far!}
 
 \paragraph{Diffusion constants:}
 The terms involving $\gamma_j$ in \Eq{Maverage} are
