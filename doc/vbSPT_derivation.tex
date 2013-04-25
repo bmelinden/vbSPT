@@ -5,8 +5,8 @@ make it easier to choose prior distributions however, we
 reparameterize the transition matrix to separate out dwell time
 distributions, and write
 \begin{equation}\label{eq:aBdef}
-A_{ij}=\delta_{ij}a_i+(1-\delta_{ij})(1-a_i)B_{ij}=
-a_i^{\delta_{ij}}(1-a_i)^{1-\delta_{ij}}B_{ij}^{1-\delta_{ij}},
+A_{ij}=\delta_{ij}(1-a_i)+(1-\delta_{ij})a_iB_{ij}=
+(1-a_i)^{\delta_{ij}}a_i^{1-\delta_{ij}}B_{ij}^{1-\delta_{ij}},
 \end{equation}
 with constraints
 \begin{equation}
@@ -27,7 +27,7 @@ p(\vec{\gamma}|N)p(\matris{B}|N)p(\vec{a}|N)p(\vec\pi|N),
   p(s_{1:T-1}|\matris{B},\vec a,\vec{\pi})=&
   \prod_{m=1}^N\pi_m^{\delta_{m,s_1}}
   \prod_{t=1}^{T-1}\prod_{k,j=1}^N 
-  \left(a_k^{\delta_{kj}}(1-a_k)^{1-\delta_{kj}}
+  \left((1-a_k)^{\delta_{kj}}a_k^{1-\delta_{kj}}
   B_{kj}^{1-\delta_{kj}}\right)^{\delta_{k,s_t}\delta_{j,s_{t+1}}},\\
     \label{xmodel1b}
     p(\x_{1:T}|s_{1:T-1},\vec\gamma)=&
@@ -80,7 +80,7 @@ variational distribution for the parameters:
     \bigg)\\
   +\sum_{j=1}^N\sum_{t=1}^{T-2}\bigg(\ln p(a_j)
   +\sum_{k=1}^N\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s_{1:T-1})}
-  \Big(\delta_{jk}\ln a_j+(1-\delta_{jk})\ln (1-a_j)\Big)
+  \Big((1-\delta_{jk})\ln a_j+\delta_{jk}\ln (1-a_j)\Big)
     \bigg)\\%  -\ln p(\x_1)\\
   +\sum_{j=1}^N\Bigg[\sum_{t=1}^{T-1}
   \bigg(
@@ -130,10 +130,10 @@ w_{jk}^{(\matris{B})}=\tilde w_{jk}^{(\matris{B})}
 \begin{align}
   q(\vec{a})=&\prod_j \beta(a_j|w_{j1}^{(\vec{a})},w_{j2}^{(\vec{a})}),&
   w_{j1}^{(\vec{a})}=&\tilde w_{j1}^{(\vec{a})}
-  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{j,s_{t+1}}}_{q(s)},\nonumber\\
+  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}(1-\delta_{j,s_{t+1}})}_{q(s)},\nonumber\\
   &&  
 w_{j2}^{(\vec{a})}=&\tilde w_{j2}^{(\vec{a})}
-  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}(1-\delta_{j,s_{t+1}})}_{q(s)},
+  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{j,s_{t+1}}}_{q(s)},
 \label{VBM_a}
 \end{align}
 with where $\tilde w_j^{(\vec{\pi})}$, $\tilde w_{jk}^{(\matris{B})}$,
@@ -180,11 +180,33 @@ and would be equal (and $\mean{A_{jk}}$ simpler) if the priors were
 chosen such that $\sum_{k\ne j}\tilde w_{jk}^{(\matris{B})}=\tilde
 w_{j2}^{(\vec{a})}$. The point of reparameterizing $A_{ij}$ however,
 is to be able to choose priors such as this is not the case. Finally,
-mean dwell times are given by
+mean dwell times (in units of $\Delta t$) is $\tau_j=a_j^{-1}$, which means
+\begin{align}
+\mean{\tau_j}=&\mean{a_j^{-1}}_{q(\vec{a})}=
+\frac{w_{j0}^{(\vec{a})}}{w_{j1}^{(\vec{a})}},\\
+\mean{\tau_j^2}=&\mean{a_j^{-2}}_{q(\vec{a})}=
+\mean{\tau_j}\frac{w_{j0}^{(\vec{a})}-1}{w_{j1}^{(\vec{a})}-1}
+=\mean{\tau_j}^2\frac{w_{j0}^{(\vec{a})}-1}{w_{j0}^{(\vec{a})}-\mean{\tau_j}},\\
+\Var(\tau_j)=&
+\mean{\tau_j^2}-\mean{\tau_j}^2=
+\frac{\mean{\tau}^2(\mean{\tau_j}-1)}{w_{j0}^{(\vec{a})}-\mean{\tau_j}}.
+\end{align}
+or
 \begin{equation}
-\frac{\tau_j}{\Delta t}=\mean{(1-a_j)^{-1}}_{q(\vec{a})}=
-\frac{w_{j0}^{(\vec{a})}}{w_{j2}^{(\vec{a})}}.
+w_{j1}^{(\vec{a})}=\frac{w_{j0}^{(\vec{a})}}{\mean{\tau_j}}
+=1+\frac{\mean{\tau}(\mean{\tau}-1)}{\Var(\tau_j)},\quad
+w_{j2}^{(\vec{a})}=w_{j0}^{(\vec{a})}\frac{\mean{\tau_j}-1}{\mean{\tau_j}}
+=(\mean{\tau_j}-1)w_{j1}^{(\vec{a})}.
 \end{equation}
+Also, the mean dwell time has the density function
+\begin{equation}
+q(\tau_j)=q(a_j(\tau_j))\left|\frac{da_j}{d\tau_j}\right|
+=\frac{\Gamma(w_{j1}^{(\vec{a})})\Gamma(w_{j2}^{(\vec{a})})}{\Gamma(w_{j0}^{(\vec{a})})}
+\tau_j^{-w_{j0}^{(\vec{a})}}(\tau_j-1)^{w_{j2}^{(\vec{a})}-1},
+\quad \tau_j\ge 1.
+\end{equation}
+
+
 
 \paragraph{Diffusion constants:}
 The terms involving $\gamma_j$ in \Eq{Maverage} are
@@ -253,20 +275,20 @@ nearest-neighbor coupling $\ln Q_{jk}$ given by
   \\
   \ln Q_{jk}=&\left\{
   \begin{array}{ll}
-  \psi(w_{j1}^{(\vec{a})})-\psi(w_{j0}^{(\vec{a})}),&(k=j)\\
+  \psi(w_{j2}^{(\vec{a})})-\psi(w_{j0}^{(\vec{a})}),&(k=j)\\
   \psi(w_{jk}^{(\matris{B})})-\psi(w_{j0}^{(\matris{B})})
   +
-  \psi(w_{j2}^{(\vec{a})})-\psi(w_{j0}^{(\vec{a})})
+  \psi(w_{j1}^{(\vec{a})})-\psi(w_{j0}^{(\vec{a})})
   ,&(k \ne j)
   \end{array}\right.
 \end{align}
 Further simplifications in $Q_{jk}$ would obtain if the $\vec a$ and
-$\matris{B}$ priors are incompatible, since $\tilde
+$\matris{B}$ priors are compatible, since $\tilde
 w_{j0}^{(\matris{B})}\equiv \sum_{k\ne j}\tilde
 w_{jk}^{(\matris{B})}= \tilde
-w_{j2}^{(\vec{a})} \Rightarrow \psi(w_{j0}^{(\matris{B})})
--\psi(w_{j2}^{(\vec{a})})=0$, which would result in results equivalent
-to the earlier version of vbSPT without the reparameterization in
+w_{j1}^{(\vec{a})} \Rightarrow \psi(w_{j0}^{(\matris{B})})
+-\psi(w_{j1}^{(\vec{a})})=0$, which would give results equivalent to
+the earlier version of vbSPT without the reparameterization in
 Eq.~\eqref{eq:aBdef}.
 
 We will need a couple of expectation values to feed back in the next
@@ -363,7 +385,7 @@ $a_j$ contributes
   -\sum_{k=1}^2\left[\ln\frac{\Gamma(w_{jk}^{(\vec{ a})})}{\Gamma(\tilde w_{jk}^{(\vec{ a})})}
     -(w_{jk}^{(\vec{ a})}-\tilde w_{jk}^{(\vec{ a})})\psi(w_{jk}^{(\vec{ a})})\right]\right\}.
 \end{multline}
-Finally, the terms from the transition matrix rows are also Dirichlet
+The terms from the transition matrix rows are also Dirichlet
 distributed, and each row contributes
 \begin{multline}
   \int dB_{j,:} q(B_{j,:}) \ln\frac{q(B_{j,:})}{p(B_{j,:}|N)}

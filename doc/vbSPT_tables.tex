@@ -30,31 +30,67 @@
 \endlastfoot
 
 
-\texttt{inputfile}						&	  'filename'						&		Name of the .mat file that contains the trajectories.\\ [0.5ex]  \hline 
-\texttt{trajectoryfield}				&	  'trajfield'							&		Name of the field in the .mat file that contains the trajectories to be analysed.\\ [0.5ex]  \hline 
-\texttt{parallelize\_config}		&	  true/false						&		Determines whether parallel computing should be used.\\ [0.5ex]  \hline 
-\texttt{parallel\_start}				&	  'command'						&		Command used to start the parallelization.\\ [0.5ex]  \hline 
-\texttt{parallel\_end}				&	  'command'						&		Command used to end the parallelization.\\ [0.5ex]  \hline 
-\texttt{outputfile	}					&	  'filename'						&		Name of the .mat file where the results are saved.\\ [0.5ex]  \hline 
-\texttt{jobID}							&	  'description'					&		Description of the job for your own records.\\ [0.5ex]  \hline 
-\texttt{timestep}						&	  real								&		Timestep between points in the trajectories, in units of [time].\\ [0.5ex]  \hline 
-\texttt{dim}								&	  int							&		Dimensionality of the data to be analysed (the first dim columns in the coordinate data will be used).\\ [0.5ex]  \hline 
-\texttt{trjLmin}						&	  int									&		Minimum length of trajectories to be included in the analysis. Recommended default value: 2.\\ [0.5ex]  \hline 
-\texttt{runs}							&	  int								&		Number of analysis attempts at each model size. Recommended to use a multiple of the number of cores when running in parallel.\\ [0.5ex]  \hline 
-\texttt{maxHidden}					&	  int								&		Maximum number of hidden states to consider. Recommended to use twice the amount of expected hidden states.\\ [0.5ex]  \hline 
-\texttt{maxIter}						&	  int									&		Maximum number of VB iterations. Set to an empty matrix (\texttt{[]}) to use the recommended default value of 1000.\\ [0.5ex]  \hline 
-\texttt{relTolF}						&	  real									&		Convergence criterion for the relative change in likelihood lower bound. Recommended to set to \texttt{[]}, which uses the default value of $10^{-8}$.\\[0.5ex]  \hline 
-\texttt{tolPar}							&	  real									&		Convergence criterion for the M-step parameters. Recommended to set to \texttt{[]}, which uses the default value of $10^{-2}$.\\[0.5ex]  \hline 
-\texttt{stateEstimate}				&	  true/false						&		Determines whether extra large and computer intensive estimates, including Viterbi paths, should be computed.\\[0.5ex]  \hline 
-\texttt{bootstrapNum}			&	  int/0							&		Number of bootstrap resamplings. Set to 0 to disable bootstrapping. 100 or more resamplings are recommended when using this feature.\\ [0.5ex]  \hline 
-\texttt{fullBootstrap}				&	  true/false						&		Determines whether bootstrapping should be done for all model sizes, not only the best global model. Bootstrapping all model sizes requires more computer time, but can give an indication of how robust the model size estimate is.\\[0.5ex]  \hline 
-\texttt{init\_D	}						&	  [real real]					&		Interval for initial guess of diffusion coefficients, given in unit of [length$^2$/time]. \\ [0.5ex]  \hline 
-\texttt{init\_tD}						&	  [real real]					&		Interval for initial guess of mean dwell times (lifetimes) of the hidden states, given in units of [time]. Recommended default value: \mbox{\texttt{[2 20]*timestep}}. Guessing too short dwell times does not hurt convergence.\\ [0.5ex]  \hline 
-\texttt{prior\_piStrength}		&	  int									&		Prior strength for the initial state probability (assumed uniform), given in pseudocounts and should be set low. Recommended default value: 5.\\ [0.5ex]  \hline 
-\texttt{prior\_D}						&	  real								&		Diffusion coefficient prior mean value, in units of  [length$^2$/time]. An order of magnitude estimate is good enough.\\ [0.5ex]  \hline 
-\texttt{prior\_Dstrength}			&	  int									&		Strength of the diffusion coefficient prior. Recommended default value: 5.\\ [0.5ex]  \hline 
-\texttt{prior\_tD}						&	  real					&		Dwell time prior mean value, in units [time]. Must not be smaller than \texttt{2*timestep}. Default: \texttt{10*timestep}. \\ [0.5ex]  \hline 
-\texttt{prior\_tDstrength}		&	  real		&		Strength of the transition probability prior. Recommended default value: \texttt{2*prior\_tD/timestep}\\ [1ex] % [1ex] adds vertical space
+\texttt{inputfile} & 'filename' & Name of the .mat file that contains the trajectories.\\ 
+[0.5ex] \hline 
+\texttt{trajectoryfield} & 'trajfield' & Name of the field in the .mat file that contains the
+trajectories to be analysed.\\ 
+[0.5ex] \hline
+\texttt{parallelize\_config} & true/false & Determines whether parallel computing should be used.\\ 
+[0.5ex] \hline
+\texttt{parallel\_start} & 'command' & Command used to start the parallelization.\\ 
+[0.5ex] \hline 
+\texttt{parallel\_end} & 'command' & Command used to end the parallelization.\\ 
+[0.5ex] \hline 
+\texttt{outputfile } & 'filename' & Name of the .mat file where the results are saved.\\ 
+[0.5ex] \hline
+\texttt{jobID} & 'description' & Description of the job for your own records.\\ 
+[0.5ex] \hline \texttt{timestep} & real & Timestep between points in the trajectories, in units of [time].\\ 
+[0.5ex] \hline
+\texttt{dim} & int & Dimensionality of the data to be analysed (the first dim columns in the coordinate data will be used).\\ 
+[0.5ex] \hline 
+\texttt{trjLmin} & int & Minimum length of trajectories to be included in the analysis. Recommended default value: 2.\\ 
+[0.5ex] \hline 
+\texttt{runs} & int & Number of analysis attempts at each model size. Recommended to use a multiple of the number of cores when running in parallel.\\ 
+[0.5ex] \hline 
+\texttt{maxHidden} & int & Maximum number of hidden states to consider. Recommended to use twice the amount of expected hidden states.\\ 
+[0.5ex] \hline
+\texttt{maxIter} & int & Maximum number of VB iterations. Set to an empty matrix (\texttt{[]}) to use the recommended default value of
+1000.\\ [0.5ex] \hline \texttt{relTolF} & real & Convergence criterion
+for the relative change in likelihood lower bound. Recommended to set
+to \texttt{[]}, which uses the default value of $10^{-8}$.\\[0.5ex]
+\hline \texttt{tolPar} & real & Convergence criterion for the M-step
+parameters. Recommended to set to \texttt{[]}, which uses the default
+value of $10^{-2}$.\\[0.5ex] \hline \texttt{stateEstimate} &
+true/false & Determines whether extra large and computer intensive
+estimates, including Viterbi paths, should be computed.\\[0.5ex]
+\hline \texttt{bootstrapNum} & int/0 & Number of bootstrap
+resamplings. Set to 0 to disable bootstrapping. 100 or more
+resamplings are recommended when using this feature.\\ [0.5ex] \hline
+\texttt{fullBootstrap} & true/false & Determines whether bootstrapping
+should be done for all model sizes, not only the best global
+model. Bootstrapping all model sizes requires more computer time, but
+can give an indication of how robust the model size estimate
+is.\\[0.5ex] \hline \texttt{init\_D } & [real real] & Interval for
+initial guess of diffusion coefficients, given in unit of
+[length$^2$/time]. \\ [0.5ex] \hline \texttt{init\_tD} & [real real] &
+Interval for initial guess of mean dwell times (lifetimes) of the
+hidden states, given in units of [time]. Recommended default value:
+\mbox{\texttt{[2 20]*timestep}}. Guessing too short dwell times does
+not hurt convergence.\\ [0.5ex] \hline \texttt{prior\_piStrength} &
+int & Prior strength for the initial state probability (assumed
+uniform), given in pseudocounts and should be set low. Recommended
+default value: 5.\\ [0.5ex] \hline \texttt{prior\_D} & real &
+Diffusion coefficient prior mean value, in units of
+[length$^2$/time]. An order of magnitude estimate is good
+enough.\\ [0.5ex] \hline \texttt{prior\_Dstrength} & int & Strength of
+the diffusion coefficient prior. Recommended default value:
+5.\\ [0.5ex] \hline \texttt{prior\_tD} & real & Dwell time prior mean
+value, in units [time]. Must not be smaller than
+\texttt{2*timestep}. Default: \texttt{10*timestep}. \\ [0.5ex] \hline
+\texttt{prior\_tDstrength} & real & Strength of the transition
+probability prior. Recommended default value:
+\texttt{2*prior\_tD/timestep}\\ 
+[1ex] % [1ex] adds vertical space
 \end{longtable}
 
 
