@@ -9,7 +9,7 @@ function W=VB3_createPrior(runinput,N)
 % VB3_createPrior.m, model initialization in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -44,32 +44,32 @@ else
 end
 
 %% start of actual code
-
 timestep=opt.timestep;              % sampling time step
-At0=opt.prior_tD/timestep;          % prior mean dwell time
 D0=opt.prior_D;                     % prior diffusion constant
 Dn=opt.prior_Dstrength;             % strength of diffusion constant prior
-An =opt.prior_tDstrength;           % transition probability strength (per row)
-nPi=opt.prior_piStrength;           % strength of initial state prior
+
+t0=opt.prior_tD/timestep;           % prior mean dwell time
+t0Var=opt.prior_tDvar/timestep;     % prior dwell time variance
 
 % each emission variable gets same strength independent of model size
 W.PM.n=Dn*ones(1,N);                
 W.PM.c=4*D0*timestep*W.PM.n;
 
-% transition matrix 
-A0=1;
-if(N>1)
-    A0=(1-1/At0)*eye(N)+1/At0/(N-1)*(ones(N,N)-eye(N));
-end
-W.PM.wA =An*A0;           % each row gets prior strength An
+% initial states have a flat distribution
+W.PM.wPi=ones(1,N); % flat initial state distribution
 
-% initial state
-W.PM.wPi=nPi*ones(1,N)/N; % flat initial state distribution
+% conditional jump probabilities are also flat
+W.PM.wB=ones(N,N-1);
+
+% mean dwell times are Gamma-distributed
+W.PM.wa=ones(N,2)+t0*(t0-1)/t0Var;
+W.PM.wa(:,2)=W.PM.wa(:,1)*(t0-1);
+
 
 % misc
 W.dim=opt.dim;
 W.N=N;
 
-if(At0<1)
+if(t0<1)
     error('VB3_createPrior: prior dwell time must exceed sampling time step')
 end
