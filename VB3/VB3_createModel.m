@@ -47,6 +47,7 @@ function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
+error('VB3_createModel has not been converted to the new transition model yet.')
 %% check input parameters and size compatibility
 if(exist('dt','var') && ~isempty(dt) && length(dt)==1 && dt>0)
    Ddt=D*dt;

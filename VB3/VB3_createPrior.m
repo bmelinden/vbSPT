@@ -59,7 +59,7 @@ W.PM.c=4*D0*timestep*W.PM.n;
 W.PM.wPi=ones(1,N); % flat initial state distribution
 
 % conditional jump probabilities are also flat
-W.PM.wB=ones(N,N-1);
+W.PM.wB=ones(N,N)-eye(N);
 
 % mean dwell times are Gamma-distributed
 W.PM.wa=ones(N,2)+t0*(t0-1)/t0Var;

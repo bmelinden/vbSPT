@@ -59,6 +59,11 @@ end
 % add .mat extension to output file if not present
 [outpath,outfile]=fileparts(opt.outputfile);
 opt.outputfile=fullfile(outpath,[outfile '.mat']);
+% make sure the out folder exist
+if(~exist(outpath,'dir'))
+   disp(['Creating output folder ' outpath])
+   mkdir(outpath)
+end
 clear outfile outpath;
 
 % construct log file name from outputfile, with extension .log
@@ -70,6 +75,7 @@ clear logfile logpath;
 if(exist(opt.logfile,'file'))
     delete(opt.logfile)
 end
+
 diary(opt.logfile);
 diary on
 VB3_license('VB3_HMManalysis')
@@ -107,7 +113,9 @@ if(opt.parallelize_config)
     eval(opt.parallel_start)
 end
 
-parfor iter=1:opt.runs    
+%parfor iter=1:opt.runs    
+warning('ML: inactivated parfor loop for debugging speed!')
+for iter=1:opt.runs    
     od=[]; tx0=[];
     % Greedy search strategy is probably more efficient than to start over
     % at each model size. We simply start with a large model, and
@@ -117,19 +125,26 @@ parfor iter=1:opt.runs
     w=VB3_createPrior(opt,maxHidden);
     w0=w;
     %% initial guess
-    w.M.wPi=w.PM.wPi+Ntrj*ones(1,maxHidden)/maxHidden; % uniform initial state distr.
-    
-    ntD=opt.init_tD/timestep;                               % init dwell time interval
-    ntD=exp(log(ntD(1))+diff(log(ntD))*rand(1,maxHidden)); % log(ntD) has flat distribution
-    A0=diag(1-1./ntD)*eye(maxHidden)+diag(1./ntD/(maxHidden-1))*(ones(maxHidden,maxHidden)-eye(maxHidden));
-    w.M.wA=w.PM.wA+nTot*A0;
-    %clear ntD A0;
-    
     w.M.n=w.PM.n+nTot*ones(1,maxHidden);
     Ddt=opt.init_D*timestep;
     Ddt=exp(log(Ddt(1))+diff(log(Ddt))*rand(1,maxHidden)); % log(Ddt) has flat distribution
     w.M.c=w.M.n*4.*Ddt;
     %clear Ddt
+
+    w.M.wPi=w.PM.wPi+Ntrj*ones(1,maxHidden)/maxHidden; % uniform initial state distr.
+    
+    ntD=opt.init_tD/timestep;                               % init dwell time interval
+    ntD=exp(log(ntD(1))+diff(log(ntD))*rand(1,maxHidden));  % log(ntD) has flat distribution
+    A0=diag(1-1./ntD)*eye(maxHidden)+diag(1./ntD/(maxHidden-1))*(ones(maxHidden,maxHidden)-eye(maxHidden));
+    A0=nTot*A0;
+    % diagonal and non-diagonal part
+    A0diag=diag(diag(A0));
+    A0nond=A0-A0diag;
+    
+    w.M.wB=w.PM.wB+A0nond;
+    w.M.wa=w.PM.wa+[sum(A0nond,2) sum(A0diag,2)];
+    %clear ntD A0;
+    
     
     % converge largest model
     w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
@@ -310,5 +325,3 @@ end
 disp([datestr(now) ' : Finished ' opt.runinputfile '. Total run time ' num2str(toc(tstart)/60) ' min.'])
 diary off
 end
-
-

@@ -160,40 +160,55 @@ for m=1:Ntrj
     dim0=dim;
 end
 W.dim=dim;
-W.N=size(W.PM.wA,1);
+W.N=size(W.PM.wB,1);
 %% initialize VBEM iterations
 runMore=true;
 C.exitStatus='';
-Wm5=[];Wm4=[];Wm3=[];Wm2=[];Wm1=[];
+Wm3=[];Wm2=[];Wm1=[];
 %% iterate
 E(1:Ntrj)=struct;
 while(runMore)
     % keep a short history in case something goes wrong...
-    Wm5=Wm4;Wm4=Wm3;Wm3=Wm2;Wm2=Wm1;Wm1=W;
+    Wm3=Wm2;Wm2=Wm1;Wm1=W;
     %try % try one round of VBEM iterations
     %% M-step: contributions from all trajectories are added
     if(isfield(W,'E')) % then start with M step
         W.M.wPi = W.PM.wPi;
-        W.M.wA =  W.PM.wA;
+        W.M.wa =  W.PM.wa;
+        W.M.wB =  W.PM.wB;
         W.M.n  = W.PM.n;
         W.M.c  = W.PM.c;
         for m=1:Ntrj
             % transitions and initial conditions
             W.M.wPi = W.M.wPi + W.E(m).wPi;
-            W.M.wA =  W.M.wA  + W.E(m).wA;
+            wB=W.E(m).wA.*(1-eye(W.N));
+            W.M.wa =  W.M.wa  + [sum(wB,2) diag(W.E(m).wA)];
+            W.M.wB =  W.M.wB  + wB;
             % emission model
             W.M.n  = W.M.n  + W.E(m).n;
             W.M.c  = W.M.c  + W.E(m).c;
         end
+        clear wB
         % check for problems
-        isNanInf=(sum(~isfinite([W.M.wPi W.M.wA(1:end) W.M.n  W.M.c]))>1);
+        isNanInf=(sum(~isfinite([W.M.wPi W.M.wa(1:end) W.M.wB(1:end) W.M.n  W.M.c]))>1);
         if(isNanInf)
             error('VB1_VBEMiter:Mfield_not_finite','Nan/Inf generated in VBM step')
         end
     end
     %% E-steps starts here
     % coupling matrix is the same for all trajectories
-    lnQ=psi(W.M.wA)-psi(sum(W.M.wA,2))*ones(1,W.N);
+    %lnQ=psi(W.M.wA)-psi(sum(W.M.wA,2))*ones(1,W.N); % old version
+    lnQ=zeros(W.N,W.N);
+    wB0=sum(W.M.wB,2);
+    wa0=sum(W.M.wa,2);
+    for i=1:W.N
+        lnQ(i,i)=psi(W.M.wa(i,2))-psi(wa0(i));
+        for j=[1:(i-1) (i+1):W.N]
+            lnQ(i,j)=psi(W.M.wa(i,1))-psi(wa0(i))...
+                    +psi(W.M.wB(i,j))-psi(wB0(i));
+        end
+    end    
+    
     lnQmax=max(max(lnQ));
     Q=exp(lnQ-lnQmax)+0*(eps);
     % for estimates of transition rates and dwell times: s(t)
@@ -227,7 +242,7 @@ while(runMore)
         for j=1:N
             lnH(:,j)=lnH0(j)-WMn(j)/WMc(j)*dx2{m};
         end
-         lnH(1,:)=lnH(1,:)+lnH1;
+        lnH(1,:)=lnH(1,:)+lnH1;
         lnHMax=max(lnH,[],2);
         H=zeros(T(m),N);
         for j=1:N % now we compute the actual pointwise emission contribution
@@ -290,6 +305,7 @@ while(runMore)
         clear West2lnHMax West2pst West2H West2lnH
     end
     % global light-weight estimates (always)
+    error('ML: code conversion continues here!')
     W.est.Amean=zeros(size(W.M.wA));
     W.est.Astd=zeros(size(W.M.wA));
     W.est.Amode=zeros(size(W.M.wA));
