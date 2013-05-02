@@ -193,10 +193,19 @@ were chosen such that $\sum_{k\ne j}\tilde
 w_{jk}^{(\matris{B})}=\tilde w_{j2}^{(\vec{a})}$. The point of
 reparameterizing $A_{ij}$ however, is to be able to choose priors such
 as this is not the case. Finally, mean dwell times (in units of
-$\Delta t$) is $\tau_j=a_j^{-1}$, which means
+$\Delta t$) is $\tau_j=a_j^{-1}$. This gives the variational density
+function
+\begin{equation}
+q(\tau_j)=q(a_j(\tau_j))\left|\frac{da_j}{d\tau_j}\right|
+=\frac{\Gamma(w_{j1}^{(\vec{a})})\Gamma(w_{j2}^{(\vec{a})})}{\Gamma(w_{j0}^{(\vec{a})})}
+\tau_j^{-w_{j0}^{(\vec{a})}}(\tau_j-1)^{w_{j2}^{(\vec{a})}-1},
+\quad \tau_j\ge 1,
+\end{equation}
+which means that
 \begin{align}
-\mean{\tau_j}=&\mean{a_j^{-1}}_{q(\vec{a})}=
-\frac{w_{j0}^{(\vec{a})}}{w_{j1}^{(\vec{a})}},\\
+\mean{\tau_j}=&\mean{a_j^{-1}}=
+\frac{w_{j0}^{(\vec{a})}}{w_{j1}^{(\vec{a})}}=\frac{1}{\mean{a_j}},\\
+\tau_j^*=&\frac{w_{j0}^{(\vec{a})}}{1+w_{j1}^{(\vec{a})}},\\
 \mean{\tau_j^2}=&\mean{a_j^{-2}}_{q(\vec{a})}=
 \mean{\tau_j}\frac{w_{j0}^{(\vec{a})}-1}{w_{j1}^{(\vec{a})}-1}
 =\mean{\tau_j}^2\frac{w_{j0}^{(\vec{a})}-1}{w_{j0}^{(\vec{a})}-\mean{\tau_j}},\\
@@ -205,19 +214,13 @@ $\Delta t$) is $\tau_j=a_j^{-1}$, which means
 \frac{\mean{\tau}^2(\mean{\tau_j}-1)}{w_{j0}^{(\vec{a})}-\mean{\tau_j}}.
 \end{align}
 or
-\begin{equation}
-w_{j1}^{(\vec{a})}=\frac{w_{j0}^{(\vec{a})}}{\mean{\tau_j}}
-=1+\frac{\mean{\tau}(\mean{\tau}-1)}{\Var(\tau_j)},\quad
-w_{j2}^{(\vec{a})}=w_{j0}^{(\vec{a})}\frac{\mean{\tau_j}-1}{\mean{\tau_j}}
+\begin{align}
+w_{j1}^{(\vec{a})}=&\frac{w_{j0}^{(\vec{a})}}{\mean{\tau_j}}
+=1+\frac{\mean{\tau}(\mean{\tau}-1)}{\Var(\tau_j)},\\
+w_{j2}^{(\vec{a})}=&w_{j0}^{(\vec{a})}\frac{\mean{\tau_j}-1}{\mean{\tau_j}}
 =(\mean{\tau_j}-1)w_{j1}^{(\vec{a})}.
-\end{equation}
-Also, the mean dwell time has the density function
-\begin{equation}
-q(\tau_j)=q(a_j(\tau_j))\left|\frac{da_j}{d\tau_j}\right|
-=\frac{\Gamma(w_{j1}^{(\vec{a})})\Gamma(w_{j2}^{(\vec{a})})}{\Gamma(w_{j0}^{(\vec{a})})}
-\tau_j^{-w_{j0}^{(\vec{a})}}(\tau_j-1)^{w_{j2}^{(\vec{a})}-1},
-\quad \tau_j\ge 1.
-\end{equation}
+\end{align}
+
 
 
 
