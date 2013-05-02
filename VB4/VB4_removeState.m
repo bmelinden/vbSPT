@@ -1,10 +1,10 @@
-function M=VB3_removeState(w,s)
-% M=VB3_removeState(w,s)
+function M=VB4_removeState(w,s)
+% M=VB4_removeState(w,s)
 % create a new model parameter field M by removing state s from model w.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%VB3_removeState.m, removes state from models in the vbSPT package
+%VB4_removeState.m, removes state from models in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson

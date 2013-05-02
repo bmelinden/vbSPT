@@ -1,12 +1,12 @@
-function res=VB3_getResult(runinput)
-% res=VB3_getResult(runinput)
+function res=VB4_getResult(runinput)
+% res=VB4_getResult(runinput)
 %
 % Find saved outputfile from a runinput file or options struct, load the analysis
 % results, and print a short description to the command line.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_getResult.m, loads analysis results for the vbSPT package
+% VB4_getResult.m, loads analysis results for the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -36,7 +36,7 @@ function res=VB3_getResult(runinput)
 % if an existing file, generate options structure
 if(isstr(runinput) && exist(runinput)==2)
     runinputfile = runinput;
-    opt=VB3_getOptions(runinputfile);
+    opt=VB4_getOptions(runinputfile);
     disp(['Read runinput file ' runinputfile])
     % if an option struct, read in the runinputfilename
 elseif(isstruct(runinput))

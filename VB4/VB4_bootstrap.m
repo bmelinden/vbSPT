@@ -1,5 +1,5 @@
-function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
-% [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,wbs0)
+function [wbs,Wmean,Wstd]=VB4_bootstrap(W,X,opt,NB,varargin)
+% [wbs,Wmean,Wstd]=VB4_bootstrap(W,X,opt,NB,wbs0)
 %
 % Run NB bootstrap fits starting from model W and data X. Each bootstrap
 % fit resamples the data with replacement, and then converges the VB3 model
@@ -14,7 +14,7 @@ function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
 % W     : Initial guess for bootstrap fit. For good results, use the best
 %         model for the inriginal data set X. 
 % X     : diffusion data 
-% opt   : VB3 parameter object ( obj=VB3_getOptions(runinputfile) ).
+% opt   : VB3 parameter object ( obj=VB4_getOptions(runinputfile) ).
 % NB    : optional number of bootstrap iterations to run. Default: 100.
 % wbs0  : wbs struct array, containing bootstrap indices in wBS.ind. This
 %         is used to duplicate a bootstrap analysis on a different starting
@@ -31,7 +31,7 @@ function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_bootstrap.m, runs a bootstrap analysis in the vbSPT package
+% VB4_bootstrap.m, runs a bootstrap analysis in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -82,7 +82,7 @@ parfor k=1:NB
     Y=X(ind);
     
     %disp(['bootstrap iter ' int2str(k) ' 2'])
-    ww=VB3_VBEMiterator(W,Y,'outputLevel',0,'maxIter',opt.maxIter,...
+    ww=VB4_VBEMiterator(W,Y,'outputLevel',0,'maxIter',opt.maxIter,...
         'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %disp(['bootstrap iter ' int2str(k) ' 3'])    
     wbs(k).M=ww.M;

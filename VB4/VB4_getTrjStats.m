@@ -1,5 +1,5 @@
-function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
-% [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
+function [M,Ptot,Ntot]=VB4_getTrjStats(X,dim,stateColumn,trjLmin)
+% [M,Ptot,Ntot]=VB4_getTrjStats(X,dim,stateColumn,trjLmin)
 % assemble optimal model from data with known hidden state sequence.
 %
 % Input:
@@ -20,7 +20,7 @@ function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_getTrjStats, finds optimal model from known hidden state sequence
+% VB4_getTrjStats, finds optimal model from known hidden state sequence
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson

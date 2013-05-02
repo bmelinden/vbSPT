@@ -1,5 +1,5 @@
-function opt=VB3_getOptions(runinputfile)
-% opt=VB3_getOptions(runinputfile)
+function opt=VB4_getOptions(runinputfile)
+% opt=VB4_getOptions(runinputfile)
 %
 % convert HMM runinput parameters from a runinput file into an options
 % structure opt. In fact, all variables created by the command
@@ -10,7 +10,7 @@ function opt=VB3_getOptions(runinputfile)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_getOptions.m, read runinout parameters in the vbSPT package
+% VB4_getOptions.m, read runinout parameters in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -42,7 +42,7 @@ function opt=VB3_getOptions(runinputfile)
 if(isempty(path))
     path='.';
 else
-    warning('VB3_getOptions warning: runinput file not in the current folder,')
+    warning('VB4_getOptions warning: runinput file not in the current folder,')
 end
 if(ismember('.',name))
    error(['runinputfile : ' name '. It is currently not possible to handle runinputfile names containing a .'])

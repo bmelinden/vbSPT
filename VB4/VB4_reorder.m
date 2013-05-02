@@ -1,12 +1,12 @@
-function w=VB3_reorder(w0,ind)
-% function w=VB3_reorder(w0,ind)
+function w=VB4_reorder(w0,ind)
+% function w=VB4_reorder(w0,ind)
 %
 % Permute the state indices in model in the order specified in ind, and 
 % return PM and M fields.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_reorder.m, permute state ordering in the vbSPT package
+% VB4_reorder.m, permute state ordering in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson

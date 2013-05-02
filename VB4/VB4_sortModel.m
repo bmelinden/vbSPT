@@ -1,5 +1,5 @@
-function W1=VB3_sortModel(W,ind)
-% W1=VB3_sortModel(W,ind)
+function W1=VB4_sortModel(W,ind)
+% W1=VB4_sortModel(W,ind)
 %
 % sort the states of the VB3 model W in order ind, where in is a
 % permutation of 1:W.N. If ind is not given, the model is sorter in order
@@ -11,7 +11,7 @@ function W1=VB3_sortModel(W,ind)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_sortModel.m, reorders state indices of models in the vbSPT package.
+% VB4_sortModel.m, reorders state indices of models in the vbSPT package.
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -46,7 +46,7 @@ if(~exist('ind','var')|| isempty(ind))
 end
 ind0=sort(union(ind(1),ind));
 if(length(ind0)~=W.N || sum(ind0==1:W.N)~=W.N)
-   error('VB3_sortModel error: incorrect order.')
+   error('VB4_sortModel error: incorrect order.')
 end
 clear ind0;
 %% actual code

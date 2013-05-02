@@ -1,14 +1,14 @@
-function X=VB3_readData(runinput)
-% X=VB3_readData(runinput)
+function X=VB4_readData(runinput)
+% X=VB4_readData(runinput)
 % 
 % Read diffusion data set as specified in a runinputfile. It is also possible
-% to use an options structure, e.g., from opt=VB3_getOptions(runinputfile) instead.
+% to use an options structure, e.g., from opt=VB4_getOptions(runinputfile) instead.
 % Only trajectories longer than trjLmin (specified in opt) are returned. 
 %
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_readData.m, reads position data fo use with the vbSPT package
+% VB4_readData.m, reads position data fo use with the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -37,7 +37,7 @@ function X=VB3_readData(runinput)
 % if an existing file, generate options structure
 if(ischar(runinput) && exist(runinput, 'file')==2)
     runinputfile = runinput;
-    opt=VB3_getOptions(runinputfile);
+    opt=VB4_getOptions(runinputfile);
     disp(['Read runinput file ' runinputfile])
     % if an option struct, read in the runinputfilename
 elseif(isstruct(runinput))
@@ -45,7 +45,7 @@ elseif(isstruct(runinput))
     runinputfile=opt.runinputfile;
     disp(['Read options structure based on runinput file ' runinputfile ])
 else
-    error(['Not a valid input, aborting VB3_readData']);
+    error(['Not a valid input, aborting VB4_readData']);
 end
 
 %% start of actual code
@@ -54,7 +54,7 @@ foo=load(opt.inputfile,opt.trajectoryfield);
 if(isfield(opt,'trjLmin'))
     Lmin=opt.trjLmin;
 else
-    warning('VB3_readData: cannot find minimum trajectory length in opt structure. Using minimum value: trjLmin=2');
+    warning('VB4_readData: cannot find minimum trajectory length in opt structure. Using minimum value: trjLmin=2');
     Lmin=2;
 end
 % extract the relevant columns

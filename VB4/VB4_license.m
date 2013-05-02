@@ -1,11 +1,11 @@
-function VB3_license(funcName)
-% res=VB3_license(funcName)
+function VB4_license(funcName)
+% res=VB4_license(funcName)
 %?
 % Prints a short license text to the command line.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_license.m, prints a short license text for the vbSPT package
+% VB4_license.m, prints a short license text for the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson

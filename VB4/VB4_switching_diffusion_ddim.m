@@ -1,5 +1,5 @@
-function [x,s]=VB3_switching_diffusion_ddim(A,g,T,d)
-% [x,s]=VB3_switching_diffusion_ddim(A,g,T,d)
+function [x,s]=VB4_switching_diffusion_ddim(A,g,T,d)
+% [x,s]=VB4_switching_diffusion_ddim(A,g,T,d)
 %
 % simulate hidden states s(t) and position x(t) for a diffusion that
 % switches between different diffusion constant according to a Markov
@@ -17,7 +17,7 @@ function [x,s]=VB3_switching_diffusion_ddim(A,g,T,d)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_switching_diffusion_ddim.m, simulate d-dimensional diffusion with 
+% VB4_switching_diffusion_ddim.m, simulate d-dimensional diffusion with 
 % multiple diffusion constants, part of the vbSPT package
 % =========================================================================
 % 

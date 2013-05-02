@@ -1,5 +1,5 @@
-function M=VB3_createModel(D,A,p0,W0,dt,strength)
-% function M=VB3_createModel(D,A,p0,W0,dt,strength)
+function M=VB4_createModel(D,A,p0,W0,dt,strength)
+% function M=VB4_createModel(D,A,p0,W0,dt,strength)
 % 
 % Creates a VB3 model from parameters and strength. The function either
 % returns an M-field, or (if an input model W0 is given), adds the M-field
@@ -22,7 +22,7 @@ function M=VB3_createModel(D,A,p0,W0,dt,strength)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB3_createModel, creates a VB3 model from parameters and strengths.
+% VB4_createModel, creates a VB3 model from parameters and strengths.
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -47,13 +47,13 @@ function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
-error('VB3_createModel has not been converted to the new transition model yet.')
+error('VB4_createModel has not been converted to the new transition model yet.')
 %% check input parameters and size compatibility
 if(exist('dt','var') && ~isempty(dt) && length(dt)==1 && dt>0)
    Ddt=D*dt;
 else
     if(length(dt)~=1 || dt<=0)
-        error('VB3_createModel: dt must be a positive scalar')
+        error('VB4_createModel: dt must be a positive scalar')
     end
    Ddt=D;
 end
@@ -61,7 +61,7 @@ clear dt D;
 
 lambda=sort(eig(A));
 if(abs(lambda(end)-1)>1e-15) % then there is no proper stationary state
-    error('VB3_createModel: A does not seem to be a proper transition matrix')
+    error('VB4_createModel: A does not seem to be a proper transition matrix')
 end
 
 if(~exist('p0','var') || ~isempty(p0)) % then use stationary state of A
@@ -73,7 +73,7 @@ if(~exist('p0','var') || ~isempty(p0)) % then use stationary state of A
             p0=A^ceil(100*neq);
             p0=p0(1,:);
         else
-            error('VB3_createModel: cannot compute equilibration time for transition matrix')
+            error('VB4_createModel: cannot compute equilibration time for transition matrix')
             endq
         end
     else
@@ -88,7 +88,7 @@ N_p0=length(p0);
 if( N_Ddt==N_A(1) && N_A(1)==N_A(2) && N_A(2)==N_p0)
     N=N_Ddt;
 else
-    error('VB3_createModel: incompatible input parameter sizes!')
+    error('VB4_createModel: incompatible input parameter sizes!')
 end
 N=N_Ddt;
 clear N_Ddt N_A N_p0
@@ -97,7 +97,7 @@ if(~exist('strength','var') || isempty(strength))
     strength=1e4;
 end
 if(length(strength)~=1 || strength<=1)
-    error('VB3_createModel: strength must be a scalar > 1')
+    error('VB4_createModel: strength must be a scalar > 1')
 end
 
 %% compute M field
@@ -118,7 +118,7 @@ if(exist('W0','var')) % thgen we shall return an output model
         Wout.dim=W0.dim;
     end
     if(isfield(W0,'N') && W0.N~=N)
-        error('VB3_createModel: input model size incompatible with parameters')
+        error('VB4_createModel: input model size incompatible with parameters')
     end    
     M=Wout;
 end
