@@ -113,10 +113,7 @@ if(opt.parallelize_config)
     eval(opt.parallel_start)
 end
 
-%parfor iter=1:opt.runs    
-for iter=1:opt.runs        
-warning('ML: inactivated parfor loop for debugging speed!')
-%for iter=1:opt.runs    
+parfor iter=1:opt.runs    
     od=[]; tx0=[];
     % Greedy search strategy is probably more efficient than to start over
     % at each model size. We simply start with a large model, and
