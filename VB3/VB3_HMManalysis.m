@@ -42,7 +42,7 @@ tstart=tic;
 %% read analysis parameters
 % if an existing file, generate options structure
 if(ischar(runinputfile))
-    if(exist(runinputfile)==2)
+    if(exist(runinputfile,'file')==2)
         opt=VB3_getOptions(runinputfile);
         disp(['Read runinput file ' runinputfile])
     else
@@ -59,6 +59,11 @@ end
 % add .mat extension to output file if not present
 [outpath,outfile]=fileparts(opt.outputfile);
 opt.outputfile=fullfile(outpath,[outfile '.mat']);
+% make sure the out folder exist
+if(~exist(outpath,'dir'))
+   disp(['Creating output folder ' outpath])
+   mkdir(outpath)
+end
 clear outfile outpath;
 
 % construct log file name from outputfile, with extension .log
