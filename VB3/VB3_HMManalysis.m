@@ -75,7 +75,6 @@ clear logfile logpath;
 if(exist(opt.logfile,'file'))
     delete(opt.logfile)
 end
-
 diary(opt.logfile);
 diary on
 VB3_license('VB3_HMManalysis')
@@ -323,3 +322,5 @@ end
 disp([datestr(now) ' : Finished ' opt.runinputfile '. Total run time ' num2str(toc(tstart)/60) ' min.'])
 diary off
 end
+
+
