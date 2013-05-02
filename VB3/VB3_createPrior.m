@@ -49,7 +49,7 @@ D0=opt.prior_D;                     % prior diffusion constant
 Dn=opt.prior_Dstrength;             % strength of diffusion constant prior
 
 t0=opt.prior_tD/timestep;           % prior mean dwell time
-t0Var=opt.prior_tDvar/timestep;     % prior dwell time variance
+t0Var=(opt.prior_tDstd/timestep)^2; % prior dwell time variance
 
 % each emission variable gets same strength independent of model size
 W.PM.n=Dn*ones(1,N);                

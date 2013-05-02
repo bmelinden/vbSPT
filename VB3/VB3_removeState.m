@@ -46,9 +46,9 @@ frS=wB(s,sk);
 M.wB=wB(sk,sk)+w.PM.wB(sk,sk)...
     +(toS*frS/sum(frS)+toS*frS/sum(toS)).*(1-eye(length(sk)));
 
-if(size(M.wa,1)==1) % then B and a are not definred in the model
-    warning('N=1 not done yet.')
+if(size(M.wa,1)==1) 
+    % then B and a are not defined in the model, but M.wa is still kept for
+    % numerical ease (and is taken care of elswhere).
     M.wB=0;
-    %M.wa=[0 0];
 end
 

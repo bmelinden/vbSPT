@@ -1016,6 +1016,7 @@ end
 
 
 function SaveScript(~,varargin)
+warning('The GUI has not yet been updated to the new representation. You will need to update you transition priors manually (see ExampleData/runinput_normal.m')
 
 if strcmp(get(findobj('Tag','mR_PP_scriptName_2'),'String'), 'NOT SAVED')
     % Get filename and path with "uigetfile" and a generic filename
@@ -1181,6 +1182,8 @@ set(findobj('Tag','mR_BP_runButton'),'Enable','on');
 end
 
 function RunScript(~, varargin)
+warning('The GUI has not yet been updated to the new representation. You will need to update you transition priors manually (see ExampleData/runinput_normal.m')
+
 try
     eval(strcat('VB3_HMManalysis(''', get(findobj('Tag','mR_PP_scriptName_2'),'String'), ''');'));
 catch err
@@ -1291,7 +1294,6 @@ clear all;
 
 end
 
-
 function ShowResult(varargin)
 
 clc
@@ -1315,23 +1317,3 @@ catch err
     end
 end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

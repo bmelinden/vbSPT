@@ -76,23 +76,26 @@ initial guess of diffusion coefficients, given in unit of
 Interval for initial guess of mean dwell times (lifetimes) of the
 hidden states, given in units of [time]. Recommended default value:
 \mbox{\texttt{[2 20]*timestep}}. Guessing too short dwell times does
-not hurt convergence.\\ [0.5ex] \hline \texttt{prior\_piStrength} &
-int & Prior strength for the initial state probability (assumed
-uniform), given in pseudocounts and should be set low. Recommended
-default value: 5.\\ [0.5ex] \hline \texttt{prior\_D} & real &
-Diffusion coefficient prior mean value, in units of
-[length$^2$/time]. An order of magnitude estimate is good
+not hurt convergence.\\ [0.5ex] \hline 
+%\texttt{prior\_piStrength} & int & Prior strength for the initial
+%state probability (assumed uniform), given in pseudocounts and should
+%be set low. Recommended default value: 5.\\ [0.5ex] \hline
+\texttt{prior\_D} & real & Diffusion coefficient prior mean value, in
+units of [length$^2$/time]. An order of magnitude estimate is good
 enough.\\ [0.5ex] \hline \texttt{prior\_Dstrength} & int & Strength of
 the diffusion coefficient prior. Recommended default value:
 5.\\ [0.5ex] \hline \texttt{prior\_tD} & real & Dwell time prior mean
 value, in units [time]. Must not be smaller than
 \texttt{2*timestep}. Default: \texttt{10*timestep}. \\ [0.5ex] \hline
-\texttt{prior\_tDstrength} & real & Strength of the transition
-probability prior. Recommended default value:
-\texttt{2*prior\_tD/timestep}\\ 
-[1ex] % [1ex] adds vertical space
+\ML{\texttt{prior\_tDstd}} & real& Standard deviation of
+  prior mean dwell time, in units [time]. Set a high value for an
+  unformative (weak) prior. Default \texttt{100*timestep}.\\[1ex]
+%\texttt{prior\_tDstrength} & real & Strength of the transition
+%probability prior. Recommended default value:
+%\texttt{2*prior\_tD/timestep}\\ [1ex] % [1ex] adds vertical space
 \end{longtable}
-
+\ML{removed: \texttt{prior\_piStrength} and
+  \texttt{prior\_tDstrength}.}
 
 \newpage
 

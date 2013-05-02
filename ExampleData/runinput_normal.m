@@ -53,5 +53,5 @@ init_tD = [2, 20]*timestep;     % interval for mean dwell time initial guess in 
 prior_D = 1e6;         % prior diffusion constant [length^2/time] in same length units as the input data.
 prior_Dstrength = 5;   % strength of diffusion constant prior, number of pseudocounts (positive).
 prior_tD = 10*timestep;      % prior dwell time in [s]. Must be greater than timestep (recommended > 2*timestep)
-prior_tDvar = 100*prior_tD;   % variance of prior dwell times [s]. 
+prior_tDstd = 100*prior_tD;  % standard deviation of prior dwell times [s]. 
 

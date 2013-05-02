@@ -216,9 +216,9 @@ which means that
 or
 \begin{align}
 w_{j1}^{(\vec{a})}=&\frac{w_{j0}^{(\vec{a})}}{\mean{\tau_j}}
-=1+\frac{\mean{\tau}(\mean{\tau}-1)}{\Var(\tau_j)},\\
+=1+\frac{\mean{\tau}(\mean{\tau}-1)}{\Var(\tau_j)},\nonumber\\
 w_{j2}^{(\vec{a})}=&w_{j0}^{(\vec{a})}\frac{\mean{\tau_j}-1}{\mean{\tau_j}}
-=(\mean{\tau_j}-1)w_{j1}^{(\vec{a})}.
+=(\mean{\tau_j}-1)w_{j1}^{(\vec{a})}.\label{eq:wjka}
 \end{align}
 
 
@@ -271,6 +271,23 @@ equations in turn contain certain averages of the hidden state
 distribution $q(s_{1:T-1})$. We now go on and derive the variational
 distribution for the hidden state and the E-step, to compute these
 averages.
+\subsection{Priors}
+The current version of the code lets the user specify a mean value and
+a prior strength for the diffusion constants, from which $\tilde c_j$
+and $\tilde n_j$ are computed, same for all model sizes.
+
+The prior for the initial state distribution is chosen as a flat
+Dirichlets, same for all model sizes, and the same is true for the
+jump probabilties, i.e., 
+$\tilde w_j^{(\vec{\pi})}=1$ and $\tilde w_{jk}^{(\matris{B})}=1$.
+
+Dwell time priors are specified by mean value and standard deviation
+of the prior dwell times, from which pseudocounts are computed using
+Eq.~\eqref{eq:wjka}.
+
+For more precise control of the priors, modify the
+function \texttt{VB3\_createPrior.m}.
+
 \subsection{Hidden states}
 Collecting the terms in Eqs. \eqref{xmodel1b} and \eqref{smodel1b} that
 depend on the hidden states, we get
