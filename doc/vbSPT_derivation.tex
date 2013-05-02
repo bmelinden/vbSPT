@@ -164,23 +164,36 @@ useful for parameter inference:
   \mean{a_i}_{q(\vec{a})}=&\frac{w_{i1}^{(\vec{a})}}{w_{i0}^{(\vec{a})}},\\
   (1-a_i)^*_{q(\vec{a})}=&\frac{w_{i2}^{(\vec{a})}-1}{w_{i0}^{(\vec{a})}-2}, &
   \mean{1-a_i}_{q(\vec{a})}=&\frac{w_{i2}^{(\vec{a})}}{w_{i0}^{(\vec{a})}},\\
+  \Var[a_j]=&\frac{w_{j1}^{(a)}w_{j2}^{(a)}}{(w_{j0}^{(a)})^2(1+w_{j1}^{(a)})},&
+\Var[1-a_j]=&\Var[a_j]\\
   B^*_{jk\;q(\matris{B})}=&\frac{w_{jk}^{(\matris{B})}-1}{w_{j0}^{(\matris{B})}-N+1}&
   \mean{B_{jk}}_{q(\matris{B})}=&\frac{w_{jk}^{(\matris{B})}}{w_{j0}^{(\matris{B})}},\\
+\Var[B_{jk}]=&
+\frac{w_{jk}^{(\matris{B})}(w_{j0}^{(\matris{B})}-w_{jk}^{(\matris{B})})}{
+(w_{j0}^{(\matris{B})})^2(1+w_{j0}^{(\matris{B})})},&
+\mean{B_{jk}^2}=&\frac{w_{jk}^{(\matris{B})}(1+w_{jk}^{(\matris{B})})}{
+        w_{j0}^{(\matris{B})}(1+w_{j0}^{(\matris{B})})},\\
 \mean{A_{jj}}_{q(\vec{a})q(\matris{B})}=&
-\frac{w_{j1}^{(\vec{a})}}{w_{j0}^{(\vec{a})}},&
+\mean{1-a_j}=\frac{w_{j2}^{(\vec{a})}}{w_{j0}^{(\vec{a})}},&
 \mean{A_{jk}}_{q(\vec{a})q(\matris{B})}=&
-\frac{w_{j2}^{(\vec{a})}w_{jk}^{(\matris{B})}}{w_{j0}^{(\vec{a})}w_{j0}^{(\matris{B})}}.
+\frac{w_{j1}^{(\vec{a})}w_{jk}^{(\matris{B})}}{w_{j0}^{(\vec{a})}w_{j0}^{(\matris{B})}}.
+\end{align}
+\begin{align}
+\Var[A_{jj}]=&\Var[1-a_j]=\Var[a_j],\\
+\Var[A_{jk}]=&\mean{a_j^2B_{jk}^2}-\mean{a_jB_{jk}}^2
+        =\Var[a_j]\mean{B_{jk}^2}+\mean{a_j}^2\Var[B_{jk}].
 \end{align}
 Note that the transition counts
 for $\vec a$ and $\matris{B}$ are related via
 \begin{equation}
 w_{j0}^{(\matris{B})}=w_{j2}^{(\vec{a})}-\tilde w_{j2}^{(\vec{a})}+\sum_{k\ne j}\tilde w_{jk}^{(\matris{B})},
 \end{equation}
-and would be equal (and $\mean{A_{jk}}$ simpler) if the priors were
-chosen such that $\sum_{k\ne j}\tilde w_{jk}^{(\matris{B})}=\tilde
-w_{j2}^{(\vec{a})}$. The point of reparameterizing $A_{ij}$ however,
-is to be able to choose priors such as this is not the case. Finally,
-mean dwell times (in units of $\Delta t$) is $\tau_j=a_j^{-1}$, which means
+and would be equal (and moments of $A_{jk}$ simpler) if the priors
+were chosen such that $\sum_{k\ne j}\tilde
+w_{jk}^{(\matris{B})}=\tilde w_{j2}^{(\vec{a})}$. The point of
+reparameterizing $A_{ij}$ however, is to be able to choose priors such
+as this is not the case. Finally, mean dwell times (in units of
+$\Delta t$) is $\tau_j=a_j^{-1}$, which means
 \begin{align}
 \mean{\tau_j}=&\mean{a_j^{-1}}_{q(\vec{a})}=
 \frac{w_{j0}^{(\vec{a})}}{w_{j1}^{(\vec{a})}},\\
