@@ -27,7 +27,7 @@ function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 %
 % Fields in the VB1 tructure W:
 % W.M.wPi;         : initial state
-% W.M.wA;         : transition counts for s(t) transition matrix
+% W.M.wa,W.M.wB;         : transition counts for s(t) transition matrix
 % W.M.n; W.M.c;  : B-distribution for s(t)
 % Prior parameters are stored in W.PM
 % E-step parameters are under W.E
@@ -153,7 +153,7 @@ dim0=size(X{1},2);
 for m=1:Ntrj
     dx2{m}=sum(diff(X{m},1,1).^2,2);
     [W.T(m),dim]=size(X{m});
-    W.T(m)=W.T(m)-1;
+    %W.T(m)=W.T(m)-1;
     if(dim~=dim0)
         error('VB3_ddim: all trajectories must have the same dimensionality (=same number of columns)')
     end
@@ -238,13 +238,13 @@ while(runMore)
 
         % we compute log(H) first, and then exponentiate
         lnH0=dim/2*(psi(WMn)-log(pi*WMc)); % same for all t
-        lnH  =zeros(T(m),N);
+        lnH  =zeros(T(m)-1,N);
         for j=1:N
             lnH(:,j)=lnH0(j)-WMn(j)/WMc(j)*dx2{m};
         end
         lnH(1,:)=lnH(1,:)+lnH1;
         lnHMax=max(lnH,[],2);
-        H=zeros(T(m),N);
+        H=zeros(T(m)-1,N);
         for j=1:N % now we compute the actual pointwise emission contribution
             H(:,j)=exp(lnH(:,j)-lnHMax);
         end
@@ -266,7 +266,7 @@ while(runMore)
         %    error('VB2_VBEMiter:Efield_not_finite','Nan/Inf generated in VBE step')
         %end
         % forward sweep normalization constant (same as VB4)
-        lnZQ(m)=(T(m)-1)*lnQmax;
+        lnZQ(m)=(T(m)-2)*lnQmax;
         lnZq(m)=sum(lnHMax);
         lnZz(m)=sum(log(Za));
         % trajectory specific light-weight estimates (always)
@@ -305,19 +305,29 @@ while(runMore)
         clear West2lnHMax West2pst West2H West2lnH
     end
     % global light-weight estimates (always)
-    error('ML: code conversion continues here!')
-    W.est.Amean=zeros(size(W.M.wA));
-    W.est.Astd=zeros(size(W.M.wA));
-    W.est.Amode=zeros(size(W.M.wA));
-    a0=sum(W.M.wA,2);
-    for k=1:W.N
-        W.est.Amean(k,:)=W.M.wA(k,:)/a0(k);
-        W.est.Astd(k,:)=sqrt((W.M.wA(k,:).*(a0(k)-W.M.wA(k,:)))./(a0(k)^2*(1+a0(k))));
-        W.est.Amode(k,:)=(W.M.wA(k,:)-1)/(a0(k)-W.N);
-    end
+    wa0=sum(W.M.wa,2);
+    W.est.aMean=W.M.wa(:,1)./wa0;
+    W.est.aMode=(W.M.wa(:,1)-1)./(wa0-2);
+    W.est.aVar=W.M.wa(:,1).*W.M.wa(:,2)./(wa0.^2.*(1+wa0));    
     
-    W.est.dwellMean=1./(1-diag(W.est.Amean));
-    W.est.dwellMode=1./(1-diag(W.est.Amode));
+    wB0=sum(W.M.wB,2)*ones(1,W.N);
+    eyeB=1-eye(W.N);
+    W.est.Bmean=W.M.wB./wB0;
+    W.est.Bmode=(W.M.wB-1+eye(W.N))./(wB0-W.N+1);
+    W.est.Bvar=W.M.wB.*(wB0.*eyeB-W.M.wB)./(wB0.^2.*(1+wB0));
+    B2=W.M.wB.*(eyeB+W.M.wB)./(wB0.*(1+wB0));  % <Bjk^2>  
+    
+    W.est.Amean=diag(W.M.wa(:,2)./sum(W.M.wa,2))...
+        +(W.M.wa(:,1)./sum(W.M.wa,2)./sum(W.M.wB,2))*ones(1,W.N).*W.M.wB;
+    %W.est.Amode : have not figured that one out yet (ML 2014-05.02)
+    W.est.Astd=diag(W.est.aVar)...
+        +(W.est.aVar*ones(1,W.N)).*B2...
+        +(W.est.aMean.^2*ones(1,W.N)).*W.est.Bvar;    
+        
+    W.est.dwellMean=1./W.est.aMean;
+    W.est.dwellMode=wa0./(1+W.M.wa(:,1));
+    clear wB0 eyeB B2 wa0
+
     % emission parameters
     W.est.gMean=W.M.n./W.M.c;
     W.est.gMode=(W.M.n-1)./W.M.c;
@@ -327,20 +337,43 @@ while(runMore)
     W.est.Ddtstd=W.M.c/4./(W.M.n-1)./sqrt(W.M.n-2);
     %% assemble free energy
     F=sum(W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz);
-    % KL divergence of transition probabilities of s(t) (same as VB4)
-    KL_A=zeros(1,W.N);
+    if(~isfinite(F))
+        error('VB3_VBEM: F not finite (lnZ)')
+    end    
+    % KL divergence of transition probabilities of s(t), new
+    % parameterization
+    wa0=sum(W.M.wa,2);
+    ua0=sum(W.PM.wa,2);
+    KL_a=gammaln(wa0)-gammaln(ua0)...
+        -(wa0-ua0).*psi(wa0)-(...
+            gammaln(W.M.wa(:,1))-gammaln(W.PM.wa(:,1))...
+           -(W.M.wa(:,1)-W.PM.wa(:,1)).*psi(W.M.wa(:,1))...
+           +gammaln(W.M.wa(:,2))-gammaln(W.PM.wa(:,2))...
+           -(W.M.wa(:,2)-W.PM.wa(:,2)).*psi(W.M.wa(:,2)));
+    W.Fterms.aterms=-KL_a;
+    F=F-sum(KL_a);
+    if(~isfinite(F))
+        error('VB3_VBEM: F not finite (KL_a)')
+    end
+    clear wa0 ua0;    
+    % jump probabilities
+    KL_B=zeros(1,W.N);
     for k=1:W.N
-        wA0=sum(W.M.wA(k,:));
-        uA0=sum(W.PM.wA(k,:));
-        KL_A(k)=gammaln(wA0)-gammaln(uA0)-(wA0-uA0)*psi(wA0)...
-            +sum((W.M.wA(k,:)-W.PM.wA(k,:)).*psi(W.M.wA(k,:))...
-            -gammaln(W.M.wA(k,:))+gammaln(W.PM.wA(k,:)));
+        ind=setdiff(1:N,k); % only include non-diagonal elements
+        wB0=sum(W.M.wB(k,ind));
+        uB0=sum(W.PM.wB(k,ind));
+        KL_B(k)=gammaln(wB0)-gammaln(uB0)-(wB0-uB0)*psi(wB0)...
+            +sum((W.M.wB(k,ind)-W.PM.wB(k,ind)).*psi(W.M.wB(k,ind))...
+            -gammaln(W.M.wB(k,ind))+gammaln(W.PM.wB(k,ind)));
         %-sum(gammaln(W.M.wA(k,:))-gammaln(W.PM.wA(k,:))...
         %-(W.M.wA(k,:)-W.PM.wA(k,:)).*psi(W.M.wA(k,:)));
     end
-    W.Fterms.Aterms=-KL_A;
-    F=F-sum(KL_A);
-    clear wA0 uA0;
+    W.Fterms.Bterms=-KL_B;
+    F=F-sum(KL_B);
+    if(~isfinite(F))
+        error('VB3_VBEM: F not finite (KL_B)')
+    end    
+    clear wA0 uA0 ind;
     % KL divergence of initial state probability 
     u0Pi=sum(W.PM.wPi);
     w0Pi=sum(W.M.wPi);
@@ -349,6 +382,9 @@ while(runMore)
                +(W.M.wPi-W.PM.wPi).*(psi(W.M.wPi)-psi(w0Pi)));
     W.Fterms.piTerms=-KL_pi;
     F=F-sum(KL_pi);
+    if(~isfinite(F))
+        error('VB3_VBEM: F not finite (KL_pi)')
+    end    
     % KL divergence of emission parameters
     KL_gj= W.PM.n.*log(W.M.c./W.PM.c)...
         -W.M.n.*(1-W.PM.c./W.M.c)...
@@ -361,9 +397,8 @@ while(runMore)
     end
     %% assembly of the free energy
     W.F=F;
-    %W.Fterms.Fterms=[ W.Fterms.lnZQ W.Fterms.lnZq W.Fterms.lnZz -KL_A -KL_pi -KL_gj];
-    W.Fterms.Fterms=[ W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz -sum(KL_A) -sum(KL_pi) -sum(KL_gj)];
-    W.Fterms.FtermsNames='[lnZQ+lnZq+lnZz -sum(KL_A) -sum(KL_pi) -sum(KL_gj)]';
+    W.Fterms.Fterms=[ W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)];
+    W.Fterms.FtermsNames='[lnZQ+lnZq+lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)]';
     if(~isfinite(W.F))
         disp(W.Fterms)
         error('VB_VBEMiter:F_not_finite','Nan/Inf generated in lower bound')
