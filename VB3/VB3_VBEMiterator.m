@@ -342,14 +342,17 @@ while(runMore)
     end    
     % KL divergence of transition probabilities of s(t), new
     % parameterization
-    wa0=sum(W.M.wa,2);
-    ua0=sum(W.PM.wa,2);
-    KL_a=gammaln(wa0)-gammaln(ua0)...
-        -(wa0-ua0).*psi(wa0)-(...
+    KL_a=zeros(W.N,1);
+    if(W.N>1) % a is only defined if N>1
+        wa0=sum(W.M.wa,2);
+        ua0=sum(W.PM.wa,2);
+        KL_a=gammaln(wa0)-gammaln(ua0)...
+            -(wa0-ua0).*psi(wa0)-(...
             gammaln(W.M.wa(:,1))-gammaln(W.PM.wa(:,1))...
-           -(W.M.wa(:,1)-W.PM.wa(:,1)).*psi(W.M.wa(:,1))...
-           +gammaln(W.M.wa(:,2))-gammaln(W.PM.wa(:,2))...
-           -(W.M.wa(:,2)-W.PM.wa(:,2)).*psi(W.M.wa(:,2)));
+            -(W.M.wa(:,1)-W.PM.wa(:,1)).*psi(W.M.wa(:,1))...
+            +gammaln(W.M.wa(:,2))-gammaln(W.PM.wa(:,2))...
+            -(W.M.wa(:,2)-W.PM.wa(:,2)).*psi(W.M.wa(:,2)));
+    end
     W.Fterms.aterms=-KL_a;
     F=F-sum(KL_a);
     if(~isfinite(F))
@@ -358,15 +361,17 @@ while(runMore)
     clear wa0 ua0;    
     % jump probabilities
     KL_B=zeros(1,W.N);
-    for k=1:W.N
-        ind=setdiff(1:N,k); % only include non-diagonal elements
-        wB0=sum(W.M.wB(k,ind));
-        uB0=sum(W.PM.wB(k,ind));
-        KL_B(k)=gammaln(wB0)-gammaln(uB0)-(wB0-uB0)*psi(wB0)...
-            +sum((W.M.wB(k,ind)-W.PM.wB(k,ind)).*psi(W.M.wB(k,ind))...
-            -gammaln(W.M.wB(k,ind))+gammaln(W.PM.wB(k,ind)));
-        %-sum(gammaln(W.M.wA(k,:))-gammaln(W.PM.wA(k,:))...
-        %-(W.M.wA(k,:)-W.PM.wA(k,:)).*psi(W.M.wA(k,:)));
+    if(W.N>1) % B is only defined for N>1        
+        for k=1:W.N
+            ind=setdiff(1:N,k); % only include non-diagonal elements
+            wB0=sum(W.M.wB(k,ind));
+            uB0=sum(W.PM.wB(k,ind));
+            KL_B(k)=gammaln(wB0)-gammaln(uB0)-(wB0-uB0)*psi(wB0)...
+                +sum((W.M.wB(k,ind)-W.PM.wB(k,ind)).*psi(W.M.wB(k,ind))...
+                -gammaln(W.M.wB(k,ind))+gammaln(W.PM.wB(k,ind)));
+            %-sum(gammaln(W.M.wA(k,:))-gammaln(W.PM.wA(k,:))...
+            %-(W.M.wA(k,:)-W.PM.wA(k,:)).*psi(W.M.wA(k,:)));
+        end
     end
     W.Fterms.Bterms=-KL_B;
     F=F-sum(KL_B);

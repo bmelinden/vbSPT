@@ -65,6 +65,13 @@ W.PM.wB=ones(N,N)-eye(N);
 W.PM.wa=ones(N,2)+t0*(t0-1)/t0Var;
 W.PM.wa(:,2)=W.PM.wa(:,1)*(t0-1);
 
+% in case there is only one hidden states, B and a are not defined in the
+% model:
+if(N==1)
+   warning('N=1 not done yet.')
+   W.PM.wB=0; 
+   %W.PM.wa=[0 0];
+end
 
 % misc
 W.dim=opt.dim;

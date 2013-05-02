@@ -42,7 +42,7 @@ tstart=tic;
 %% read analysis parameters
 % if an existing file, generate options structure
 if(ischar(runinputfile))
-    if(exist(runinputfile)==2)
+    if(exist(runinputfile,'file')==2)
         opt=VB3_getOptions(runinputfile);
         disp(['Read runinput file ' runinputfile])
     else
@@ -114,8 +114,9 @@ if(opt.parallelize_config)
 end
 
 %parfor iter=1:opt.runs    
+for iter=1:opt.runs        
 warning('ML: inactivated parfor loop for debugging speed!')
-for iter=1:opt.runs    
+%for iter=1:opt.runs    
     od=[]; tx0=[];
     % Greedy search strategy is probably more efficient than to start over
     % at each model size. We simply start with a large model, and
@@ -187,8 +188,8 @@ for iter=1:opt.runs
                     %disp(['Iter ' int2str(iter) ': simple removal did not help. Trying to add some extra transitions'])
                     w=VB3_createPrior(opt,w0.N-1);
                     w.M=VB3_removeState(w0,h(k));
-                    od=mean(mean((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
-                    w.M.wA= diag(diag(w.M.wA))+od*(1-eye(w.N));
+                    od=max(max(w.M.wB-w.PM.wB)); % largest off-diagonal element
+                    w.M.wB=od*(1-eye(w.N));
                     if(isfield(w,'E')) % make sure that the new M field is used
                         w=rmfield(w,'E');
                     end
@@ -226,8 +227,8 @@ for iter=1:opt.runs
             if(w0.N>1)
                 tx0=tic;
                 w=w0;
-                od=mean(mean((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
-                w.M.wA= diag(diag(w.M.wA))+od*(1-eye(w.N));
+                od=max(max(w.M.wB-w.PM.wB)); % largest off-diagonal element
+                w.M.wB=od*(1-eye(w.N));
                 if(isfield(w,'E')) % make sure that the new M field is used
                     w=rmfield(w,'E');
                 end

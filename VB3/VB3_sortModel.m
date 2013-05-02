@@ -58,12 +58,7 @@ W1.F  =W.F;
 % reorder some fields
 f={'PM','M','est'};
 %g={'wPi','n','c'};
-for a=1:length(f)
-    %W1.(f{a}).wA=W.(f{a}).wA(ind,ind);
-    %for b=1:length(g)
-    %   W1.(f{a}).(g{b})=W.(f{a}).(g{b})(ind);        
-    %end
-    
+for a=1:length(f)    
     F=W.(f{a});
     g=fieldnames(F);
     for b=1:length(g)
