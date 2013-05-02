@@ -1,5 +1,5 @@
-function [W,C,F]=VB4_VBEMiterator(W,X,varargin)
-%% [W,C,F]=VB4_VBEMiterator(W,X,varargin)
+function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
+%% [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 %
 % Perform VBEM iterations, on the VB structure W, with data (structure)
 % X, until convergence. This version accepts d-dimensional data (T by d
@@ -43,7 +43,7 @@ function [W,C,F]=VB4_VBEMiterator(W,X,varargin)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB4_VBEMiterator, variational EM iterations in the vbSPT package
+% VB3_VBEMiterator, variational EM iterations in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -155,7 +155,7 @@ for m=1:Ntrj
     [W.T(m),dim]=size(X{m});
     %W.T(m)=W.T(m)-1;
     if(dim~=dim0)
-        error('VB4_ddim: all trajectories must have the same dimensionality (=same number of columns)')
+        error('VB3_ddim: all trajectories must have the same dimensionality (=same number of columns)')
     end
     dim0=dim;
 end
@@ -265,7 +265,7 @@ while(runMore)
         %if(isNanInf)
         %    error('VB2_VBEMiter:Efield_not_finite','Nan/Inf generated in VBE step')
         %end
-        % forward sweep normalization constant (same as VB4)
+        % forward sweep normalization constant (same as VB3)
         lnZQ(m)=(T(m)-2)*lnQmax;
         lnZq(m)=sum(lnHMax);
         lnZz(m)=sum(log(Za));
@@ -338,7 +338,7 @@ while(runMore)
     %% assemble free energy
     F=sum(W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz);
     if(~isfinite(F))
-        error('VB4_VBEM: F not finite (lnZ)')
+        error('VB3_VBEM: F not finite (lnZ)')
     end    
     % KL divergence of transition probabilities of s(t), new
     % parameterization
@@ -356,7 +356,7 @@ while(runMore)
     W.Fterms.aterms=-KL_a;
     F=F-sum(KL_a);
     if(~isfinite(F))
-        error('VB4_VBEM: F not finite (KL_a)')
+        error('VB3_VBEM: F not finite (KL_a)')
     end
     clear wa0 ua0;    
     % jump probabilities
@@ -376,7 +376,7 @@ while(runMore)
     W.Fterms.Bterms=-KL_B;
     F=F-sum(KL_B);
     if(~isfinite(F))
-        error('VB4_VBEM: F not finite (KL_B)')
+        error('VB3_VBEM: F not finite (KL_B)')
     end    
     clear wA0 uA0 ind;
     % KL divergence of initial state probability 
@@ -388,7 +388,7 @@ while(runMore)
     W.Fterms.piTerms=-KL_pi;
     F=F-sum(KL_pi);
     if(~isfinite(F))
-        error('VB4_VBEM: F not finite (KL_pi)')
+        error('VB3_VBEM: F not finite (KL_pi)')
     end    
     % KL divergence of emission parameters
     KL_gj= W.PM.n.*log(W.M.c./W.PM.c)...
@@ -398,7 +398,7 @@ while(runMore)
     W.Fterms.gTerms=-KL_gj;
     F=F-sum(KL_gj);
     if(~isfinite(F))
-        error('VB4_VBEM: F not finite (KL_gj)')
+        error('VB3_VBEM: F not finite (KL_gj)')
     end
     %% assembly of the free energy
     W.F=F;

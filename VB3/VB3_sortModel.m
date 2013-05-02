@@ -1,12 +1,17 @@
-function w=VB4_reorder(w0,ind)
-% function w=VB4_reorder(w0,ind)
+function W1=VB3_sortModel(W,ind)
+% W1=VB3_sortModel(W,ind)
 %
-% Permute the state indices in model in the order specified in ind, and 
-% return PM and M fields.
+% sort the states of the VB3 model W in order ind, where in is a
+% permutation of 1:W.N. If ind is not given, the model is sorter in order
+% of increasing most likely diffusion constant, 
+% W.est.DdtMode=W.M.c/4./(W.M.n+1)
+%
+% Only the M,PM, and est fields are sorted, other fields must be recreated
+% by running further VB iterations.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB4_reorder.m, permute state ordering in the vbSPT package
+% VB3_sortModel.m, reorders state indices of models in the vbSPT package.
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -33,17 +38,42 @@ function w=VB4_reorder(w0,ind)
 %% start of actual code
 
 
-w.dim=w0.dim;
-w.N=w0.N;
+% M.L. 2012-04-14
 
-fn=fieldnames(w0.M);
-for m=1:length(fn)
-    if(strcmp(fn{m},'wA'))
-        w.M.wA=w0.M.wA(ind,ind);
-        w.PM.wA=w0.PM.wA(ind,ind);        
-    else
-        w.M.(fn{m}) = w0.M.(fn{m})(ind);
-        w.PM.(fn{m})=w0.PM.(fn{m})(ind);
+%% check parameters
+if(~exist('ind','var')|| isempty(ind))
+    [~,ind]=sort(W.M.c/4./(W.M.n+1));
+end
+ind0=sort(union(ind(1),ind));
+if(length(ind0)~=W.N || sum(ind0==1:W.N)~=W.N)
+   error('VB3_sortModel error: incorrect order.')
+end
+clear ind0;
+%% actual code
+% fields the do not need reordering
+W1.dim= W.dim;
+W1.N  = W.N;
+W1.T  = W.T;
+W1.F  =W.F;
+% reorder some fields
+f={'PM','M','est'};
+%g={'wPi','n','c'};
+for a=1:length(f)    
+    F=W.(f{a});
+    g=fieldnames(F);
+    for b=1:length(g)
+        [R,C]=size(F.(g{b}));
+        
+        % only sort dimensions that have length W.N
+        ri=1:R;
+        ci=1:C;
+        if(R==W.N)
+            ri=ind;            
+        end        
+        if(C==W.N)
+            ci=ind;
+        end
+        W1.(f{a}).(g{b})=F.(g{b})(ri,ci);        
     end
 end
 

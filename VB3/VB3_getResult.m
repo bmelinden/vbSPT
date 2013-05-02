@@ -1,14 +1,12 @@
-function X=VB4_readData(runinput)
-% X=VB4_readData(runinput)
-% 
-% Read diffusion data set as specified in a runinputfile. It is also possible
-% to use an options structure, e.g., from opt=VB4_getOptions(runinputfile) instead.
-% Only trajectories longer than trjLmin (specified in opt) are returned. 
+function res=VB3_getResult(runinput)
+% res=VB3_getResult(runinput)
 %
+% Find saved outputfile from a runinput file or options struct, load the analysis
+% results, and print a short description to the command line.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB4_readData.m, reads position data fo use with the vbSPT package
+% VB3_getResult.m, loads analysis results for the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -33,11 +31,12 @@ function X=VB4_readData(runinput)
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
-%% parse input
+%% Parse input
+
 % if an existing file, generate options structure
-if(ischar(runinput) && exist(runinput, 'file')==2)
+if(isstr(runinput) && exist(runinput)==2)
     runinputfile = runinput;
-    opt=VB4_getOptions(runinputfile);
+    opt=VB3_getOptions(runinputfile);
     disp(['Read runinput file ' runinputfile])
     % if an option struct, read in the runinputfilename
 elseif(isstruct(runinput))
@@ -45,27 +44,34 @@ elseif(isstruct(runinput))
     runinputfile=opt.runinputfile;
     disp(['Read options structure based on runinput file ' runinputfile ])
 else
-    error(['Not a valid input, aborting VB4_readData']);
+    error(['Not a valid input, aborting']);
 end
 
-%% start of actual code
-foo=load(opt.inputfile,opt.trajectoryfield);
+%% Start of actual code
+res=load(opt.outputfile);
 
-if(isfield(opt,'trjLmin'))
-    Lmin=opt.trjLmin;
-else
-    warning('VB4_readData: cannot find minimum trajectory length in opt structure. Using minimum value: trjLmin=2');
-    Lmin=2;
-end
-% extract the relevant columns
-X=cell(1,length(foo.(opt.trajectoryfield)));
-k=0;
+%% Calculate transition matrix
+numStates = res.Wbest.N;
+A = res.Wbest.M.wA - res.Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
+A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
 
-for m=1:length(foo.(opt.trajectoryfield))
-    if(size(foo.(opt.trajectoryfield){m}(:,1:opt.dim),1)>=Lmin)
-        k=k+1;
-        X{k}=foo.(opt.trajectoryfield){m}(:,1:opt.dim);
-   end
+%% Present results in the Matlab prompt
+
+disp(['The best global model for ' opt.runinputfile ':']);
+disp(sprintf('\n'));
+disp(['Number of states: ' num2str(res.Wbest.N)]);
+disp(sprintf('\n'));
+disp(['Diffusion rate constants: ']);
+disp(num2str(res.Wbest.est.DdtMean/opt.timestep, 3));
+disp(sprintf('\n'));
+disp(['Occupancy: ']);
+disp(num2str(res.Wbest.est.Ptot, 3));
+disp(sprintf('\n'));
+disp(['Transition matrix [per timestep]: ']);
+disp(num2str(A, 3));
+
+
 end
-% remove empty elements
-X={X{1:k}};
+
+
+

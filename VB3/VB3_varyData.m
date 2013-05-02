@@ -1,5 +1,5 @@
-function modelRun = VB4_varyData(runinput, varargin)
-%% wModels=VB4_varyData(runinput, varargin)
+function modelRun = VB3_varyData(runinput, varargin)
+%% wModels=VB3_varyData(runinput, varargin)
 %
 % Takes a previously used runinputfile or options struct as input. 
 % Converges the best models for different number of states with an increasing amount of 
@@ -23,7 +23,7 @@ function modelRun = VB4_varyData(runinput, varargin)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB4_varyData, test inference robustness, in the vbSPT package
+% VB3_varyData, test inference robustness, in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -56,7 +56,7 @@ tvaryData=tic;
 % if an existing file, generate options structure
 if(isstr(runinput) && exist(runinput)==2)
     runinputfile = runinput;
-    opt=VB4_getOptions(runinputfile);
+    opt=VB3_getOptions(runinputfile);
     disp(['Read runinput file ' runinputfile])
     % if an option struct, read in the runinputfilename
 elseif(isstruct(runinput))
@@ -68,7 +68,7 @@ else
 end
 
 % Get input data
-X = VB4_readData(opt);
+X = VB3_readData(opt);
 Ntraj = length(X); % number of trajectories
 
 % Get results
@@ -97,7 +97,7 @@ if(nargin>1)        % parse options
             if(~isempty(varargin{k+1}))
                 runs=varargin{k+1};
                 if(~isnumeric(runs) | runs<=0 | runs~=round(runs))
-                    error('VB4_varyData: runs option must be followed by a positive integer.')
+                    error('VB3_varyData: runs option must be followed by a positive integer.')
                 end
             end
             k=k+2;
@@ -106,7 +106,7 @@ if(nargin>1)        % parse options
                 numStates=varargin{k+1};
                 [m, ~] = size(numStates);
                 if(~isnumeric(numStates) | m ~= 1 | numStates<=0 | numStates~=round(numStates))
-                    error('VB4_varyData: numStates option must be followed by a positive integer 1*N array.')
+                    error('VB3_varyData: numStates option must be followed by a positive integer 1*N array.')
                 end
             end
             k=k+2;
@@ -115,12 +115,12 @@ if(nargin>1)        % parse options
                 sampleSize=varargin{k+1};
                 [m, ~] = size(sampleSize);
                 if(~isnumeric(sampleSize) | m ~= 1 | max(sampleSize)>1 | sampleSize<=0)
-                    error('VB4_varyData: sampleSize option must be followed by a positive numeric 1*N array, with no element larger than 1.')
+                    error('VB3_varyData: sampleSize option must be followed by a positive numeric 1*N array, with no element larger than 1.')
                 end
             end
             k=k+2;
         else
-            error(['VB4_varyData: option ' option ' not recognized.'])
+            error(['VB3_varyData: option ' option ' not recognized.'])
         end
     end
 end
@@ -157,7 +157,7 @@ parfor k=1:length(sampleSize)
     end
     
     for k2=1:length(numStates)
-        w = VB4_VBEMiterator(res.WbestN{numStates(k2)},Xtemp,'outputLevel',1,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+        w = VB3_VBEMiterator(res.WbestN{numStates(k2)},Xtemp,'outputLevel',1,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
         w.sampleSize = sampleSize(k);
         w.numStates = numStates(k2);
         wModels{k}{k2} = w;

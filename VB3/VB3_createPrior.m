@@ -1,4 +1,4 @@
-function W=VB4_createPrior(runinput,N)
+function W=VB3_createPrior(runinput,N)
 % W=V3_createPrior(runinput,N)
 %
 % Creates a model structure W with N states, and prior distributions
@@ -6,7 +6,7 @@ function W=VB4_createPrior(runinput,N)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB4_createPrior.m, model initialization in the vbSPT package
+% VB3_createPrior.m, model initialization in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2013 Martin Lindén and Fredrik Persson
@@ -35,12 +35,12 @@ function W=VB4_createPrior(runinput,N)
 % if an existing file, generate options structure
 if(isstr(runinput) && exist(runinput)==2)
     runinputfile = runinput;
-    opt=VB4_getOptions(runinputfile);
+    opt=VB3_getOptions(runinputfile);
     % if an option struct, read in the runinputfilename
 elseif(isstruct(runinput))
     opt=runinput;
 else
-    error(['Not a valid input, aborting VB4_createPrior']);
+    error(['Not a valid input, aborting VB3_createPrior']);
 end
 
 %% start of actual code
@@ -78,5 +78,5 @@ W.dim=opt.dim;
 W.N=N;
 
 if(t0<1)
-    error('VB4_createPrior: prior dwell time must exceed sampling time step')
+    error('VB3_createPrior: prior dwell time must exceed sampling time step')
 end

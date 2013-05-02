@@ -1,10 +1,10 @@
-function res=VB4_HMManalysis(runinputfile)
-% res=VB4_HMManalysis(runinputfile)
+function res=VB3_HMManalysis(runinputfile)
+% res=VB3_HMManalysis(runinputfile)
 %
 % Run the variational HMM analysis specified in the runinputfile, which
 % should be in the current directory. 
 % It is also possible to use an options structure, e.g., from
-% opt=VB4_getOptions(runinputfile) instead, which might be useful for
+% opt=VB3_getOptions(runinputfile) instead, which might be useful for
 % scripting things like parameter sweeps from a single runinput file.
 %
 % res : structure containing the result of the analysis. The same
@@ -13,7 +13,7 @@ function res=VB4_HMManalysis(runinputfile)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% VB4_HMManalysis, runs data analysis in the vbSPT package
+% VB3_HMManalysis, runs data analysis in the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -43,7 +43,7 @@ tstart=tic;
 % if an existing file, generate options structure
 if(ischar(runinputfile))
     if(exist(runinputfile,'file')==2)
-        opt=VB4_getOptions(runinputfile);
+        opt=VB3_getOptions(runinputfile);
         disp(['Read runinput file ' runinputfile])
     else
        error(['Cannot find runinput file ' runinputfile '. Please check name and path.'])
@@ -78,7 +78,7 @@ end
 
 diary(opt.logfile);
 diary on
-VB4_license('VB4_HMManalysis')
+VB3_license('VB3_HMManalysis')
 disp('----------')
 disp([ datestr(now) ' : Starting greedy optimization to find best model.'])
 disp(['jobID        : ' opt.jobID])
@@ -93,7 +93,7 @@ disp('----------')
 %% set up model structure: prior distributions
 %% converge models
 % load data
-X=VB4_readData(opt);
+X=VB3_readData(opt);
 maxHidden=opt.maxHidden;
 timestep=opt.timestep;
 
@@ -123,7 +123,7 @@ warning('ML: inactivated parfor loop for debugging speed!')
     % systematically remove the least occupied statate until things start
     % to get worse.
     titer=tic;
-    w=VB4_createPrior(opt,maxHidden);
+    w=VB3_createPrior(opt,maxHidden);
     w0=w;
     %% initial guess
     w.M.n=w.PM.n+nTot*ones(1,maxHidden);
@@ -148,7 +148,7 @@ warning('ML: inactivated parfor loop for debugging speed!')
     
     
     % converge largest model
-    w=VB4_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %% greedy search
     
     Witer{iter}{1}=w;
@@ -162,15 +162,15 @@ warning('ML: inactivated parfor loop for debugging speed!')
         for k=1:1 % length(h) %%% k=1 only is where one decides to only try the least occupied state
             if(w0.N>1)
                 %% try to remove a looping state
-                w=VB4_createPrior(opt,w0.N-1);
-                w.M=VB4_removeState(w0,h(k));
+                w=VB3_createPrior(opt,w0.N-1);
+                w.M=VB3_removeState(w0,h(k));
                 try
-                    w=VB4_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                 catch me
-                    disp('VB4_HMManalysis encountered an error:')
+                    disp('VB3_HMManalysis encountered an error:')
                     disp(me.message)
                     disp(me.stack)
-                    errFile=['errorlog_VB4_HMManalysis' num2str(rand) '.mat'];
+                    errFile=['errorlog_VB3_HMManalysis' num2str(rand) '.mat'];
                     save(errFile);
                     rethrow(me);
                 end
@@ -186,20 +186,20 @@ warning('ML: inactivated parfor loop for debugging speed!')
                 if(w.N>1)
                     tx0=tic;
                     %disp(['Iter ' int2str(iter) ': simple removal did not help. Trying to add some extra transitions'])
-                    w=VB4_createPrior(opt,w0.N-1);
-                    w.M=VB4_removeState(w0,h(k));
+                    w=VB3_createPrior(opt,w0.N-1);
+                    w.M=VB3_removeState(w0,h(k));
                     od=max(max(w.M.wB-w.PM.wB)); % largest off-diagonal element
                     w.M.wB=od*(1-eye(w.N));
                     if(isfield(w,'E')) % make sure that the new M field is used
                         w=rmfield(w,'E');
                     end
                     try
-                        w=VB4_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                        w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                     catch me
-                        disp('VB4_HMManalysis encountered an error:')
+                        disp('VB3_HMManalysis encountered an error:')
                         disp(me.message)
                         disp(me.stack)
-                        errFile=['errorlog_VB4_HMManalysis' num2str(rand) '.mat'];
+                        errFile=['errorlog_VB3_HMManalysis' num2str(rand) '.mat'];
                         save(errFile);
                         rethrow(me);
                     end
@@ -233,12 +233,12 @@ warning('ML: inactivated parfor loop for debugging speed!')
                     w=rmfield(w,'E');
                 end
                 try
-                    w=VB4_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                 catch me
-                    disp('VB4_HMManalysis encountered an error:')
+                    disp('VB3_HMManalysis encountered an error:')
                     disp(me.message)
                     disp(me.stack)
-                    errFile=['errorlog_VB4_HMManalysis' num2str(rand) '.mat'];
+                    errFile=['errorlog_VB3_HMManalysis' num2str(rand) '.mat'];
                     save(errFile);
                     rethrow(me);
                 end
@@ -268,7 +268,7 @@ for k=1:maxHidden
 end
 for iter=1:opt.runs
     for k=1:length(Witer{iter})
-        w=VB4_sortModel(Witer{iter}{k});
+        w=VB3_sortModel(Witer{iter}{k});
         INF(end+1,1:3)=[iter w.N w.F];
         if(w.F>Wbest.F)
             Wbest=w;
@@ -282,13 +282,13 @@ end
 % regenerate unsorted fields
 disp('Sorting and regenerating best model and estimates')
 if(opt.stateEstimate)
-    Wbest=VB4_VBEMiterator(Wbest,X,'estimate','maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
+    Wbest=VB3_VBEMiterator(Wbest,X,'estimate','maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
 else
-    Wbest=VB4_VBEMiterator(Wbest,X,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
+    Wbest=VB3_VBEMiterator(Wbest,X,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
 end
 parfor k=1:length(WbestN)
     if(WbestN{k}.F>-inf);
-        WbestN{k}=VB4_VBEMiterator(WbestN{k},X,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+        WbestN{k}=VB3_VBEMiterator(WbestN{k},X,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     end
 end
 %
@@ -311,7 +311,7 @@ save(opt.outputfile,'-struct','res');
 %% bootstrapping
 
 if(opt.bootstrapNum>0)
-bootstrap = VB4_bsResult(opt, 'HMM_analysis');
+bootstrap = VB3_bsResult(opt, 'HMM_analysis');
 res.bootstrap=bootstrap;
 
 % save again after bootstrapping

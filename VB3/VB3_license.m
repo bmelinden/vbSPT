@@ -1,10 +1,11 @@
-function M=VB4_removeState(w,s)
-% M=VB4_removeState(w,s)
-% create a new model parameter field M by removing state s from model w.
+function VB3_license(funcName)
+% res=VB3_license(funcName)
+%?
+% Prints a short license text to the command line.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%VB4_removeState.m, removes state from models in the vbSPT package
+% VB3_license.m, prints a short license text for the vbSPT package
 % =========================================================================
 % 
 % Copyright (C) 2012 Martin Lind??n and Fredrik Persson
@@ -30,25 +31,17 @@ function M=VB4_removeState(w,s)
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 %% start of actual code
 
-M=struct;
+fprintf(...
+['\nvbSPT, %s, Copyright (C) 2012 Martin Lind??n and Fredrik Persson \n' ...
+ 'This program comes with ABSOLUTELY NO WARRANTY. \n' ...
+ 'This is free software, and you are welcome to redistribute it \n' ...
+ 'under certain conditions. See license.txt for details. \n\n' ...
+ 'Additional permission under GNU GPL version 3 section 7 \n\n'...
+ 'If you modify this Program, or any covered work, by linking or combining it \n'...
+ 'with Matlab or any Matlab toolbox, the licensors of this Program grant you \n'...
+ 'additional permission to convey the resulting work. \n\n'],funcName);
 
-sk=[1:s-1 s+1:w.N]; % states to keep
-M.wPi=w.M.wPi(sk);
-M.n  =  w.M.n(sk);
-M.c  =  w.M.c(sk);
-M.wa =  w.M.wa(sk,:);
-
-% transfer observed transitions
-wB =w.M.wB -w.PM.wB;
-% try to compensate for transitions that went via the removed state
-toS=wB(sk,s);
-frS=wB(s,sk);
-M.wB=wB(sk,sk)+w.PM.wB(sk,sk)...
-    +(toS*frS/sum(frS)+toS*frS/sum(toS)).*(1-eye(length(sk)));
-
-if(size(M.wa,1)==1) % then B and a are not definred in the model
-    warning('N=1 not done yet.')
-    M.wB=0;
-    %M.wa=[0 0];
 end
+
+
 
