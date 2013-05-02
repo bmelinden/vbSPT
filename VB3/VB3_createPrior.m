@@ -68,9 +68,9 @@ W.PM.wa(:,2)=W.PM.wa(:,1)*(t0-1);
 % in case there is only one hidden states, B and a are not defined in the
 % model:
 if(N==1)
-   warning('N=1 not done yet.')
    W.PM.wB=0; 
-   %W.PM.wa=[0 0];
+   %W.PM.wa=[0 0]; % there really should not be an a-variable for N=1, but
+   %this is taken care of elsewhere (mostly in VBEMiterator).
 end
 
 % misc
