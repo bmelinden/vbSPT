@@ -76,26 +76,71 @@ initial guess of diffusion coefficients, given in unit of
 Interval for initial guess of mean dwell times (lifetimes) of the
 hidden states, given in units of [time]. Recommended default value:
 \mbox{\texttt{[2 20]*timestep}}. Guessing too short dwell times does
-not hurt convergence.\\ [0.5ex] \hline 
-%\texttt{prior\_piStrength} & int & Prior strength for the initial
-%state probability (assumed uniform), given in pseudocounts and should
-%be set low. Recommended default value: 5.\\ [0.5ex] \hline
+not hurt convergence.\\ [0.5ex] 
+
+\hline \hline
+
+\texttt{prior\_type\_D} & string & Type of parameterization for
+diffusion constant. Default: 'mean\_strength'. \\ [0.5 ex] \hline
+
+'mean\_strength':
 \texttt{prior\_D} & real & Diffusion coefficient prior mean value, in
 units of [length$^2$/time]. An order of magnitude estimate is good
-enough.\\ [0.5ex] \hline \texttt{prior\_Dstrength} & int & Strength of
-the diffusion coefficient prior. Recommended default value:
-5.\\ [0.5ex] \hline \texttt{prior\_tD} & real & Dwell time prior mean
-value, in units [time]. Must not be smaller than
+enough.\\ [0.5ex] \hline 
+'mean\_strength':
+\texttt{prior\_Dstrength} & int & Strength of the diffusion
+coefficient prior. Recommended default value: 5.\\ [0.5ex] 
+
+\hline\hline
+
+\texttt{prior\_type\_Pi} & string & Type of parameterization for
+initial state prior. Alternatives: 'flat' (default), and
+'const\_strength'. \\ [0.5 ex] \hline
+
+'flat': no parameteres needed. && A flat Dirichlet prior;
+$\tilde w_j^{(\vec{\pi})}=1$. \\ [0.5 ex] \hline
+
+const\_strength': \texttt{prior\_piStrength} & int & Prior strength $\tilde
+w_0^{(\vec{\pi})}$ for the initial state probability, , given in
+pseudocounts, $\tilde w_j^{(\vec{\pi})}=\tilde w_0^{(\vec{\pi})}/N$.
+Default value: 5.  \\ [0.5ex]
+
+\hline\hline
+
+\texttt{prior\_type\_A}& string & Type of parameterization for
+transition matrix. Alternatives: 'dwell\_Bflat' (default),
+'natmet13'.\\ [0.5 ex] \hline
+
+'dwell\_Bflat' & & Specifies mean value and standard deviation of the
+prior mean dwell times (same for all states) to specify $\tilde
+w_j^{(\vec{a})}$, and uses a flat Dirichlet prior for the rows of
+$\matris{B}$. \\ [0.5ex] \hline
+
+'dwell\_Bflat': \texttt{prior\_tD} & real & Dwell time
+prior mean value, in units [time]. Must not be smaller than
 \texttt{2*timestep}. Default: \texttt{10*timestep}. \\ [0.5ex] \hline
-\ML{\texttt{prior\_tDstd}} & real& Standard deviation of
-  prior mean dwell time, in units [time]. Set a high value for an
-  unformative (weak) prior. Default \texttt{100*timestep}.\\[1ex]
-%\texttt{prior\_tDstrength} & real & Strength of the transition
-%probability prior. Recommended default value:
-%\texttt{2*prior\_tD/timestep}\\ [1ex] % [1ex] adds vertical space
+
+'dwell\_Bflat': \texttt{prior\_tDstd} & real& Standard deviation of
+prior mean dwell time, in units [time]. Set a high value for an
+unformative (weak) prior. Default \texttt{100*timestep}.
+\\ [0.5ex] \hline
+
+'natmet13' & & Specifies a Dirichlet prior for all rows of the
+transition matrix $\matris{A}$ directly, via the mean dwell time and
+total strength $\tilde w_{j0}^{(\matris{A})}=\tilde
+w_{j0}^{(\vec{a})}$, while using a uniform prior for $\matris{B}$ with
+$\tilde w_{j0}^{(\matris{B})}=\tilde w_{j1}^{(\vec{a})}$.  \\ [0.5ex]
+\hline
+
+
+'natmet13': \texttt{prior\_tD} & real & Dwell time
+prior mean value, in units [time]. Must not be smaller than
+\texttt{2*timestep}. Default: \texttt{10*timestep}. \\ [0.5ex] \hline
+
+'natmet13': \texttt{prior\_tDstrength} & real & Strength of the transition
+probability prior. Recommended default value:
+\texttt{2*prior\_tD/timestep}\\ [1ex] % [1ex] adds vertical space
 \end{longtable}
-\ML{removed: \texttt{prior\_piStrength} and
-  \texttt{prior\_tDstrength}.}
 
 \newpage
 

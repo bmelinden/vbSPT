@@ -190,7 +190,7 @@ w_{j0}^{(\matris{B})}=w_{j2}^{(\vec{a})}-\tilde w_{j2}^{(\vec{a})}+\sum_{k\ne j}
 \end{equation}
 and would be equal (and moments of $A_{jk}$ simpler) if the priors
 were chosen such that $\sum_{k\ne j}\tilde
-w_{jk}^{(\matris{B})}=\tilde w_{j2}^{(\vec{a})}$. The point of
+w_{jk}^{(\matris{B})}=\tilde w_{j1}^{(\vec{a})}$. The point of
 reparameterizing $A_{ij}$ however, is to be able to choose priors such
 as this is not the case. Finally, mean dwell times (in units of
 $\Delta t$) is $\tau_j=a_j^{-1}$. This gives the variational density
@@ -272,21 +272,16 @@ distribution $q(s_{1:T-1})$. We now go on and derive the variational
 distribution for the hidden state and the E-step, to compute these
 averages.
 \subsection{Priors}
-The current version of the code lets the user specify a mean value and
-a prior strength for the diffusion constants, from which $\tilde c_j$
-and $\tilde n_j$ are computed, same for all model sizes.
-
-The prior for the initial state distribution is chosen as a flat
-Dirichlets, same for all model sizes, and the same is true for the
-jump probabilties, i.e., 
-$\tilde w_j^{(\vec{\pi})}=1$ and $\tilde w_{jk}^{(\matris{B})}=1$.
-
-Dwell time priors are specified by mean value and standard deviation
-of the prior dwell times, from which pseudocounts are computed using
-Eq.~\eqref{eq:wjka}.
-
-For more precise control of the priors, modify the
-function \texttt{VB3\_createPrior.m}.
+Directly specifying the parameters of the conjugate priors -- $\tilde
+c_j$, $\tilde n_j$, $\tilde w_j^{(\vec{\pi})}$, $\tilde
+w_j^{(\vec{a})}$ and $\tilde w_{jk}^{(\matris{B})}$ -- is often an
+unintuitive way to express ones prior beliefs. This version of the
+code therefore offers different alternatives in terms of, e.g.,
+moments of the prior distributions. Different ways to do this can be
+chosen via the \texttt{prior\_type\_X} variables in the runinput
+files, and more alternatives can be added by
+modifying \texttt{VB3\_createPrior.m}. See also
+table \ref{Tab:runinput} for details.
 
 \subsection{Hidden states}
 Collecting the terms in Eqs. \eqref{xmodel1b} and \eqref{smodel1b} that
