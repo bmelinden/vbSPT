@@ -182,7 +182,8 @@ while(runMore)
         for m=1:Ntrj
             % transitions and initial conditions
             W.M.wPi = W.M.wPi + W.E(m).wPi;
-            wB=W.E(m).wA.*(1-eye(W.N));
+            %wB=W.E(m).wA.*(1-eye(W.N));
+            wB=W.E(m).wA.*(1-eye(W.N)).*(W.PM.wB>0); % only allowed transitions included
             W.M.wa =  W.M.wa  + [sum(wB,2) diag(W.E(m).wA)];
             W.M.wB =  W.M.wB  + wB;
             % emission model part
@@ -364,14 +365,13 @@ while(runMore)
     KL_B=zeros(1,W.N);
     if(W.N>1) % B is only defined for N>1        
         for k=1:W.N
-            ind=setdiff(1:N,k); % only include non-diagonal elements
+            %ind=setdiff(1:N,k); % only include non-diagonal elements
+            ind=find(W.PM.wB(k,:)>0); % only include non-zero elements
             wB0=sum(W.M.wB(k,ind));
             uB0=sum(W.PM.wB(k,ind));
             KL_B(k)=gammaln(wB0)-gammaln(uB0)-(wB0-uB0)*psi(wB0)...
                 +sum((W.M.wB(k,ind)-W.PM.wB(k,ind)).*psi(W.M.wB(k,ind))...
                 -gammaln(W.M.wB(k,ind))+gammaln(W.PM.wB(k,ind)));
-            %-sum(gammaln(W.M.wA(k,:))-gammaln(W.PM.wA(k,:))...
-            %-(W.M.wA(k,:)-W.PM.wA(k,:)).*psi(W.M.wA(k,:)));
         end
     end
     W.Fterms.Bterms=-KL_B;
