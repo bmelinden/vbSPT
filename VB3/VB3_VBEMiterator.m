@@ -176,6 +176,7 @@ while(runMore)
         W.M.wPi = W.PM.wPi;
         W.M.wa =  W.PM.wa;
         W.M.wB =  W.PM.wB;
+        % emission model part
         W.M.n  = W.PM.n;
         W.M.c  = W.PM.c;
         for m=1:Ntrj
@@ -184,7 +185,7 @@ while(runMore)
             wB=W.E(m).wA.*(1-eye(W.N));
             W.M.wa =  W.M.wa  + [sum(wB,2) diag(W.E(m).wA)];
             W.M.wB =  W.M.wB  + wB;
-            % emission model
+            % emission model part
             W.M.n  = W.M.n  + W.E(m).n;
             W.M.c  = W.M.c  + W.E(m).c;
         end

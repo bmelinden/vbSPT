@@ -50,11 +50,6 @@ end
 %% Start of actual code
 res=load(opt.outputfile);
 
-%% Calculate transition matrix
-numStates = res.Wbest.N;
-A = res.Wbest.M.wA - res.Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
-A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
-
 %% Present results in the Matlab prompt
 
 disp(['The best global model for ' opt.runinputfile ':']);
@@ -68,7 +63,7 @@ disp(['Occupancy: ']);
 disp(num2str(res.Wbest.est.Ptot, 3));
 disp(sprintf('\n'));
 disp(['Transition matrix [per timestep]: ']);
-disp(num2str(A, 3));
+disp(num2str(res.Wbest.est.Amean, 3));
 
 
 end
