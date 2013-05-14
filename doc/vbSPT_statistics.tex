@@ -1,6 +1,6 @@
 In this chapter, we describe the statistical method used to analyze
 the data, with more details than the corresponding part of the
-supplementary information of the original paper \cite{Persson2012}.
+supplementary information of the original paper \cite{Persson2013}.
 
 %A detailed derivation, including translation tables to interpret the
 %analysis code, \FPR{is given in the vbSPT %software
@@ -150,7 +150,7 @@ F[q(\theta,s),x]=\ln p(x|N)
 -D_{KL}\big(q(\theta,s)||\frac{p(x,s|\theta,N)p(\theta|N)}{p(x|N)}\big).
 \end{multline}
 Hence, maximizing $F$ means minimizing the KL-divergence from $q^\dagger$ to
-$q$, and it follows from the properties of KL-divergencies\cite{KLdiv}
+$q$, and it follows from the properties of KL-divergencies\cite{wiki:KLdiv}
 that $q^\dagger$ is the only distribution that achieves the best bound
 $F=\ln p(x|N)$. 
 
@@ -182,7 +182,7 @@ HMMs \cite{Mackay1997,Beal2003,Bronson2009}, we solve these equations
 iteratively, by alternatingly updating $q(s)$ and $q(\theta)$ for fixed
 $q(\theta)$ and $q(s)$, respectively. The resulting algorithm greatly resembles the
 well-known expectation-maximization procedure for maximum-likelihood
-optimization in HMMs \cite{Ghahramani2002} (see
+optimization in HMMs \cite{Ghahramani2002,Rabiner1989,Baum1972} (see
 Sec.~\ref{Sec:derivation} for details).
 
 \subsection{Diffusion model}

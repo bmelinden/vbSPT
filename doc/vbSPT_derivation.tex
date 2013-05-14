@@ -139,8 +139,8 @@ w_{j2}^{(\vec{a})}=&\tilde w_{j2}^{(\vec{a})}
 with where $\tilde w_j^{(\vec{\pi})}$, $\tilde w_{jk}^{(\matris{B})}$,
 and $\tilde w_{jk}^{(\vec{a})}$ are pseudocounts in the prior
 distributions.  The total number of pseudocounts (for each
-distribution) is called the prior strength. The following
-average\cite{Beal2003} and mode values will be needed:
+distribution) is called the prior strength. The following average and
+mode values will be needed:
 \begin{align}
   \mean{\ln \pi_i}_{q(\vec{\pi})}=&\psi(w_i^{(\vec{\pi})})-\psi(w_0^{(\vec{\pi})}),
   &w_0^{(\vec{\pi})}=&\sum_{i=1}^Nw_i^{(\vec{\pi})},\label{lnpiaverage}\\
@@ -176,12 +176,12 @@ useful for parameter inference:
 \mean{A_{jj}}_{q(\vec{a})q(\matris{B})}=&
 \mean{1-a_j}=\frac{w_{j2}^{(\vec{a})}}{w_{j0}^{(\vec{a})}},&
 \mean{A_{jk}}_{q(\vec{a})q(\matris{B})}=&
-\frac{w_{j1}^{(\vec{a})}w_{jk}^{(\matris{B})}}{w_{j0}^{(\vec{a})}w_{j0}^{(\matris{B})}}.
+\frac{w_{j1}^{(\vec{a})}w_{jk}^{(\matris{B})}}{w_{j0}^{(\vec{a})}w_{j0}^{(\matris{B})}}.\label{Amean}
 \end{align}
 \begin{align}
-\Var[A_{jj}]=&\Var[1-a_j]=\Var[a_j],\\
+\Var[A_{jj}]=&\Var[1-a_j]=\Var[a_j],\nonumber\\
 \Var[A_{jk}]=&\mean{a_j^2B_{jk}^2}-\mean{a_jB_{jk}}^2
-        =\Var[a_j]\mean{B_{jk}^2}+\mean{a_j}^2\Var[B_{jk}].
+        =\Var[a_j]\mean{B_{jk}^2}+\mean{a_j}^2\Var[B_{jk}].\label{Avar}
 \end{align}
 Note that the transition counts
 for $\vec a$ and $\matris{B}$ are related via
@@ -463,7 +463,7 @@ $a_j$. There should be some way to really have $a_1=0$ for $N=1$.}
 It can happen that to distinct binding states have the same diffusion
 constant. Models that describe this are known as aggregated Markov
 models in the
-literature\cite{fredkin1986,kienker1989,bruno2005,flomenbom2006}. vbSPT
+literature\cite{Fredkin1986,Kienker1989,Bruno2005,Flomenbom2006}. vbSPT
 can fit aggregated models, but care must be taken, since aggregation
 can lead to unidentifiable models grouped in equivalnce classes, where
 each class is a set of models with different transition probabilities
@@ -491,7 +491,7 @@ contribution per aggregate.
 
 One suggested solution to the unidentifiability problem is to fit the
 data only to special members, canoncial
-forms\cite{kineker1989,bruno2005}, of each equivalence classes, where
+forms\cite{Kienker1989,Bruno2005}, of each equivalence classes, where
 certain transitions probabilities are set to zero, so as to make the
 remaining transition probabilities non-degenerate. vbSPT supports
 this, and transitions can be disallowed by adding zeros to the jump
@@ -500,7 +500,7 @@ the $i\to j$ transition is forbidden.
 
 There is no general recipe for which canoncial forms to use. It is
 generally assumed that the best choice is to find the canoncial form
-with the least number of free parameters\cite{kienker1989,bruno2005},
+with the least number of free parameters\cite{Kienker1989,Bruno2005},
 a problem that is not generally solved. From a Bayesian standpoint, I
 think the correct approach is instead to do the evidence integrals,
 parameter degeneracy or not, and then the problem is to integrate over
@@ -531,9 +531,12 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \ST  \verb+W.M.wPi(i)+ & $w^{(\vec\pi)}_i$        &
   \verb+W.PM.wPi(i)+& $\tilde w^{(\vec\pi)}_i$ & \eqref{VBM_pi} \\
   \hline
-\ST  \verb+W.M.wA(j,k)+ & $w^{(\matris{A})}_{jk}$        &
-  \verb+W.PM.wA(j,k)+& $\tilde w^{(\matris{A})}_{jk}$ & \eqref{VBM_A}\\
+\ST  \verb+W.M.wB(j,k)+ & $w^{(\matris{B})}_{jk}$        &
+  \verb+W.PM.wB(j,k)+& $\tilde w^{(\matris{B})}_{jk}$ & \eqref{VBM_B}\\
   \hline
+\ST  \verb+W.M.wa(j,k)+ & $w^{(\vec{a})}_{jk}$        &
+  \verb+W.PM.wa(j,k)+& $\tilde w^{(\vec{a})}_{jk}$ & \eqref{VBM_a}\\
+\hline
   \verb+W.M.n(j)+ & $n_j$ & 
   \verb+W.PM.n(j)+& $\tilde n_j$ & \eqref{VBM_gamma}\\
   \verb+W.M.c(j)+ & $c_j$ & \verb+W.PM.c(j)+ & $\tilde c_j$ & \\
@@ -548,7 +551,7 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \hline
 \ST  \verb+W.E(m).wPi(j)+ & $\mean{\delta_{j,s_1}}$ & \eqref{VBM_pi} \\
   \hline
-\ST  \verb+W.E(m).wA(j,k)+& $\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}$ & \eqref{VBM_A}\\
+\ST  \verb+W.E(m).wA(j,k)+& $\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}$ & \eqref{VBM_B},\eqref{VBM_a}\\
   \hline
 \ST  \verb+W.E(m).n(j) +  & $\frac d2\sum_{t=1}^{T-1}\mean{\delta_{j,s_t}}$ & \eqref{VBM_gamma}\\
   \hline
@@ -560,13 +563,15 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \hline
 \verb+W.N+ & Number of hidden states $N$.\\
 \hline
+\verb+W.SA+ & State $j$ is in aggregate \verb+W.SA(j)+.\\
+\hline
 \verb+W.F+ & Total lower bound $F$.\\
 \hline
 \verb+W.Fterms+ & Various contributions to $F$ (for debugging). \\
 \hline
 \verb+W.T(j)+ & Length of trajectory j. Note that this counts \\
-              &the number of steps, and hence trajectory j will\\
-              & contain \verb+W.T(j)++1 particle positions.\\
+              &the number of steps, and hence trajectory j will\\ &
+              contain \verb+W.T(j)++1 particle positions.\\
 \hline
 \end{tabular}\end{center}
 \item Interesting estimates are supplied to describe the output and
@@ -589,11 +594,9 @@ the VB3 code, with the matlab model object named \texttt{W}.
       \hline
 \ST       \verb+W.est.Ps+& \verb+W.est.Ts/sum(W.est.Ts)+ & \\
       \hline
-\ST       \verb+W.est.Amean(j,k)+& $\mean{A_{jk}}_{q(\matris(A)}$ & \eqref{Dirmean} \\
+\ST       \verb+W.est.Amean(j,k)+& $\mean{A_{jk}}_{q(\matris(A)}$ & \eqref{Amean} \\
       \hline
-\ST       \verb+W.est.Amode(j,k)+& $A^*_{jk\;q(\matris{A})}$& \eqref{Dirmode} \\
-      \hline
-\ST       \verb+W.est.Astd(j,k)+& $\std[A_{jk\;q(\matris{A})}]$ & \eqref{Dirvar} \\
+\ST       \verb+W.est.Astd(j,k)+& $\std[A_{jk\;q(\matris{A})}]$ & \eqref{Avar} \\
       \hline
 \ST       \verb+W.est.lnAmean(k,j)+&$e^{\verb+W.est.lnAmean+}=\mean{\matris{A}}$ & approx. rate matrix [$\Delta t^{-1}$]\\
       \hline
