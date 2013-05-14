@@ -569,9 +569,10 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \hline
 \verb+W.Fterms+ & Various contributions to $F$ (for debugging). \\
 \hline
-\verb+W.T(j)+ & Length of trajectory j. Note that this counts \\
-              &the number of steps, and hence trajectory j will\\ &
-              contain \verb+W.T(j)++1 particle positions.\\
+\verb+W.T(m)+ & Length of trajectory $m$. Note that this counts \\
+              &the number of positions, and hence trajectory j will\\
+              & contain \verb+W.T(m)-1+ steps, and \verb+W.T(m)-2+
+              transitions.\\
 \hline
 \end{tabular}\end{center}
 \item Interesting estimates are supplied to describe the output and
@@ -581,7 +582,7 @@ the VB3 code, with the matlab model object named \texttt{W}.
   contain quantities that are either large or expensive to compute,
   and therefore only supplied when the iterator algorithm is called
   with the \texttt{'estimate'} argument. When given, the index \texttt{m}
-  refers to trajectory number.
+  refers to trajectory number. \ML{Entries somewhat outdated.}
   
   \begin{center}\begin{tabular}{l|l|c}
       \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
