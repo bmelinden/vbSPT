@@ -161,8 +161,8 @@ for m=1:Ntrj
 end
 W.dim=dim;
 W.N=size(W.PM.wB,1);
-if(~isfield(W,'aggr')) % add default state aggregation (no aggregation)
-    W.aggre=1:W.N;
+if(~isfield(W,'SA')) % add default state aggregation (no aggregation)
+    W.SA=1:W.N;
 end
 %% initialize VBEM iterations
 runMore=true;
@@ -189,9 +189,14 @@ while(runMore)
             wB=W.E(m).wA.*(1-eye(W.N)).*(W.PM.wB>0); % only allowed transitions included
             W.M.wa =  W.M.wa  + [sum(wB,2) diag(W.E(m).wA)];
             W.M.wB =  W.M.wB  + wB;
-            % emission model part
-            W.M.n  = W.M.n  + W.E(m).n;
-            W.M.c  = W.M.c  + W.E(m).c;
+            % emission model part, with aggregated states
+            for a=1:max(W.SA)
+                % all states in aggregate a gets emission statistics from
+                % all states in the same aggregate
+                ind=find(a==W.SA); 
+                W.M.n(ind)  = W.M.n(ind)  + sum(W.E(m).n(ind));
+                W.M.c(ind)  = W.M.c(ind)  + sum(W.E(m).c(ind));
+            end
         end
         clear wB
         % check for problems
@@ -399,6 +404,11 @@ while(runMore)
         -W.M.n.*(1-W.PM.c./W.M.c)...
         -gammaln(W.M.n)+gammaln(W.PM.n)...
         +(W.M.n-W.PM.n).*psi(W.M.n);
+    % remove duplicate terms in each aggregate
+    for a=1:max(W.SA)
+       ind=find(a==W.SA);
+       KL_gj(ind(2:end))=0;
+    end
     W.Fterms.gTerms=-KL_gj;
     F=F-sum(KL_gj);
     if(~isfinite(F))

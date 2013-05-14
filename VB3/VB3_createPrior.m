@@ -83,7 +83,7 @@ end
 %% misc
 W.dim=opt.dim;
 W.N=N;
-W.aggr=1:N; % aggregate assignments
+W.SA=1:N; % aggregate assignments
 end
 %% more complicated prior choices
 function [n,c]=priorD_mean_strength(opt,N)

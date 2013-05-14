@@ -47,7 +47,6 @@ function M=VB3_createModel(D,A,p0,W0,dt,strength)
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
-error('VB3_createModel has not been converted to the new transition model yet.')
 %% check input parameters and size compatibility
 if(exist('dt','var') && ~isempty(dt) && length(dt)==1 && dt>0)
    Ddt=D*dt;
@@ -103,7 +102,11 @@ end
 %% compute M field
 M.n=ones(1,N)*strength;
 M.c=4*Ddt*(strength-1);
-M.wA=A*strength;
+wA=A*strength;
+
+M.wa=[sum(wA,2)-diag(wA) diag(wA)];
+M.wB=wA-diag(diag(wA));
+
 M.wPi=p0*strength;
 %clear strength Ddt D A p0
 
@@ -113,6 +116,10 @@ if(exist('W0','var')) % thgen we shall return an output model
     Wout.M=M;
     if(isfield(W0,'PM'))
         Wout.PM=W0.PM;
+        fn=fieldnames(W0.PM);
+        for n=1:length(fn)
+           Wout.M.(fn{n})=Wout.M.(fn{n})+Wout.PM.(fn{n});           
+        end
     end
     if(isfield(W0,'dim'))
         Wout.dim=W0.dim;
