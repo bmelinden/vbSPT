@@ -2,7 +2,8 @@ function W=VB3_createPrior(runinput,N)
 % W=V3_createPrior(runinput,N)
 %
 % Creates a model structure W with N states, and prior distributions
-% according to runinput, either a runinputfile or an options struct.
+% according to runinput, either a runinputfile or an options struct. By
+% default no aggregated states are generated.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,6 +83,7 @@ end
 %% misc
 W.dim=opt.dim;
 W.N=N;
+W.aggr=1:N; % aggregate assignments
 end
 %% more complicated prior choices
 function [n,c]=priorD_mean_strength(opt,N)

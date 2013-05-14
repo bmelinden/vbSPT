@@ -145,7 +145,7 @@ end
 C.iter    =0;
 C.converged=false;
 C.W0=W;
-%% preprocess the data
+%% preprocess the data and insert default aggregation
 Ntrj=length(X);
 dx2=cell(1,Ntrj);
 W.T=[];
@@ -161,6 +161,9 @@ for m=1:Ntrj
 end
 W.dim=dim;
 W.N=size(W.PM.wB,1);
+if(~isfield(W,'aggr')) % add default state aggregation (no aggregation)
+    W.aggre=1:W.N;
+end
 %% initialize VBEM iterations
 runMore=true;
 C.exitStatus='';

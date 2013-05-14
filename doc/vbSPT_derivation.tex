@@ -332,7 +332,7 @@ algorithm\cite{Rabiner1989,Baum1972}. As a side effect, one also
 obtains the normalization constant $Z_s$, which will be needed below
 when computing the lower bound $F$.
 
-\paragraph{Multiple trajectories:}
+\subsection{Multiple trajectories:}
 To analyze many trajectories, one tries to optimize the sum of the
 lower bounds for each trajectory with a single model. For the
 EM-iterations, this means that the parameters in the variational
@@ -458,6 +458,59 @@ $\mean{\ln\gamma_j}_{q(\gamma_j)}$.
 
 {\bf ML: still not quite satisfied with the $N=1$ limit of
 $a_j$. There should be some way to really have $a_1=0$ for $N=1$.}
+
+\subsection{Aggregated states}
+It can happen that to distinct binding states have the same diffusion
+constant. Models that describe this are known as aggregated Markov
+models in the
+literature\cite{fredkin1986,kienker1989,bruno2005,flomenbom2006}. vbSPT
+can fit aggregated models, but care must be taken, since aggregation
+can lead to unidentifiable models grouped in equivalnce classes, where
+each class is a set of models with different transition probabilities
+but with identical observable properties.
+
+This means that the extracted tranision probabilities are not unique,
+and also that the mean-field approximation might not work well, since
+the variational distributions might not approximate the complicated
+posterior density well.
+
+If two states $i,j$ are aggregated, they have the same diffusion
+constant. We implement that by defining $N_A\le N$ aggregated states,
+and assign each state to an aggregate. All states in an aggregate have
+identical diffusion constant variational distributions, enforced
+during the M-step by summing up expectation values from all states in
+the aggregate 
+\begin{equation}
+n_j=\tilde n_j+\sum_{t=1}^{T-1}\sum_{m\in \alpha(j)}\mean{\delta_{m,s_t}},\quad
+c_j=\tilde c_j+\sum_{t=1}^{T-1}\sum_{m\in \alpha(j)}
+           \mean{\delta_{m,s_t}}(\vec x_{t+1}-\vec x_t)^2,
+\end{equation}
+where $\alpha(j)$ is the set of states in the same aggregate as state
+$j$. In addition, the lower bound only gets one diffusion constant
+contribution per aggregate.
+
+One suggested solution to the unidentifiability problem is to fit the
+data only to special members, canoncial
+forms\cite{kineker1989,bruno2005}, of each equivalence classes, where
+certain transitions probabilities are set to zero, so as to make the
+remaining transition probabilities non-degenerate. vbSPT supports
+this, and transitions can be disallowed by adding zeros to the jump
+matrix pseudocount matrix: $\tilde w_{ij}^{(\matris{B})}=0$ means that
+the $i\to j$ transition is forbidden. 
+
+There is no general recipe for which canoncial forms to use. It is
+generally assumed that the best choice is to find the canoncial form
+with the least number of free parameters\cite{kienker1989,bruno2005},
+a problem that is not generally solved. From a Bayesian standpoint, I
+think the correct approach is instead to do the evidence integrals,
+parameter degeneracy or not, and then the problem is to integrate over
+a poentially complex set of degenerate transition probability
+values. I suspect that the variational approximation might be worse
+for this case than for identifiable models, but this remains to be
+tested.
+
+
+
 
 \subsection{Matlab notation}
 \label{Sec:matlabNotation}
