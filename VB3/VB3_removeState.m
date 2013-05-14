@@ -37,6 +37,7 @@ M.wPi=w.M.wPi(sk);
 M.n  =  w.M.n(sk);
 M.c  =  w.M.c(sk);
 M.wa =  w.M.wa(sk,:);
+M.SA =  w.M.SA(sk);
 
 % transfer observed transitions
 wB =w.M.wB -w.PM.wB;
@@ -47,7 +48,7 @@ M.wB=wB(sk,sk)+w.PM.wB(sk,sk)...
     +(toS*frS/sum(frS)+toS*frS/sum(toS)).*(1-eye(length(sk)));
 
 if(size(M.wa,1)==1) 
-    % then B and a are not defined in the model, but M.wa is still kept for
+    % B and a are not defined for only one state, but M.wa is still kept for
     % numerical ease (and is taken care of elswhere).
     M.wB=0;
 end

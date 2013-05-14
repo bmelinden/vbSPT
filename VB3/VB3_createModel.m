@@ -108,6 +108,8 @@ M.wa=[sum(wA,2)-diag(wA) diag(wA)];
 M.wB=wA-diag(diag(wA));
 
 M.wPi=p0*strength;
+
+M.SA=1:N;
 %clear strength Ddt D A p0
 
 % assemble result structure

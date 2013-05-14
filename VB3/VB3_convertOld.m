@@ -11,7 +11,7 @@ w=struct;
 
 w.dim=w0.dim;
 w.N=w0.N;
-
+w.M.SA=w0.M.SA;
 
 w.PM.n=w0.PM.n;
 w.PM.c=w0.PM.c;
