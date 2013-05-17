@@ -96,7 +96,8 @@ Dn=opt.prior_Dstrength;             % strength of diffusion constant prior
 
 % each emission variable gets same strength independent of model size
 n=Dn*ones(1,N);
-c=4*D0*timestep*(n-1); % match <D> rather than <1/D>.
+c=4*D0*timestep*n; % match <gamma>=<1/D> rather than <D>.
+
 end
 
 function [wa,wB]=priorA_dwell_Bflat(opt,N)
