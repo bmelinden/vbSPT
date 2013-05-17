@@ -96,7 +96,7 @@ Dn=opt.prior_Dstrength;             % strength of diffusion constant prior
 
 % each emission variable gets same strength independent of model size
 n=Dn*ones(1,N);
-c=4*D0*timestep*n; % match <gamma>=<1/D> rather than <D>.
+c=4*D0*timestep*n; % match <gamma>=<1/D> rather than <D> to avoid Inf
 
 end
 
@@ -105,7 +105,7 @@ function [wa,wB]=priorA_dwell_Bflat(opt,N)
 % dwell times, and uses a flat prior for each row of the jump matrix B.
 
 timestep=opt.timestep;          % sampling time step
-t0=opt.prior_tD/timestep;               % prior mean dwell time
+t0=opt.prior_tD/timestep;       % prior mean dwell time
 if(t0<1)
     error('VB3_createPrior/priorA_dwell_Bflat: prior dwell time must exceed sampling time step')
 end
