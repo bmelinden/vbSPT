@@ -539,8 +539,11 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \hline
   \verb+W.M.n(j)+ & $n_j$ & 
   \verb+W.PM.n(j)+& $\tilde n_j$ & \eqref{VBM_gamma}\\
-  \verb+W.M.c(j)+ & $c_j$ & \verb+W.PM.c(j)+ & $\tilde c_j$ & \\
-  \hline
+  \verb+W.M.c(j)+ & $c_j$ & \texttt{W.PM.c(j)} & $\tilde c_j$ & \\
+\hline
+  \verb+W.M.SA+ & \multicolumn{3}{l}{State $j$ is in
+  aggregate \texttt{W.M.SA(j)}.}&\\
+\hline
 \end{tabular}\end{center}
 
 \item Expectation values computed in the E-step are in the \texttt{W.E}
@@ -562,8 +565,6 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \begin{center}\begin{tabular}{l|l}
 \hline
 \verb+W.N+ & Number of hidden states $N$.\\
-\hline
-\verb+W.SA+ & State $j$ is in aggregate \verb+W.SA(j)+.\\
 \hline
 \verb+W.F+ & Total lower bound $F$.\\
 \hline
