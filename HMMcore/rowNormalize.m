@@ -14,7 +14,7 @@ end
 % rowNormalize.m
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n, E-mail: bmelinden@gmail.com
+% Copyright (C) 2012 Martin Lindén, E-mail: bmelinden@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This program is free software: you can redistribute it and/or modify it
 % under the terms of the GNU General Public License as published by the
