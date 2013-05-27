@@ -1,4 +1,4 @@
-function S=VBlogViterbi(lnQ,lnqst) 
+function S=VBviterbi_log0(lnQ,lnqst) 
 % S=VBlogViterbi(lnQ,lnqst) 
 % most likely trajectory by the Viterbi algorithm, using log of transition
 % matrix lnQ and emission likelihood lnqst. This is the matlab version of
@@ -29,5 +29,6 @@ S=zeros(T,1,'uint16');
 for tV=T-1:-1:1
     S(tV)=MaxPrev(tV+1,S(tV+1));
 end
+%disp(int2str(MaxPrev))
 end
 
