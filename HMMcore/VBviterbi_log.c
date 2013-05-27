@@ -93,12 +93,12 @@ void mexFunction(int nlhs, mxArray *plhs[],
     /*lnP1=lnqst(1,:)-mean(lnqst(1,:)); % initial probability, not normalized */
     Z=0.0;
     for(k=0;k<N;k++){
-        Z=Z+lnqst[k]/N;
+        Z=Z+lnqst[k*T]/N;
     }
     for(k=0;k<N;k++){
-        lnp1[k]=lnqst[k]-Z;
+        lnp1[k]=lnqst[k*T]-Z;
     }
-    for(t=0;t<T;t++){
+    for(t=1;t<T;t++){
         for(k=0;k<N;k++){/*lnP0=lnP1;lnP1=zeros(1,N);*/
             lnp0[k]=lnp1[k];
             lnp1[k]=0.0;
@@ -120,10 +120,11 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 }
             }
         }
+        
         Z=0.0;         /*lnP1=lnP1-mean(lnP1); % rescale*/
         for(k=0;k<N;k++){
             Z=Z+lnp1[k]/N;
-        }
+        }        
         for(k=0;k<N;k++){
             lnp1[k]=lnp1[k]-Z;
         }
