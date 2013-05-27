@@ -22,7 +22,7 @@
  
  If you use vbSPT please cite: "Person F,Lindén M, Unoson C, Elf J,
  Extracting intracellular reaction rates from single molecule tracking
- data, Nature Methods 2013"
+ data, Nature Methods 10, 265–269 (2013). doi:10.1038/nmeth.2367"
  
  You should have received a copy of the GNU General Public License
  along with this program. If not, see <http://www.gnu.org/licenses/>.
