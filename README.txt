@@ -29,3 +29,13 @@
 
  This product includes software developed and copyrighted by Martin
  Lindén (in HMMcore/, see copyright in individual files).
+
+ ----
+ updates:
+ v 1.0.1 (2013-05-31): bugfix release
+ - getDwellTRJ.m : consistent function name in m-file, and better handling 
+   trajectories with not all states present.
+ - VB3_HMManalysis.m : added functionaly to create non-existent target folders.
+ - VBviterbi_log.c   : fixed bug in viterbi algorithm.
+
+
