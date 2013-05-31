@@ -9,7 +9,7 @@ function res=VB3_getResult(runinput)
 % VB3_getResult.m, loads analysis results for the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

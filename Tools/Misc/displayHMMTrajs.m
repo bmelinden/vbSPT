@@ -1,4 +1,3 @@
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Script for visualize HMM model results in trajectory plots
 % Place this script and the plotc.m file in the experiment folder (where the 

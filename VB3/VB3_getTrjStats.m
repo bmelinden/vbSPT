@@ -23,7 +23,7 @@ function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 % VB3_getTrjStats, finds optimal model from known hidden state sequence
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

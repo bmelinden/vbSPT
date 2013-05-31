@@ -34,7 +34,7 @@ function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
 % VB3_bootstrap.m, runs a bootstrap analysis in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
