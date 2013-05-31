@@ -6,7 +6,7 @@
  questions can be found at 'sourceforge.net/projects/vbspt/'.
 
  ========================================================================= 
- Copyright (C) 2012 Martin Lindén, Fredrik Persson, and Johan Elf
+ Copyright (C) 2013 Martin Lindén, Fredrik Persson, and Johan Elf
  
  E-mail: 
  bmelinden@gmail.com, freddie.persson@gmail.com, johan.elf@gmail.com
