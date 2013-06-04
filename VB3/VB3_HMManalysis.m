@@ -92,15 +92,14 @@ disp('----------')
 %% set up model structure: prior distributions
 %% converge models
 % load data
+dat=VB3_preprocess(opt);
+
 X=VB3_readData(opt);
 maxHidden=opt.maxHidden;
 timestep=opt.timestep;
 
-nTot=0; % total number of time steps in data
-for n=1:length(X) % count total number of time steps
-    nTot=nTot+length(X{n})-1;
-end
-Ntrj=length(X); % number of trajectories
+nTot=length(dat.dx2); % total number of time steps in data
+Ntrj=length(dat.end); % number of trajectories
 
 Witer  =cell(1,opt.runs); % save all models generated in each run
 
@@ -112,7 +111,8 @@ if(opt.parallelize_config)
     eval(opt.parallel_start)
 end
 
-parfor iter=1:opt.runs    
+%parfor iter=1:opt.runs    
+for iter=1:opt.runs    %%% debug without parfor
     od=[]; tx0=[];
     % Greedy search strategy is probably more efficient than to start over
     % at each model size. We simply start with a large model, and
@@ -144,7 +144,8 @@ parfor iter=1:opt.runs
     
     
     % converge largest model
-    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+    w1=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+    w=VB3_VBEMiterator2(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %% greedy search
     
     Witer{iter}{1}=w;

@@ -1,7 +1,6 @@
 % script to draw distribution functions for the mean dwell time as a
 % function of average mean dwell time and strength
 
-
 tau=3;
 var=100*tau;
 
