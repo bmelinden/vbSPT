@@ -14,7 +14,7 @@ inputfile = './InputData/testdata_vbSPT.mat';
 trajectoryfield = 'finalTraj';
 
 % Computing strategy
-parallelize_config = 0;
+parallelize_config = 1;
 parallel_start = 'matlabpool open';  % executed before the parallelizable loop.
 parallel_end = 'matlabpool close'; % executed after the parallelizable loop.
 
