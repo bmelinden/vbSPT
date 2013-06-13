@@ -44,14 +44,14 @@ tstart=tic;
 if(ischar(runinputfile))
     if(exist(runinputfile,'file')==2)
         opt=VB3_getOptions(runinputfile);
-        disp(['Read runinput file ' runinputfile])
+        %disp(['Read runinput file ' runinputfile])
     else
        error(['Cannot find runinput file ' runinputfile '. Please check name and path.'])
     end
 elseif(isstruct(runinputfile))
     opt=runinputfile;
     runinputfile=opt.runinputfile;
-    disp(['Read options structure based on runinput file ' runinputfile ])
+    %disp(['Read options structure based on runinput file ' runinputfile ])
 else
     error('Could not find runinputfile or interpret runinputfile argument.')
 end
@@ -144,10 +144,9 @@ for iter=1:opt.runs    %%% debug without parfor
     
     
     % converge largest model
-    w1=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
-    w=VB3_VBEMiterator2(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+    w0=w;
+    w=VB3_VBEMiterator2(w0,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %% greedy search
-    
     Witer{iter}{1}=w;
     oneMoreTry=true;
     move=0;

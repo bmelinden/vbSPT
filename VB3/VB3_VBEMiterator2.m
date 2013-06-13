@@ -1,5 +1,5 @@
-function [W,C,F]=VB3_VBEMiterator(W,dat,varargin)
-%% [W,C,F]=VB3_VBEMiterator(W,dat,varargin)
+function [W,C,F]=VB3_VBEMiterator2(W,dat,varargin)
+%% [W,C,F]=VB3_VBEMiterator2(W,dat,varargin)
 %
 % Perform VBEM iterations, on the VB structure W, with data (structure)
 % X, until convergence. This version accepts d-dimensional data (T by d
@@ -439,7 +439,9 @@ while(runMore)
         W.est.DdtMode=W.M.c/4./(W.M.n+1);
         W.est.Ddtstd=W.M.c/4./(W.M.n-1)./sqrt(W.M.n-2);
 
-    
+        % occupation        
+        W.est.Ttot=sum(pst,1);
+        W.est.Ptot=W.est.Ttot/sum(W.est.Ttot);
 
         W.Fterms.Fterms=[ W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)];
         W.Fterms.FtermsNames='[lnZQ+lnZq+lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)]';
@@ -453,17 +455,28 @@ while(runMore)
             W.est2.pst=pst;
             W.est2.H=H;
             W.est2.lnH=lnH;
-            W.est2.lnHMax=West2lnHMax;
+            W.est2.lnHMax=lnHMax;
             [~,W.est2.sMaxP]=max(pst,[],2);
             W.est2.sMaxP=uint8(W.est2.sMaxP);
             W.est2.start=trjstarts;
             W.est2.end=dat.end;
-            W.est2.Ts=zeros(length(trjstarts,N));
-            W.est2.Ps=zeros(length(trjstarts,N));
+            W.est2.Ts=zeros(length(trjstarts),N);
+            W.est2.Ps=zeros(length(trjstarts),N);
             for m=1:length(trjstarts)
                 W.est2.Ts(m,:)=sum(pst(trjstarts(m):dat.end(m),:),1); % time spent in each state
-                W.est2.Ps(m,:)=WestTs(m,:)/sum(WestTs(m,:));
+                W.est2.Ps(m,:)=W.est2.Ts(m,:)/sum(W.est2.Ts(m,:));
             end
+            
+            try
+                W.est.lnAmean=logm(W.est.Amean);
+                W.est.lnAmode=logm(W.est.Amode);
+                W.est.lnA_error='none';
+            catch me
+                W.est.lnAmean=0*W.est.Amean;
+                W.est.lnAmode=0*W.est.Amean;
+                W.est.lnA_error=me;
+            end
+            W.est2.viterbi=uint8(HMM_multiViterbi_log(W.est.lnQ,W.est2.lnH,dat.end)); % Viterbi path
         end
     end
 end
@@ -473,28 +486,11 @@ if(displayExit) % display exit message
     displayConvergence();
     fprintf('%s \n',C.exitStatus)
 end
-%% some large estimates that can be done on the last iteration.
-if(do_estimates)
-    try
-        W.est.lnAmean=logm(W.est.Amean);
-        W.est.lnAmode=logm(W.est.Amode);
-        W.est.lnA_error='none';
-    catch me
-        W.est.lnAmean=0*W.est.Amean;
-        W.est.lnAmode=0*W.est.Amean;
-        W.est.lnA_error=me;
-    end
-    for m=1:Ntrj
-        W.est2.viterbi{m}=uint8(VBviterbi_log(W.est.lnQ,W.est2.lnH{m})); % Viterbi path
-    end    
-end
 %% slim down the model, on request, by deleting the bulky E-field
 if(do_slim)
     W=rmfield(W,'E');
     W.est=rmfield(W.est,{'Ts','Ps'});
 end
-
-
 %% auxiliary functions
     function dFminus=displayConvergence()
         fprintf('%02d % 5d % 0.2e ',[W.N C.iter C.dFrel]);

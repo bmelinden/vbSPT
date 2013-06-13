@@ -73,7 +73,7 @@ VB3_license('VB3_generateSynthData')
 %% Define filenames and paths
 p = mfilename('fullpath');
 [p, ~, ~] = fileparts(p);
-resPath = [p filesep 'generatedData' filesep];
+resPath = [p filesep ];%'generatedData' filesep];
 oldFold = cd(resPath);
 cont = what;
 ind = length(cont.mat)+1;
