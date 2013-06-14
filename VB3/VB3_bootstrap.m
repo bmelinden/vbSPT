@@ -1,5 +1,5 @@
 function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
-% [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,wbs0)
+% [wbs,Wmean,Wstd]=VB3_bootstrap(W,dat,opt,NB,wbs0)
 %
 % Run NB bootstrap fits starting from model W and data X. Each bootstrap
 % fit resamples the data with replacement, and then converges the VB3 model
@@ -34,7 +34,7 @@ function [wbs,Wmean,Wstd]=VB3_bootstrap(W,X,opt,NB,varargin)
 % VB3_bootstrap.m, runs a bootstrap analysis in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,10 +79,12 @@ parfor k=1:NB
         ind=sort(ceil(L*rand(1,L))); % sample with replacement
     end
     %disp(['bootstrap iter ' int2str(k) ' 1'])
+    % produce resampled data set
     Y=X(ind);
+    dat=VB3_preprocess(Y,opt.dim);
     
     %disp(['bootstrap iter ' int2str(k) ' 2'])
-    ww=VB3_VBEMiterator(W,Y,'outputLevel',0,'maxIter',opt.maxIter,...
+    ww=VB3_VBEMiterator2(W,dat,'outputLevel',0,'maxIter',opt.maxIter,...
         'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %disp(['bootstrap iter ' int2str(k) ' 3'])    
     wbs(k).M=ww.M;
