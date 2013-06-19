@@ -198,9 +198,10 @@ if(nargin>1)        % parse options
             if(~isempty(varargin{k+1}))
                 occProb=varargin{k+1};
                 [m, ~] = size(occProb);
-                if(~isnumeric(occProb) | occProb<=0 | m ~= 1 | sum(occProb) ~= 1)
+                if(~isnumeric(occProb) |  ~isempty(find(occProb<=0,1)) | m ~= 1 | abs(sum(occProb)-1)>1e-14)
                     error('VB3_synthData: occProb option must be followed by a 1*N numeric array which sums up to 1 or [].')
                 end
+                occProb=occProb/sum(occProb);
             else
                 do_steadystate = true;
             end
