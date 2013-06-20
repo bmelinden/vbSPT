@@ -284,11 +284,12 @@ end
 
 
 %% Plot the trajectory length distribution
-figure(1);
-clf
-hist(trajLengths,0:100);
+%figure(1);
+%clf
+%hist(trajLengths,0:100);
 
 %% List the parameters
+format compact
 runs
 do_steadystate
 do_parallel

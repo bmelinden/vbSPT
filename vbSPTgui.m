@@ -64,7 +64,7 @@ hFig = figure(...
 
 %Font name
 font = 'Ariel';
-fontsize = 13;
+fontsize = 12;
 
 if ispc || isunix 
     fontsize = fontsize*(72/96); 
@@ -99,7 +99,7 @@ set(hObject,'Name','Create Runinputfile');
 
 
 % Dimensions for panels
-panelWidth = 450;
+panelWidth = 500;
 panelHeight = 325;
 
 delim = 10;
@@ -534,7 +534,7 @@ uicontrol(...
     'HorizontalAlignment','left',...
     'String','Advanced users can find additional settings in the generated script.',...
     'FontName', varargin{end} ,...
-    'Position',[x4-ew y12 lw 1.5*lh],...
+    'Position',[x1 y12 lw*2 1.5*lh],... % x4-ew
     'Tag','mR_SP_info');
 
 end
@@ -1233,14 +1233,35 @@ try
     stateEstimate;
     init_D;
     init_tD;
-    prior_piStrength;
-    prior_D;
-    prior_Dstrength;
-    prior_tD;
-    prior_tDstrength;
 
+    % prior settings are not conserved anyway, so might as well be ignored.
+    %prior_type_D;
+    %if(strcmp(prior_type_D,'mean_strength'))
+    %    prior_D;
+    %    prior_Dstrength;
+    %else
+    %   warning(['vbSPTgui: non-stadnard prior_type_D = '  prior_type_D ' not recognized.'])
+    %end
+
+    %prior_type_Pi;
+    %if(strcmp(prior_type_Pi,'flat'))
+    %else
+    %   warning(['vbSPTgui: non-standard prior_type_Pi = '  prior_type_Pi ' not recognized.'])
+    %end    
+    %prior_piStrength;
+
+    %prior_type_A;
+    %if(strcmp(prior_type_A,'dwell_Bflat'))
+    %    prior_tD;
+    %    prior_tDstd;
+    %else
+    %   warning(['vbSPTgui: non-standard prior_type_A = '  prior_type_D ' not recognized.'])   
+%end
+    
 catch err
-    warndlg(['vbSPTgui : ' filename ' does not appear to be a valid runinputfile with all required variables, aborting.']);
+    warndlg(['vbSPTgui : ' filename ' does not appear to be a valid ' ...
+        'runinputfile with all required variables. Aborting. ' ...
+        'Error message : ' err.message]);
     return;
 end
 
