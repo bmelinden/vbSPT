@@ -10,8 +10,12 @@ A_{ij}=\delta_{ij}(1-a_i)+(1-\delta_{ij})a_iB_{ij}=
 \end{equation}
 with constraints
 \begin{equation}
-0\le a_j\le 1,\quad B_{ii}=0,\quad \sum_{j\ne i}B_{ij}=1.
+0\le a_j\le 1,\quad B_{ii}=0,\quad \sum_{j\ne i}B_{ij}=1,
 \end{equation}
+that is, $a_i=p(s_{t+1}\ne i|s_t=i)$ is the probability to exit state $i$, and
+$B_{ij}=p(s_{t+1}=j|s_t=i,i\ne j)$ is a matrix of jump probabilities,
+conditional on a jump actually occuring.
+
 
 To start with, we will combine the model
 Eqs. (\ref{eq:efactor1}-\ref{xmodel1}) with the new parameterization,

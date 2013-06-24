@@ -50,7 +50,9 @@ if(length(ind0)~=W.N || sum(ind0==1:W.N)~=W.N)
 end
 clear ind0;
 %% actual code
-% fields the do not need reordering
+
+
+% fields that do not need reordering
 W1.dim= W.dim;
 W1.N  = W.N;
 W1.T  = W.T;
@@ -72,6 +74,10 @@ for a=1:length(f)
         end        
         if(C==W.N)
             ci=ind;
+        end
+        if(strcmp(g{b},'wa')) % special case: only rows of wa should be sorted
+            ri=ind;
+            ci=1:2;
         end
         W1.(f{a}).(g{b})=F.(g{b})(ri,ci);        
     end
