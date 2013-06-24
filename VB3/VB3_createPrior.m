@@ -67,7 +67,7 @@ end
 %% initial state prior
 if(strcmp(opt.prior_type_Pi,'flat'))
     W.PM.wPi=ones(1,N); % flat initial state distribution
-elseif(strcmp(opt.prior_type_Pi,'const_strength'))
+elseif(strcmp(opt.prior_type_Pi,'natmet13'))
     W.PM.wPi=ones(1,N)*opt.prior_piStrength/N; % the choice used in the nat. meth. 2013 paper.
 else
     error(['VB3_createPrior: did not recognize prior_type_Pi : ' opt.prior_type_Pi])

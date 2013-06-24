@@ -62,7 +62,7 @@ prior_tDstd = 100*prior_tD;  % standard deviation of prior dwell times [s].
 
 % alternative prior choices
 
-%prior_type_Pi = 'const_strength';
+%prior_type_Pi = 'natmet13';
 %prior_piStrength = 5;  % prior strength of initial state distribution (assumed uniform) in pseudocounts.
 
 %prior_type_A = 'natmet13';
