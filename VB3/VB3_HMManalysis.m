@@ -145,7 +145,7 @@ parfor iter=1:opt.runs
     
     % converge largest model
     w0=w;
-    w=VB3_VBEMiterator2(w0,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+    w=VB3_VBEMiterator(w0,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %% greedy search
     Witer{iter}{1}=w;
     oneMoreTry=true;
@@ -161,7 +161,7 @@ parfor iter=1:opt.runs
                 w=VB3_createPrior(opt,w0.N-1);
                 w.M=VB3_removeState(w0,h(k));
                 try
-                    w=VB3_VBEMiterator2(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                    w=VB3_VBEMiterator(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                 catch me
                     disp('VB3_HMManalysis encountered an error:')
                     disp(me.message)
@@ -190,7 +190,7 @@ parfor iter=1:opt.runs
                         w=rmfield(w,'E');
                     end
                     try
-                        w=VB3_VBEMiterator2(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                        w=VB3_VBEMiterator(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                     catch me
                         disp('VB3_HMManalysis encountered an error:')
                         disp(me.message)
@@ -229,7 +229,7 @@ parfor iter=1:opt.runs
                     w=rmfield(w,'E');
                 end
                 try
-                    w=VB3_VBEMiterator2(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                    w=VB3_VBEMiterator(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                 catch me
                     disp('VB3_HMManalysis encountered an error:')
                     disp(me.message)
@@ -278,13 +278,13 @@ end
 % regenerate unsorted fields
 disp('Sorting and regenerating best model and estimates')
 if(opt.stateEstimate)
-    Wbest=VB3_VBEMiterator2(Wbest,dat,'estimate','maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
+    Wbest=VB3_VBEMiterator(Wbest,dat,'estimate','maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
 else
-    Wbest=VB3_VBEMiterator2(Wbest,dat,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
+    Wbest=VB3_VBEMiterator(Wbest,dat,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
 end
 parfor k=1:length(WbestN)
     if(WbestN{k}.F>-inf);
-        WbestN{k}=VB3_VBEMiterator2(WbestN{k},dat,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+        WbestN{k}=VB3_VBEMiterator(WbestN{k},dat,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     end
 end
 %

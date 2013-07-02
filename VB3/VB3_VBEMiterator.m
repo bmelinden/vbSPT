@@ -1,5 +1,5 @@
-function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
-%% [W,C,F]=VB3_VBEMiterator(W,X,varargin)
+function [W,C,F]=VB3_VBEMiterator(W,dat,varargin)
+%% [W,C,F]=VB3_VBEMiterator(W,dat,varargin)
 %
 % Perform VBEM iterations, on the VB structure W, with data (structure)
 % X, until convergence. This version accepts d-dimensional data (T by d
@@ -36,17 +36,17 @@ function [W,C,F]=VB3_VBEMiterator(W,X,varargin)
 %                    memory
 % W.est2           : more memory intensensive estimates
 %
-% This function uses mex files from HMMcore for the computer intensive
-% inner loops: VB_forwardbackward.mexXXX VB_wAcount.mexXX, where XXX is a
-% platform dependent extension. Please refer to HMMcore/compile_code.m to
-% (re)compile for your system.
+% This function uses the mex file HMM_multiForwardBackward.mexXXX from
+% HMMcore for the computer intensive nner loops, where XXX is a platform
+% dependent extension. Please refer to HMMcore/compile_code.m to
+% (re)compile for your system. 
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VB3_VBEMiterator, variational EM iterations in the vbSPT package
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -146,21 +146,12 @@ C.iter    =0;
 C.converged=false;
 C.W0=W;
 %% preprocess the data and insert default aggregation
-Ntrj=length(X);
-dx2=cell(1,Ntrj);
-W.T=[];
-dim0=size(X{1},2);
-for m=1:Ntrj
-    dx2{m}=sum(diff(X{m},1,1).^2,2);
-    [W.T(m),dim]=size(X{m});
-    %W.T(m)=W.T(m)-1;
-    if(dim~=dim0)
-        error('VB3_ddim: all trajectories must have the same dimensionality (=same number of columns)')
-    end
-    dim0=dim;
-end
-W.dim=dim;
-W.N=size(W.PM.wB,1);
+%%%Ntrj=length(X);
+%%%dx2=cell(1,Ntrj);
+W.T=dat.T;
+W.dim=dat.dim;
+N=size(W.PM.wB,1);
+W.N=N;
 if(~isfield(W.M,'SA')) % add default state aggregation (no aggregation)
     W.M.SA=1:W.N;
 end
@@ -169,41 +160,38 @@ runMore=true;
 C.exitStatus='';
 Wm3=[];Wm2=[];Wm1=[];
 %% iterate
-E(1:Ntrj)=struct;
+E=struct;
+E.wPi=zeros(1,N);
+E.wA=zeros(N,N);
+E.n=zeros(1,N);
+E.c=zeros(1,N);
 while(runMore)
     % keep a short history in case something goes wrong...
     Wm3=Wm2;Wm2=Wm1;Wm1=W;
     %try % try one round of VBEM iterations
     %% M-step: contributions from all trajectories are added
     if(isfield(W,'E')) % then start with M step
-        W.M.wPi = W.PM.wPi;
-        W.M.wa =  W.PM.wa;
-        W.M.wB =  W.PM.wB;
-        % emission model part
-        W.M.n  = W.PM.n;
-        W.M.c  = W.PM.c;
-        for m=1:Ntrj
-            % transitions and initial conditions
-            W.M.wPi = W.M.wPi + W.E(m).wPi;
-            %wB=W.E(m).wA.*(1-eye(W.N));
-            wB=W.E(m).wA.*(1-eye(W.N)).*(W.PM.wB>0); % only allowed transitions included
-            W.M.wa =  W.M.wa  + [sum(wB,2) diag(W.E(m).wA)];
-            W.M.wB =  W.M.wB  + wB;
-            % emission model part, with aggregated states
-            for a=1:max(W.M.SA)
-                % all states in aggregate a gets emission statistics from
-                % all states in the same aggregate
-                ind=find(a==W.M.SA); 
-                W.M.n(ind)  = W.M.n(ind)  + sum(W.E(m).n(ind));
-                W.M.c(ind)  = W.M.c(ind)  + sum(W.E(m).c(ind));
-            end
+        
+        % transitions and initial conditions
+        W.M.wPi = W.PM.wPi + W.E.wPi;
+        wB=W.E.wA.*(1-eye(W.N)).*(W.PM.wB>0); % only allowed transitions included
+        W.M.wa =  W.PM.wa  + [sum(wB,2) diag(W.E.wA)];
+        W.M.wB =  W.PM.wB  + wB;
+
+        % emission model part, with aggregated states
+        for a=1:max(W.M.SA)
+            % all states in aggregate a gets emission statistics from
+            % all states in the same aggregate
+            ind=find(a==W.M.SA);
+            W.M.n(ind)  = W.PM.n(ind)  + sum(W.E.n(ind));
+            W.M.c(ind)  = W.PM.c(ind)  + sum(W.E.c(ind));
         end
-        clear wB
-        % check for problems
-        isNanInf=(sum(~isfinite([W.M.wPi W.M.wa(1:end) W.M.wB(1:end) W.M.n  W.M.c]))>1);
-        if(isNanInf)
-            error('VB1_VBEMiter:Mfield_not_finite','Nan/Inf generated in VBM step')
-        end
+    end
+    clear wB
+    % check for problems
+    isNanInf=(sum(~isfinite([W.M.wPi W.M.wa(1:end) W.M.wB(1:end) W.M.n  W.M.c]))>1);
+    if(isNanInf)
+        error('VB1_VBEMiter:Mfield_not_finite','Nan/Inf generated in VBM step')
     end
     %% E-steps starts here
     % coupling matrix is the same for all trajectories
@@ -224,129 +212,62 @@ while(runMore)
     % for estimates of transition rates and dwell times: s(t)
     W.est.Q=Q;
     W.est.lnQ=lnQ;
-
-    % here starts a weird optimization scheme that makes it possible to run
-    % the loop m=1:Ntrj in parallell. However, it turned out that most of
-    % the speedup remained even in serial mode, perhaps it is expensive to
-    % use nested struct vector constructs?
-    lnH1=psi(W.M.wPi)-psi(sum(W.M.wPi)); % initial state probability
-    clear lnH H lnH0
+    
+    lnH1=psi(W.M.wPi)-psi(sum(W.M.wPi)); % initial state probability    
     T=W.T;N=W.N;dim=W.dim;
     WMn=W.M.n;
     WMc=W.M.c;
-    WestTs=zeros(Ntrj,W.N);WestPs=zeros(Ntrj,W.N);
-    lnZQ=zeros(1,Ntrj);lnZq=zeros(1,Ntrj);lnZz=zeros(1,Ntrj);
-    West2lnHMax=cell(1,Ntrj);
-    West2pst=cell(1,Ntrj); 
-    West2H=cell(1,Ntrj); 
-    West2lnH=cell(1,Ntrj);
-    West2sMaxP=cell(1,Ntrj);
-    for m=1:Ntrj
-        %% trial emission priobability q(s,t)
-        % variational pointwise contributions, notation as in ML1 notes
-        % except perhaps an off-by-one difference in time index
 
-        % we compute log(H) first, and then exponentiate
-        lnH0=dim/2*(psi(WMn)-log(pi*WMc)); % same for all t
-        lnH  =zeros(T(m)-1,N);
-        for j=1:N
-            lnH(:,j)=lnH0(j)-WMn(j)/WMc(j)*dx2{m};
-        end
-        lnH(1,:)=lnH(1,:)+lnH1;
-        lnHMax=max(lnH,[],2);
-        H=zeros(T(m)-1,N);
-        for j=1:N % now we compute the actual pointwise emission contribution
-            H(:,j)=exp(lnH(:,j)-lnHMax);
-        end
-        %% forward sweep  (depends only on Q and H)
-        [Za,alpha,~,beta,pst]=VB_forwardbackward(Q,H);
-        % compute quantities for next M-steps, same as VB5      
-        %% transition counts
-        E(m).wPi=pst(1,:);          % <s_1>=<\delta_{j,s_1}>_{q(s)}
-        E(m).wA =VB_wAcount(alpha,beta,H,Q);
-        %% for the emission models
-        E(m).n=dim/2*sum(pst,1);   % sum_{t=2}^T p(s_t)
-        E(m).c=zeros(1,N);             % sum_{t=2}^T P(s(t)=j,c(t)=1).*dx(t)^2
-        for j=1:N
-            E(m).c(j)=sum(pst(:,j).*dx2{m});
-        end
-        %% check for problems
-        %isNanInf=(sum(~isfinite([E(m).n E(m).c]))>1);
-        %if(isNanInf)
-        %    error('VB2_VBEMiter:Efield_not_finite','Nan/Inf generated in VBE step')
-        %end
-        % forward sweep normalization constant (same as VB3)
-        lnZQ(m)=(T(m)-2)*lnQmax;
-        lnZq(m)=sum(lnHMax);
-        lnZz(m)=sum(log(Za));
-        % trajectory specific light-weight estimates (always)
-        % occupation probabilities
-        WestTs(m,:)=sum(pst,1); % time spent in each state 
-        WestPs(m,:)=WestTs(m,:)/sum(WestTs(m,:));
-        %% potentially demanding estimates (only if asked, and only on last iteration)
-        if(do_estimates)
-            West2pst{m}=pst;
-            West2H{m}=H;
-            West2lnH{m}=lnH;
-            [~,West2sMaxP{m}]=max(pst,[],2);
-            West2sMaxP{m}=uint8(West2sMaxP{m});
-        end                
+    %% trial emission priobability q(s,t)
+    % variational pointwise contributions, notation as in ML1 notes
+    % except perhaps an off-by-one difference in time index
+        
+    trjStarts=[1 dat.end(1:end-1)+1];
+    trjEnds=dat.end;
+    
+    % we compute log(H) first, and then exponentiate
+    lnH1=psi(W.M.wPi)-psi(sum(W.M.wPi)); % initial state probability
+    lnH0=dim/2*(psi(WMn)-log(pi*WMc));   % data-independent term, same for all t
+    lnH  =zeros(length(dat.dx2),N); % data-dependent terms
+    for j=1:N
+        lnH(:,j)=lnH0(j)-W.M.n(j)/W.M.c(j)*dat.dx2;        
+        lnH(trjStarts,j)=lnH(trjStarts,j)+lnH1(j);
     end
-    for m=1:Ntrj
-        % check for problems
-        isNanInf=(sum(~isfinite([E(m).n E(m).c]))>1);
-        if(isNanInf)
-            error('VB2_VBEMiter:Efield_not_finite','Nan/Inf generated in VBE step')
-        end
+    lnHMax=max(lnH,[],2);
+    H=zeros(length(dat.dx2),N);
+    for j=1:N % now we compute the actual pointwise emission contribution
+        H(:,j)=exp(lnH(:,j)-lnHMax);
+    end 
+    %% forward sweep  (depends only on Q and H)
+    [lnZz,E.wA,pst]=HMM_multiForwardBackward(Q,H,trjEnds);
+    % forward sweep normalization constant (same as VB3)
+    lnZQ=(sum(dat.T-2))*lnQmax;
+    lnZq=sum(lnHMax);
+
+    % compute quantities for next M-step
+    %% transition counts
+    E.wPi=sum(pst(trjStarts,:),1);          % <s_1>=<\delta_{j,s_1}>_{q(s)}    
+    % E.wA: already done!
+    %% for the emission models
+    E.n=dim/2*sum(pst,1);   % sum_{t=2}^T p(s_t)
+    E.c=zeros(1,N);             % sum_{t=2}^T P(s(t)=j,c(t)=1).*dx(t)^2
+    for j=1:N
+        E.c(j)=sum(pst(:,j).*dat.dx2);
     end
     W.E=E;
-    W.Fterms.lnZQ=lnZQ;
-    W.Fterms.lnZq=lnZq;
-    W.Fterms.lnZz=lnZz;
-    W.est.Ts=WestTs;
-    W.est.Ps=WestPs;
-    W.est.Ptot=sum(WestTs)/sum(sum(WestTs)); % total average
-    if(do_estimates)
-        W.est2.lnHMax=West2lnHMax;
-        W.est2.pst   =West2pst;
-        W.est2.H     =West2H;
-        W.est2.lnH   =West2lnH;
-        W.est2.sMaxP =West2sMaxP;
-        clear West2lnHMax West2pst West2H West2lnH
-    end
-    % global light-weight estimates (always)
-    wa0=sum(W.M.wa,2);
-    W.est.aMean=W.M.wa(:,1)./wa0;
-    W.est.aMode=(W.M.wa(:,1)-1)./(wa0-2);
-    W.est.aVar=W.M.wa(:,1).*W.M.wa(:,2)./(wa0.^2.*(1+wa0));    
-    
-    wB0=sum(W.M.wB,2)*ones(1,W.N);
-    eyeB=1-eye(W.N);
-    W.est.Bmean=W.M.wB./wB0;
-    W.est.Bmode=(W.M.wB-1+eye(W.N))./(wB0-W.N+1);
-    W.est.Bvar=W.M.wB.*(wB0.*eyeB-W.M.wB)./(wB0.^2.*(1+wB0));
-    B2=W.M.wB.*(eyeB+W.M.wB)./(wB0.*(1+wB0));  % <Bjk^2>  
-    
-    W.est.Amean=diag(W.M.wa(:,2)./sum(W.M.wa,2))...
-        +(W.M.wa(:,1)./sum(W.M.wa,2)./sum(W.M.wB,2))*ones(1,W.N).*W.M.wB;
-    %W.est.Amode : have not figured that one out yet (ML 2014-05.02)
-    W.est.Astd=diag(W.est.aVar)...
-        +(W.est.aVar*ones(1,W.N)).*B2...
-        +(W.est.aMean.^2*ones(1,W.N)).*W.est.Bvar;    
-        
-    W.est.dwellMean=1./W.est.aMean;
-    W.est.dwellMode=wa0./(1+W.M.wa(:,1));
-    clear wB0 eyeB B2 wa0
+    %% check for problems
+    %isNanInf=(sum(~isfinite([E(m).n E(m).c]))>1);
+    %if(isNanInf)
+    %    error('VB2_VBEMiter:Efield_not_finite','Nan/Inf generated in VBE step')
+    %end
 
-    % emission parameters
-    W.est.gMean=W.M.n./W.M.c;
-    W.est.gMode=(W.M.n-1)./W.M.c;
-    W.est.gStd=sqrt(W.M.n./W.M.c.^2); % sqrt(Var(g))
-    W.est.DdtMean=W.M.c/4./(W.M.n-1);
-    W.est.DdtMode=W.M.c/4./(W.M.n+1);
-    W.est.Ddtstd=W.M.c/4./(W.M.n-1)./sqrt(W.M.n-2);
+    % check for problems
+    isNanInf=(sum(~isfinite([E.n E.c]))>1);
+    if(isNanInf)
+        error('VB2_VBEMiter:Efield_not_finite','Nan/Inf generated in VBE step')
+    end
     %% assemble free energy
-    F=sum(W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz);
+    F=lnZQ+lnZq+lnZz;
     if(~isfinite(F))
         error('VB3_VBEM: F not finite (lnZ)')
     end    
@@ -415,11 +336,12 @@ while(runMore)
         error('VB3_VBEM: F not finite (KL_gj)')
     end
     %% assembly of the free energy
-    W.F=F;
-    W.Fterms.Fterms=[ W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)];
-    W.Fterms.FtermsNames='[lnZQ+lnZq+lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)]';
+    W.F=F;    
+    W.Fterms.lnZQ=lnZQ;
+    W.Fterms.lnZq=lnZq;
+    W.Fterms.lnZz=lnZz;
+            
     if(~isfinite(W.F))
-        disp(W.Fterms)
         error('VB_VBEMiter:F_not_finite','Nan/Inf generated in lower bound')
     end
     %catch me
@@ -484,6 +406,88 @@ while(runMore)
             C.exitStatus='';
         end
     end
+    %% estimates (only last iteration)
+    if(~runMore)
+        
+        % global light-weight estimates (always)
+        wa0=sum(W.M.wa,2);
+        W.est.aMean=W.M.wa(:,1)./wa0;
+        W.est.aMode=(W.M.wa(:,1)-1)./(wa0-2);
+        W.est.aVar=W.M.wa(:,1).*W.M.wa(:,2)./(wa0.^2.*(1+wa0));
+        
+        wB0=sum(W.M.wB,2)*ones(1,W.N);
+        eyeB=1-eye(W.N);
+        W.est.Bmean=W.M.wB./wB0;
+        W.est.Bmode=(W.M.wB-1+eye(W.N))./(wB0-W.N+1);
+        W.est.Bvar=W.M.wB.*(wB0.*eyeB-W.M.wB)./(wB0.^2.*(1+wB0));
+        B2=W.M.wB.*(eyeB+W.M.wB)./(wB0.*(1+wB0));  % <Bjk^2>
+        
+        W.est.Amean=diag(W.M.wa(:,2)./sum(W.M.wa,2))...
+            +(W.M.wa(:,1)./sum(W.M.wa,2)./sum(W.M.wB,2))*ones(1,W.N).*W.M.wB;
+        %W.est.Amode : have not figured that one out yet (ML 2014-05.02)
+        W.est.Astd=diag(W.est.aVar)...
+            +(W.est.aVar*ones(1,W.N)).*B2...
+            +(W.est.aMean.^2*ones(1,W.N)).*W.est.Bvar;
+        
+        W.est.dwellMean=1./W.est.aMean;
+        W.est.dwellMode=wa0./(1+W.M.wa(:,1));
+        clear wB0 eyeB B2 wa0
+        
+        % emission parameters
+        W.est.gMean=W.M.n./W.M.c;
+        W.est.gMode=(W.M.n-1)./W.M.c;
+        W.est.gStd=sqrt(W.M.n./W.M.c.^2); % sqrt(Var(g))
+        W.est.DdtMean=W.M.c/4./(W.M.n-1);
+        W.est.DdtMode=W.M.c/4./(W.M.n+1);
+        W.est.Ddtstd=W.M.c/4./(W.M.n-1)./sqrt(W.M.n-2);
+
+        % occupation        
+        W.est.Ttot=sum(pst,1);
+        W.est.Ptot=W.est.Ttot/sum(W.est.Ttot);
+
+        W.Fterms.Fterms=[ W.Fterms.lnZQ+W.Fterms.lnZq+W.Fterms.lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)];
+        W.Fterms.FtermsNames='[lnZQ+lnZq+lnZz -sum(KL_a) -sum(KL_B) -sum(KL_pi) -sum(KL_gj)]';
+
+        
+        
+        W.est.Ts=sum(pst,1);
+        W.est.Ps=W.est.Ts/sum(W.est.Ts);
+        %% potentially demanding estimates (only if asked)
+        if(do_estimates)
+            % extract trajectory estimates
+            Wviterbi=uint8(HMM_multiViterbi_log(lnQ,lnH,trjEnds)); % Viterbi path
+            [~,WsMaxP]=max(pst,[],2);
+            
+            for kk=1:length(trjStarts)
+                W.est2.pst{kk}    =           pst(trjStarts(kk):trjEnds(kk),:);
+                W.est2.H{kk}      =             H(trjStarts(kk):trjEnds(kk),:);
+                W.est2.lnH{kk}    =           lnH(trjStarts(kk):trjEnds(kk),:);
+                W.est2.lnHMax{kk} =        lnHMax(trjStarts(kk):trjEnds(kk),:);
+                W.est2.sMaxP{kk}  =uint8(  WsMaxP(trjStarts(kk):trjEnds(kk)));
+                W.est2.viterbi{kk}=uint8(Wviterbi(trjStarts(kk):trjEnds(kk)));
+                %W.est2.start=trjstarts;
+                %W.est2.end=trjEnds;
+            end
+            clear Wviterbi WsMaxP
+            
+            W.est2.Ts=zeros(length(trjStarts),N);
+            W.est2.Ps=zeros(length(trjStarts),N);
+            for m=1:length(trjStarts)
+                W.est2.Ts(m,:)=sum(pst(trjStarts(m):trjEnds(m),:),1); % time spent in each state
+                W.est2.Ps(m,:)=W.est2.Ts(m,:)/sum(W.est2.Ts(m,:));
+            end
+            
+            try
+                W.est.lnAmean=logm(W.est.Amean);
+                W.est.lnAmode=logm(W.est.Amode);
+                W.est.lnA_error='none';
+            catch me
+                W.est.lnAmean=0*W.est.Amean;
+                W.est.lnAmode=0*W.est.Amean;
+                W.est.lnA_error=me;
+            end
+        end
+    end
 end
 %% exit message
 if(displayExit) % display exit message
@@ -491,28 +495,11 @@ if(displayExit) % display exit message
     displayConvergence();
     fprintf('%s \n',C.exitStatus)
 end
-%% some large estimates that can be done on the last iteration.
-if(do_estimates)
-    try
-        W.est.lnAmean=logm(W.est.Amean);
-        W.est.lnAmode=logm(W.est.Amode);
-        W.est.lnA_error='none';
-    catch me
-        W.est.lnAmean=0*W.est.Amean;
-        W.est.lnAmode=0*W.est.Amean;
-        W.est.lnA_error=me;
-    end
-    for m=1:Ntrj
-        W.est2.viterbi{m}=uint8(VBviterbi_log(W.est.lnQ,W.est2.lnH{m})); % Viterbi path
-    end    
-end
 %% slim down the model, on request, by deleting the bulky E-field
 if(do_slim)
     W=rmfield(W,'E');
     W.est=rmfield(W.est,{'Ts','Ps'});
 end
-
-
 %% auxiliary functions
     function dFminus=displayConvergence()
         fprintf('%02d % 5d % 0.2e ',[W.N C.iter C.dFrel]);

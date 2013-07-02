@@ -84,7 +84,7 @@ parfor k=1:NB
     dat=VB3_preprocess(Y,opt.dim);
     
     %disp(['bootstrap iter ' int2str(k) ' 2'])
-    ww=VB3_VBEMiterator2(W,dat,'outputLevel',0,'maxIter',opt.maxIter,...
+    ww=VB3_VBEMiterator(W,dat,'outputLevel',0,'maxIter',opt.maxIter,...
         'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %disp(['bootstrap iter ' int2str(k) ' 3'])    
     wbs(k).M=ww.M;
