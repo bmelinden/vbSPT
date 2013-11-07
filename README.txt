@@ -31,12 +31,17 @@
  Lindén (in HMMcore/, see copyright in individual files).
 
  =========================================================================
- v 1.1
+v 1.1 (2013-11-08): 
+ - better representation of data leads to a significantly faster
+   execution (~10-fold on our test data).
+ - A new parameterization of the transition rates, allowing more
+   flexible priors (for advanced user, see manual).
+
 Changes since v1.1 -- beta 1
  - reverted to natmet13 as the default prior
  - updated VB3_displayHMMmodel and VB3_getTrjStats to the new model format.
  - deleted VB3_reorder.m (obsolete, replaced by VB3_sortModel.m)
-
+--------------------------------------------------------------------------
 v 1.1 -- beta 1
 Changes since v 1.0 (Nat. Meth. 2013)
  - bugfix in HMMcore/getDwellTRJ.m
