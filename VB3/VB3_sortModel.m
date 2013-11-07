@@ -14,7 +14,7 @@ function W1=VB3_sortModel(W,ind)
 % VB3_sortModel.m, reorders state indices of models in the vbSPT package.
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

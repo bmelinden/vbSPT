@@ -16,14 +16,14 @@ function [M,Ptot,Ntot]=VB3_getTrjStats(X,dim,stateColumn,trjLmin)
 %
 % trjLmin: minimum trajectory length (default 2)
 % The current code cannot handle more than 100 states.
-%
+% 2013-11-07: Uppdated to give fields for 1.1-models as well.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VB3_getTrjStats, finds optimal model from known hidden state sequence
 % =========================================================================
 % 
-% Copyright (C) 2012 Martin Lind??n and Fredrik Persson
+% Copyright (C) 2013 Martin Lindén and Fredrik Persson
 % 
 % E-mail: bmelinden@gmail.com, freddie.persson@gmail.com
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,6 +96,8 @@ end
 M.n=n(1:N);
 M.c=c(1:N);
 M.wA=wA(1:N,1:N);
+M.wB=M.wA.*(1-eye(N));
+M.wa=[sum(M.wB,2) diag(M.wA)];
 M.wPi=wPi(1:N);
 Ntot=Ptot(1:N);
 Ptot=Ptot(1:N)/sum(Ptot(1:N));
