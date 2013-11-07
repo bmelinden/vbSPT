@@ -1,5 +1,4 @@
-function S=HMM_multiViterbi_log_m(lnQ,lnH,iEnd) 
-% S=VBlogViterbi(lnQ,lnqst,iEnd) 
+% function S=HMM_multiViterbi_log_m(lnQ,lnH,iEnd) 
 % most likely trajectories by the Viterbi algorithm, using a one-array
 % representation of many trajectories, and the log of transition
 % matrix lnQ and emission likelihood lnH. This is the matlab version of
@@ -8,6 +7,32 @@ function S=HMM_multiViterbi_log_m(lnQ,lnH,iEnd)
 
 % ML 2013-05-27
 
+%% copyright notice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% rHMM_multiViterbi_log_m.m, part of HMMcore/
+% =========================================================================
+% 
+% Copyright (C) 2013 Martin Lindén, E-mail: bmelinden@gmail.com
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software: you can redistribute it and/or modify it
+% under the terms of the GNU General Public License as published by the
+% Free Software Foundation, either version 3 of the License, or any later
+% version.   
+% This program is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+% Public License for more details.
+% 
+% Additional permission under GNU GPL version 3 section 7
+% 
+% If you modify this Program, or any covered work, by linking or combining it
+% with Matlab or any Matlab toolbox, the licensors of this Program grant you 
+% additional permission to convey the resulting work.
+%
+% You should have received a copy of the GNU General Public License along
+% with this program. If not, see <http://www.gnu.org/licenses/>.
+%% start of actual code
+function S=HMM_multiViterbi_log_m(lnQ,lnH,iEnd) 
 [T,N]=size(lnH);
 % algorithm version without large lnpt array
 lnPP=zeros(1,N);
@@ -42,28 +67,5 @@ for n=1:length(iEnd)
     
     tStart=tEnd+1;
 end
-%% copyright notice
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% rHMM_multiViterbi_log_m.m, part of HMMcore/
-% =========================================================================
-% 
-% Copyright (C) 2013 Martin Lindén, E-mail: bmelinden@gmail.com
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This program is free software: you can redistribute it and/or modify it
-% under the terms of the GNU General Public License as published by the
-% Free Software Foundation, either version 3 of the License, or any later
-% version.   
-% This program is distributed in the hope that it will be useful, but
-% WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-% Public License for more details.
-% 
-% Additional permission under GNU GPL version 3 section 7
-% 
-% If you modify this Program, or any covered work, by linking or combining it
-% with Matlab or any Matlab toolbox, the licensors of this Program grant you 
-% additional permission to convey the resulting work.
-%
-% You should have received a copy of the GNU General Public License along
-% with this program. If not, see <http://www.gnu.org/licenses/>.
+
 

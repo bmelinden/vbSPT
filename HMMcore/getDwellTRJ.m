@@ -14,7 +14,7 @@ function [STATE,DWELL,Dstart,Dend,wA]=getDwellTRJ(s,spurious,Nmax)
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% getDwellTRJ.m
+% getDwellTRJ.m, part of HMMcore/
 % =========================================================================
 % 
 % Copyright (C) 2013 Martin Linden, E-mail: bmelinden@gmail.com

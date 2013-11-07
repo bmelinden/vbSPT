@@ -54,15 +54,15 @@ prior_type_D = 'mean_strength';
 prior_D = 1e6;         % prior diffusion constant [length^2/time] in same length units as the input data.
 prior_Dstrength = 5;   % strength of diffusion constant prior, number of pseudocounts (positive).
 
-%% new prior choices
-prior_type_Pi = 'flat';
-prior_type_A = 'dwell_Bflat';
-prior_tD = 10*timestep;      % prior dwell time in [s]. Must be greater than timestep (recommended > 2*timestep)
-prior_tDstd = 100*prior_tD;  % standard deviation of prior dwell times [s]. 
+%% default prior choices (according nat. meth. 2013 paper)
+prior_type_Pi = 'natmet13';
+prior_piStrength = 5;  % prior strength of initial state distribution (assumed uniform) in pseudocounts.
+prior_type_A = 'natmet13';
+prior_tD = 10*timestep;      % prior dwell time in [s].
+prior_tDstrength = 2*prior_tD/timestep;  % transition rate strength (number of pseudocounts). Recommended to be at least 2*prior_tD/timestep.
 
-%% old prior choices (according nat. meth. 2013 paper)
-%prior_type_Pi = 'natmet13';
-%prior_piStrength = 5;  % prior strength of initial state distribution (assumed uniform) in pseudocounts.
-%prior_type_A = 'natmet13';
-%prior_tD = 10*timestep;      % prior dwell time in [s].
-%prior_tDstrength = 2*prior_tD/timestep;  % transition rate strength (number of pseudocounts). Recommended to be at least 2*prior_tD/timestep.
+%% new prior choices (for advanced users, as they are not yet systematically tested)
+%prior_type_Pi = 'flat';
+%prior_type_A = 'dwell_Bflat';
+%prior_tD = 10*timestep;      % prior dwell time in [s]. Must be greater than timestep (recommended > 2*timestep)
+%prior_tDstd = 100*prior_tD;  % standard deviation of prior dwell times [s].
