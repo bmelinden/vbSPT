@@ -35,6 +35,7 @@
 Changes since v1.1 -- beta 1
  - reverted to natmet13 as the default prior
  - updated VB3_displayHMMmodel and VB3_getTrjStats to the new model format.
+ - deleted VB3_reorder.m (obsolete, replaced by VB3_sortModel.m)
 
 v 1.1 -- beta 1
 Changes since v 1.0 (Nat. Meth. 2013)
