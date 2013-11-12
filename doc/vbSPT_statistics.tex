@@ -132,21 +132,36 @@ and then make use of Jensen's inequality to write
     -q(\theta,s) \ln q(\theta,s)
     \Big]\equiv F[q(\theta,s),x].
 \end{multline}
-This inequality is true for any distribution $q(\theta,s)$. Note that
-if we use the calculus of variations to directly optimize $F$ with
-respect to $q(\theta,s)$ subject to a normalization constraint (since
+This inequality is true for any distribution $q(\theta,s)$. If we use
+the calculus of variations to directly optimize $F$ with respect to
+$q(\theta,s)$ subject to a normalization constraint (since
 $q(\theta,s)$ is a probability distribution), we find
-$q^*(\theta,s)=\frac{p(x,s|\theta,N)p(\theta|N)}{p(x|N)}$. Substituting
-back in Eq.~\eqref{eq:F1}, we then get
-$F[q^*,x]=p(x|N)$, \textit{i.e.} the original intractable problem.
+$q^\dagger(\theta,s)=\frac{p(x,s|\theta,N)p(\theta|N)}{p(x|N)}$. Substituting
+back in Eq.~\eqref{eq:F1}, we then get $F[q^\dagger,x]=\ln
+p(x|N)$, \textit{i.e.} the original intractable problem.
+
+Moreover, we can rewrite the second line of \Eq{eq:F1} as the evidence
+minus a Kullback-Leibler divergence,
+\begin{multline}
+F[q(\theta,s),x]=\ln p(x|N)
+-\int d\theta\sum_s q(\theta,s) 
+\ln \frac{q(\theta,s)}{\frac{1}{p(x|N)}p(x,s|\theta,N)p(\theta|N)}\\
+=\ln p(x|N)
+-D_{KL}\big(q(\theta,s)||\frac{p(x,s|\theta,N)p(\theta|N)}{p(x|N)}\big).
+\end{multline}
+Hence, maximizing $F$ means minimizing the KL-divergence from $q^\dagger$ to
+$q$, and it follows from the properties of KL-divergencies\cite{wiki:KLdiv}
+that $q^\dagger$ is the only distribution that achieves the best bound
+$F=\ln p(x|N)$. 
 
 To make this a useful approximation, we place restrictions on the
 variational distribution $q(\theta,s)$. Our approximate model
 selection will be to prefer the model for which the tightest bound $F$
-can be found within that restricted function space, and we can also
-use the corresponding optimal distribution $q^*(\theta,s)$ for
-approximate inference about the parameter values and hidden
-states\cite{Mackay2003, Bishop2006}.
+can be found within that restricted function space. KL-divergencies
+are not proper metrics, but have enough metric-like properties to
+motivate using the corresponding optimal distribution $q^*(\theta,s)$
+for approximate inference about the parameter values and hidden
+states, not only model selection\cite{Mackay2003, Bishop2006}.
 
 A useful restriction is that of separable distribution
 $q(\theta,s)\approx
@@ -167,7 +182,7 @@ HMMs \cite{Mackay1997,Beal2003,Bronson2009}, we solve these equations
 iteratively, by alternatingly updating $q(s)$ and $q(\theta)$ for fixed
 $q(\theta)$ and $q(s)$, respectively. The resulting algorithm greatly resembles the
 well-known expectation-maximization procedure for maximum-likelihood
-optimization in HMMs \cite{Ghahramani2002} (see
+optimization in HMMs \cite{Ghahramani2002,Rabiner1989,Baum1972} (see
 Sec.~\ref{Sec:derivation} for details).
 
 \subsection{Diffusion model}

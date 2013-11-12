@@ -30,12 +30,20 @@
  This product includes software developed and copyrighted by Martin
  Lindén (in HMMcore/, see copyright in individual files).
 
- ----
- updates:
+ =========================================================================
+v 1.1 (2013-11-12): code speed-up
+ - better representation of data leads to a significantly faster
+   execution (~10-fold on our test data).
+ - A new parameterization of the transition rates, allowing more
+   flexible priors for advanced users (See manual). For non-advanced
+   users, the old priors (Nat. Meth 2013 paper) are still default.
+ - updated VB3_displayHMMmodel and VB3_getTrjStats to the new model format.
+ - deleted VB3_reorder.m (obsolete, replaced by VB3_sortModel.m)
+--------------------------------------------------------------------------
  v 1.0.1 (2013-05-31): bugfix release
  - getDwellTRJ.m : consistent function name in m-file, and better handling 
    trajectories with not all states present.
- - VB3_HMManalysis.m : added functionaly to create non-existent target folders.
+ - VB3_HMManalysis.m : added functionaly to create non-existent target
+   folders.
  - VBviterbi_log.c   : fixed bug in viterbi algorithm.
-
-
+--------------------------------------------------------------------------

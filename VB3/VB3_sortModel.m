@@ -50,7 +50,9 @@ if(length(ind0)~=W.N || sum(ind0==1:W.N)~=W.N)
 end
 clear ind0;
 %% actual code
-% fields the do not need reordering
+
+
+% fields that do not need reordering
 W1.dim= W.dim;
 W1.N  = W.N;
 W1.T  = W.T;
@@ -58,12 +60,7 @@ W1.F  =W.F;
 % reorder some fields
 f={'PM','M','est'};
 %g={'wPi','n','c'};
-for a=1:length(f)
-    %W1.(f{a}).wA=W.(f{a}).wA(ind,ind);
-    %for b=1:length(g)
-    %   W1.(f{a}).(g{b})=W.(f{a}).(g{b})(ind);        
-    %end
-    
+for a=1:length(f)    
     F=W.(f{a});
     g=fieldnames(F);
     for b=1:length(g)
@@ -77,6 +74,10 @@ for a=1:length(f)
         end        
         if(C==W.N)
             ci=ind;
+        end
+        if(strcmp(g{b},'wa')) % special case: only rows of wa should be sorted
+            ri=ind;
+            ci=1:2;
         end
         W1.(f{a}).(g{b})=F.(g{b})(ri,ci);        
     end

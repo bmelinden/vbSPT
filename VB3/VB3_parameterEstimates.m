@@ -34,21 +34,33 @@ function est=VB3_parameterEstimates(M)
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-
+%% actual code
 N=length(M.wPi);
-% global light-weight estimates (always)
-est.Amean=zeros(size(M.wA));
-est.Astd=zeros(size(M.wA));
-est.Amode=zeros(size(M.wA));
-a0=sum(M.wA,2);
-for k=1:N
-    est.Amean(k,:)=M.wA(k,:)/a0(k);
-    est.Astd(k,:)=sqrt((M.wA(k,:).*(a0(k)-M.wA(k,:)))./(a0(k)^2*(1+a0(k))));
-    est.Amode(k,:)=(M.wA(k,:)-1)/(a0(k)-N);
-end
 
-est.dwellMean=1./(1-diag(est.Amean));
-est.dwellMode=1./(1-diag(est.Amode));
+% global light-weight estimates (always)
+wa0=sum(M.wa,2);
+est.aMean=M.wa(:,1)./wa0;
+est.aMode=(M.wa(:,1)-1)./(wa0-2);
+est.aVar=M.wa(:,1).*M.wa(:,2)./(wa0.^2.*(1+wa0));
+
+wB0=sum(M.wB,2)*ones(1,N);
+eyeB=1-eye(N);
+est.Bmean=M.wB./wB0;
+est.Bmode=(M.wB-1+eye(N))./(wB0-N+1);
+est.Bvar=M.wB.*(wB0.*eyeB-M.wB)./(wB0.^2.*(1+wB0));
+B2=M.wB.*(eyeB+M.wB)./(wB0.*(1+wB0));  % <Bjk^2>
+
+est.Amean=diag(M.wa(:,2)./sum(M.wa,2))...
+    +(M.wa(:,1)./sum(M.wa,2)./sum(M.wB,2))*ones(1,N).*M.wB;
+%est.Amode : have not figured that one out yet (ML 2014-05.02)
+est.Astd=diag(est.aVar)...
+    +(est.aVar*ones(1,N)).*B2...
+    +(est.aMean.^2*ones(1,N)).*est.Bvar;
+
+est.dwellMean=1./est.aMean;
+est.dwellMode=wa0./(1+M.wa(:,1));
+clear wB0 eyeB B2 wa0
+
 % emission parameters
 est.gMean=M.n./M.c;
 est.gMode=(M.n-1)./M.c;
@@ -56,3 +68,6 @@ est.gStd=sqrt(M.n./M.c.^2); % sqrt(Var(g))
 est.DdtMean=M.c/4./(M.n-1);
 est.DdtMode=M.c/4./(M.n+1);
 est.Ddtstd=M.c/4./(M.n-1)./sqrt(M.n-2);
+
+
+

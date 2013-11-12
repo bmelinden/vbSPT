@@ -7,7 +7,7 @@ function VB3_displayHMMmodel(runinput)
 % 'Open file' dialogue. It shows the result for the globally best model,
 % however in the code you can set what modelsize should be shown.
 %
-
+% Updated to 1.1 model format 2013-11-07 ML.
 
 
 %% copyright notice
@@ -116,12 +116,15 @@ if modelSize == 0;
     
     occTot = Wbest.est.Ptot(ind);       % Total occupation percentage
     dwellTime = Wbest.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state
-    
-    A = Wbest.M.wA - Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
-    A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
+
+    % extract pure transition counts from 1.1 model
+    wA=diag(Wbest.M.wa(:,2)-Wbest.PM.wa(:,2))+ Wbest.M.wB - Wbest.PM.wB;
+    A=rowNormalize(wA);    
+    %A = Wbest.M.wA - Wbest.PM.wA;   %The transition probability matrix with the prior values subtracted
+    %A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
     transitions = A(ind, ind);
     
-elseif exist('WbestN', 'var') & modelSize<=length(WbestN)
+elseif exist('WbestN', 'var') && modelSize<=length(WbestN)
     numStates = WbestN{modelSize}.N;
     
     [diffCoeff, ind] = sort(WbestN{modelSize}.est.DdtMean./timeStep/LscaleFactor); % Mean diff. coeff in um^2/s provided the data is in nm
@@ -130,8 +133,12 @@ elseif exist('WbestN', 'var') & modelSize<=length(WbestN)
     occTot = WbestN{modelSize}.est.Ptot(ind);       % Total occupation percentage
     dwellTime = WbestN{modelSize}.est.dwellMean(ind)'*timeStep;     % Mean dwelltime in each state
     
-    A = WbestN{modelSize}.M.wA - WbestN{modelSize}.PM.wA;   %The transition probability matrix with the prior values subtracted
-    A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
+    % extract pure transition counts from 1.1 model
+    wA=diag(WbestN{modelSize}.M.wa(:,2)-WbestN{modelSize}.PM.wa(:,2)) ...
+        + (WbestN{modelSize}.M.wB - WbestN{modelSize}.PM.wB);
+    A=rowNormalize(wA);
+    %A = WbestN{modelSize}.M.wA - WbestN{modelSize}.PM.wA;   %The transition probability matrix with the prior values subtracted
+    %A = spdiags (sum (A,2), 0, numStates, numStates) \ A; % Rownormalize the matrix
     transitions = A(ind, ind);
 else
     error(['VB3_displayHMMmodel: Could not find the best model of size ' modelSize '.']);

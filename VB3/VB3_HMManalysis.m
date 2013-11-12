@@ -44,14 +44,14 @@ tstart=tic;
 if(ischar(runinputfile))
     if(exist(runinputfile,'file')==2)
         opt=VB3_getOptions(runinputfile);
-        disp(['Read runinput file ' runinputfile])
+        %disp(['Read runinput file ' runinputfile])
     else
        error(['Cannot find runinput file ' runinputfile '. Please check name and path.'])
     end
 elseif(isstruct(runinputfile))
     opt=runinputfile;
     runinputfile=opt.runinputfile;
-    disp(['Read options structure based on runinput file ' runinputfile ])
+    %disp(['Read options structure based on runinput file ' runinputfile ])
 else
     error('Could not find runinputfile or interpret runinputfile argument.')
 end
@@ -92,15 +92,14 @@ disp('----------')
 %% set up model structure: prior distributions
 %% converge models
 % load data
-X=VB3_readData(opt);
+dat=VB3_preprocess(opt);
+
+%X=VB3_readData(opt);
 maxHidden=opt.maxHidden;
 timestep=opt.timestep;
 
-nTot=0; % total number of time steps in data
-for n=1:length(X) % count total number of time steps
-    nTot=nTot+length(X{n})-1;
-end
-Ntrj=length(X); % number of trajectories
+nTot=length(dat.dx2); % total number of time steps in data
+Ntrj=length(dat.end); % number of trajectories
 
 Witer  =cell(1,opt.runs); % save all models generated in each run
 
@@ -113,6 +112,7 @@ if(opt.parallelize_config)
 end
 
 parfor iter=1:opt.runs    
+%for iter=1:opt.runs    %%% debug without parfor
     od=[]; tx0=[];
     % Greedy search strategy is probably more efficient than to start over
     % at each model size. We simply start with a large model, and
@@ -122,24 +122,31 @@ parfor iter=1:opt.runs
     w=VB3_createPrior(opt,maxHidden);
     w0=w;
     %% initial guess
-    w.M.wPi=w.PM.wPi+Ntrj*ones(1,maxHidden)/maxHidden; % uniform initial state distr.
-    
-    ntD=opt.init_tD/timestep;                               % init dwell time interval
-    ntD=exp(log(ntD(1))+diff(log(ntD))*rand(1,maxHidden)); % log(ntD) has flat distribution
-    A0=diag(1-1./ntD)*eye(maxHidden)+diag(1./ntD/(maxHidden-1))*(ones(maxHidden,maxHidden)-eye(maxHidden));
-    w.M.wA=w.PM.wA+nTot*A0;
-    %clear ntD A0;
-    
     w.M.n=w.PM.n+nTot*ones(1,maxHidden);
     Ddt=opt.init_D*timestep;
     Ddt=exp(log(Ddt(1))+diff(log(Ddt))*rand(1,maxHidden)); % log(Ddt) has flat distribution
     w.M.c=w.M.n*4.*Ddt;
     %clear Ddt
+
+    w.M.wPi=w.PM.wPi+Ntrj*ones(1,maxHidden)/maxHidden; % uniform initial state distr.
+    
+    ntD=opt.init_tD/timestep;                               % init dwell time interval
+    ntD=exp(log(ntD(1))+diff(log(ntD))*rand(1,maxHidden));  % log(ntD) has flat distribution
+    A0=diag(1-1./ntD)*eye(maxHidden)+diag(1./ntD/(maxHidden-1))*(ones(maxHidden,maxHidden)-eye(maxHidden));
+    A0=nTot*A0;
+    % diagonal and non-diagonal part
+    A0diag=diag(diag(A0));
+    A0nond=A0-A0diag;
+    
+    w.M.wB=w.PM.wB+A0nond;
+    w.M.wa=w.PM.wa+[sum(A0nond,2) sum(A0diag,2)];
+    %clear ntD A0;
+    
     
     % converge largest model
-    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+    w0=w;
+    w=VB3_VBEMiterator(w0,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     %% greedy search
-    
     Witer{iter}{1}=w;
     oneMoreTry=true;
     move=0;
@@ -154,7 +161,7 @@ parfor iter=1:opt.runs
                 w=VB3_createPrior(opt,w0.N-1);
                 w.M=VB3_removeState(w0,h(k));
                 try
-                    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                    w=VB3_VBEMiterator(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                 catch me
                     disp('VB3_HMManalysis encountered an error:')
                     disp(me.message)
@@ -177,13 +184,13 @@ parfor iter=1:opt.runs
                     %disp(['Iter ' int2str(iter) ': simple removal did not help. Trying to add some extra transitions'])
                     w=VB3_createPrior(opt,w0.N-1);
                     w.M=VB3_removeState(w0,h(k));
-                    od=mean(mean((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
-                    w.M.wA= diag(diag(w.M.wA))+od*(1-eye(w.N));
+                    od=max(max(w.M.wB-w.PM.wB)); % largest off-diagonal element
+                    w.M.wB=od*(1-eye(w.N));
                     if(isfield(w,'E')) % make sure that the new M field is used
                         w=rmfield(w,'E');
                     end
                     try
-                        w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                        w=VB3_VBEMiterator(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                     catch me
                         disp('VB3_HMManalysis encountered an error:')
                         disp(me.message)
@@ -216,13 +223,13 @@ parfor iter=1:opt.runs
             if(w0.N>1)
                 tx0=tic;
                 w=w0;
-                od=mean(mean((w.M.wA-w.PM.wA).*(1-eye(w.N)))); % largest off-diagonal element
-                w.M.wA= diag(diag(w.M.wA))+od*(1-eye(w.N));
+                od=max(max(w.M.wB-w.PM.wB)); % largest off-diagonal element
+                w.M.wB=od*(1-eye(w.N));
                 if(isfield(w,'E')) % make sure that the new M field is used
                     w=rmfield(w,'E');
                 end
                 try
-                    w=VB3_VBEMiterator(w,X,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+                    w=VB3_VBEMiterator(w,dat,'outputLevel',0,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
                 catch me
                     disp('VB3_HMManalysis encountered an error:')
                     disp(me.message)
@@ -271,13 +278,13 @@ end
 % regenerate unsorted fields
 disp('Sorting and regenerating best model and estimates')
 if(opt.stateEstimate)
-    Wbest=VB3_VBEMiterator(Wbest,X,'estimate','maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
+    Wbest=VB3_VBEMiterator(Wbest,dat,'estimate','maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
 else
-    Wbest=VB3_VBEMiterator(Wbest,X,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
+    Wbest=VB3_VBEMiterator(Wbest,dat,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'outputLevel',0);
 end
 parfor k=1:length(WbestN)
     if(WbestN{k}.F>-inf);
-        WbestN{k}=VB3_VBEMiterator(WbestN{k},X,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
+        WbestN{k}=VB3_VBEMiterator(WbestN{k},dat,'maxIter',opt.maxIter,'relTolF',opt.relTolF,'tolPar',opt.tolPar,'slim');
     end
 end
 %

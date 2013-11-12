@@ -26,7 +26,7 @@
 \newcommand\ST{\rule[-0.75em]{0pt}{2.0em}} % a strut to uncrowd some tables
 
 \newcommand{\FPR}[1]{#1}
-\newcommand{\ML}[1]{#1}
+\newcommand{\ML}[1]{\textcolor{red}{#1}}
 \newcommand{\MLcolorOn}{}
 \newcommand{\MLcolorOff}{}
 % numbering w prefix
@@ -72,14 +72,12 @@ with this program. If not, see http://www.gnu.org/licenses/.\medskip\\
 original article in your work:\medskip\\
 \noindent Fredrik Persson, Martin Lind\'en, Cecilia Unoson, and Johan
 Elf, \emph{Extracting intracellular diffusive states and transition
-  rates from single molecule tracking data}, Nature Methods 10(3):265–269,
-2013. doi:10.1038/nmeth.2367 \medskip\\
+  rates from single molecule tracking data}, Nature Methods 10 265-269
+(2013). doi:10.1038/nmeth.2367 \medskip\\
 
-
-\noindent  This product includes software developed and copyrighted by Martin
-Lind\'en (see copyright in individual files). 
-
-
+\noindent The vbSPT suite also includes code developed by Martin
+Lind\'en, and by Jan-Willem van de Meent. See individual files for
+copyright and detailed origin.
 
 \tableofcontents
 \newpage
@@ -97,6 +95,8 @@ Lind\'en (see copyright in individual files).
 \section{Derivation of the variational algorithm}
 \label{Sec:derivation}
 \input{vbSPT_derivation.tex}
+%\section{(Old) derivation of the variational algorithm}
+%\input{vbSPT_derivation_old.tex}
 
 %\section{Controls}
 %\input{SI_controls.tex}

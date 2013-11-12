@@ -1,12 +1,11 @@
-% A=rowNormalize(Q)
-% normalize the rows of a transition matrix to enforce sum_j Q(i,j) = 1
-% If each row is the parameters of a Dirichlet distribution, then each row
-% in the output is the mode (most likely vlues) of that distribution.
-% M.L. 2011
+% S=VBviterbi_log_m(lnQ,lnqst)
+% most likely trajectory by the Viterbi algorithm, using log of transition
+% matrix lnQ and emission likelihood lnqst. This is the matlab version of
+% VBviterbi_log.c, created for debugging purposes, but very much slower.
 
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% rowNormalize.m, part of HMMcore/
+% VBviterbi_log_m, part of HMMcore/
 % =========================================================================
 % 
 % Copyright (C) 2013 Martin Lindén, E-mail: bmelinden@gmail.com
@@ -29,9 +28,32 @@
 % You should have received a copy of the GNU General Public License along
 % with this program. If not, see <http://www.gnu.org/licenses/>.
 %% start of actual code
-function A=rowNormalize(Q)
+function S=VBviterbi_log_m(lnQ,lnqst)
+[T,N]=size(lnqst);
+% algorithm version without large lnpt array
+lnPP=zeros(1,N);
+lnP0=zeros(1,N);
+lnP1=zeros(1,N);
+MaxPrev=zeros(T,N,'uint16'); % state variable
+lnP1=lnqst(1,:)-mean(lnqst(1,:)); % initial probability, not normalized
 
-A=Q;
-for k=1:size(Q,1)
-    A(k,:)=Q(k,:)/sum(Q(k,:));
+for tV=2:T
+    lnP0=lnP1;
+    lnP1=zeros(1,N);
+    
+    for jV=1:N      % current target state
+        for kV=1:N  % previous state
+            lnPP(kV)=lnP0(kV)     +lnQ(kV,jV)+lnqst(tV,jV); % probability of most likely path that ends with kV -> jV
+        end
+        % probability of previous state before ending up at jV.
+        [lnP1(jV),         MaxPrev(tV,jV)]=max(lnPP);
+    end
+    lnP1=lnP1-mean(lnP1); % rescale to avoid numerical under- or overflow.
 end
+S=zeros(T,1,'uint16');
+[~,S(T)]=max(lnP1);
+for tV=T-1:-1:1
+    S(tV)=MaxPrev(tV+1,S(tV+1));
+end
+end
+

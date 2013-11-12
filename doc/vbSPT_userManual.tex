@@ -1,7 +1,18 @@
 In this section, we introduce the developed vbSPT software and how to use it.
 
 \subsection{Recommended hardware}
-It is computationally very demanding to identify the model that describes thousands of trajectories the best. For this reason it is strongly recommended  that the analysis of data sets with more than 1000 trajectories are run on a very good computer. For example, a typical analysis with 10000-15000 trajectories including bootstrapping takes 2-10~h on a 2 x Intel® Xeon® X5650 (6 core, 2.66 GHz, 12MB L3) machine running MATLAB verR2012a. It should be noted that this version is capable of working with 12 parallel nodes, while previous versions only work with 8, setting a limit on the actual number of usable cores in the computer. However, the test example (see Sec.~\ref{Sec:testRun}) should produce a result in less than 10~min also on a conventional desktop or laptop computer. 
+It is computationally very demanding to identify the model that
+describes thousands of trajectories the best. For this reason it is
+strongly recommended that the analysis of data sets with more than
+1000 trajectories are run on a very good computer. For example, a
+typical analysis with 10000-15000 trajectories including bootstrapping
+takes 2-10~h on a 2 x Intel® Xeon® X5650 (6 core, 2.66 GHz, 12MB L3)
+machine running MATLAB verR2012a. It should be noted that this version
+is capable of working with 12 parallel nodes, while previous versions
+only work with 8, setting a limit on the actual number of usable cores
+in the computer. However, the test example (see
+Sec.~\ref{Sec:testRun}) should produce a result in less than 10~min
+also on a conventional desktop or laptop computer.
 
 \subsection{Installation}
 To install the vbSPT software, uncompress the vbSPT.zip file into a
@@ -129,12 +140,17 @@ Here, we list the Matlab notation for some important variables contained within 
   runinput file (or chosen in the GUI).
 \item \textbf{dF} - An array showing the relative difference in the
   model score for different model sizes. The size for the best global
-  model should have value 0.
+  model should have value 0, and all others negative.
 \item \textbf{options} - A structure with fields defined by the
   runinput file that is used to run the analysis. 
 \end{itemize}
 
-In Table~\ref{Tab:Wbest} some important fields in the Wbest, and thus also WbestN\{\textit{i}\} (where \textit{i} is a number describing the model size) structure are presented and explained. All state-related variables are sorted after increasing diffusion coefficient. In Table~\ref{Tab:bootstrap} some important fields in the bootstrap structure are presented and explained.
+In Table~\ref{Tab:Wbest} some important fields in the Wbest, and thus
+also WbestN\{\textit{i}\} (where \textit{i} is a number describing the
+model size) structure are presented and explained. All state-related
+variables are sorted after increasing diffusion coefficient. In
+Table~\ref{Tab:bootstrap} some important fields in the bootstrap
+structure are presented and explained.
 
 \subsection{Useful scripts}
 \label{Sec:usefulScripts}
@@ -161,6 +177,9 @@ running \texttt{help scriptname} from the Matlab prompt.
   analysis. Note that the bootstrapping parameters are taken from the
   the runinput file or options structure given as input, which should
   therefore be modified prior to running this script.
+\item \texttt{VB3\_convertOld} - Converts models using direct
+  transition probability parameterization (contains an \texttt{M.wA}
+  field) to the present format.
 \end{itemize}
 
 Additional undocumented scripts that can serve as templates for visualizing and extracting data can be found under \texttt{vbRoot/Tools/} and subfolders therein.

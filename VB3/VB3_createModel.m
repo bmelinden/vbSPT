@@ -102,8 +102,14 @@ end
 %% compute M field
 M.n=ones(1,N)*strength;
 M.c=4*Ddt*(strength-1);
-M.wA=A*strength;
+wA=A*strength;
+
+M.wa=[sum(wA,2)-diag(wA) diag(wA)];
+M.wB=wA-diag(diag(wA));
+
 M.wPi=p0*strength;
+
+M.SA=1:N;
 %clear strength Ddt D A p0
 
 % assemble result structure
@@ -112,6 +118,10 @@ if(exist('W0','var')) % thgen we shall return an output model
     Wout.M=M;
     if(isfield(W0,'PM'))
         Wout.PM=W0.PM;
+        fn=fieldnames(W0.PM);
+        for n=1:length(fn)
+           Wout.M.(fn{n})=Wout.M.(fn{n})+Wout.PM.(fn{n});           
+        end
     end
     if(isfield(W0,'dim'))
         Wout.dim=W0.dim;
