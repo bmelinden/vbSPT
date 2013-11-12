@@ -479,11 +479,9 @@ while(runMore)
             
             try
                 W.est.lnAmean=logm(W.est.Amean);
-                W.est.lnAmode=logm(W.est.Amode);
                 W.est.lnA_error='none';
             catch me
                 W.est.lnAmean=0*W.est.Amean;
-                W.est.lnAmode=0*W.est.Amean;
                 W.est.lnA_error=me;
             end
         end
