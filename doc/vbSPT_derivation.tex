@@ -208,8 +208,8 @@ q(\tau_j)=q(a_j(\tau_j))\left|\frac{da_j}{d\tau_j}\right|
 which means that
 \begin{align}
 \mean{\tau_j}=&\mean{a_j^{-1}}=
-\frac{w_{j0}^{(\vec{a})}}{w_{j1}^{(\vec{a})}}=\frac{1}{\mean{a_j}},\\
-\tau_j^*=&\frac{w_{j0}^{(\vec{a})}}{1+w_{j1}^{(\vec{a})}},\\
+\frac{w_{j0}^{(\vec{a})}}{w_{j1}^{(\vec{a})}}=\frac{1}{\mean{a_j}},\label{eq:dwellmean}\\
+\tau_j^*=&\frac{w_{j0}^{(\vec{a})}}{1+w_{j1}^{(\vec{a})}},\label{eq:dwellmode}\\
 \mean{\tau_j^2}=&\mean{a_j^{-2}}_{q(\vec{a})}=
 \mean{\tau_j}\frac{w_{j0}^{(\vec{a})}-1}{w_{j1}^{(\vec{a})}-1}
 =\mean{\tau_j}^2\frac{w_{j0}^{(\vec{a})}-1}{w_{j0}^{(\vec{a})}-\mean{\tau_j}},\\
@@ -417,14 +417,11 @@ $a_j$ contributes
   -\sum_{k=1}^2\left[\ln\frac{\Gamma(w_{jk}^{(\vec{ a})})}{\Gamma(\tilde w_{jk}^{(\vec{ a})})}
     -(w_{jk}^{(\vec{ a})}-\tilde w_{jk}^{(\vec{ a})})\psi(w_{jk}^{(\vec{ a})})\right]\right\}.
 \end{multline}
-Note that for an $N=1$ state model, $a_1$ is not well-defined variable
-(or $a_1=0$, as there is no other state to escape to), and
-$w_{11}^{(\vec{ a})})=0$ which leads to undefined terms in the above
-expression. The easiest way out of this is to recognize that the $N=1$
-state model has not hidden state dynamics, and hence the contributions
-for both $\vec{a}$ and $\matris{B}$ should be omitted (the
-contribution from $\vec{\pi}$ does indeed give zero in the $N=1$
-case).
+Note that for an $N=1$ state model, there is no hidden state dynamics,
+and hence the contributions for both $\vec{a}$ and $\matris{B}$ should
+be omitted. (The contribution from $\vec{\pi}$ does indeed give zero
+in the $N=1$ case; but this is not obviously so for $\vec{a}$ and
+$\matris{B}$. More algebra might be needed here).
 
 The jump matrix rows are also Dirichlet distributed, and each row
 contributes
@@ -459,9 +456,6 @@ written in the form
 where in the last step, we substituted Eq.~\eqref{gammaprop} for
 $\mean{\gamma_j}_{q(\gamma_j)}$ and
 $\mean{\ln\gamma_j}_{q(\gamma_j)}$.
-
-{\bf ML: still not quite satisfied with the $N=1$ limit of
-$a_j$. There should be some way to really have $a_1=0$ for $N=1$.}
 
 \subsection{Aggregated states}
 It can happen that to distinct binding states have the same diffusion
@@ -580,14 +574,15 @@ the VB3 code, with the matlab model object named \texttt{W}.
               transitions.\\
 \hline
 \end{tabular}\end{center}
+\clearpage
 \item Interesting estimates are supplied to describe the output and
   make sense of the converged model and the data. They divided into
-  two fields, \texttt{W.est} for quantities that are small and cheap to
-  compute (and hence are given every time), while \texttt{W.est2}
+  two fields, \texttt{W.est} for quantities that are small and cheap
+  to compute (and hence are given every time), while \texttt{W.est2}
   contain quantities that are either large or expensive to compute,
   and therefore only supplied when the iterator algorithm is called
-  with the \texttt{'estimate'} argument. When given, the index \texttt{m}
-  refers to trajectory number. \ML{Entries somewhat outdated.}
+  with the \texttt{'estimate'} argument. When given, the
+  index \texttt{m} refers to trajectory number. 
   
   \begin{center}\begin{tabular}{l|l|c}
       \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
@@ -600,17 +595,18 @@ the VB3 code, with the matlab model object named \texttt{W}.
       \hline
 \ST       \verb+W.est.Ps+& \verb+W.est.Ts/sum(W.est.Ts)+ & \\
       \hline
-\ST       \verb+W.est.Amean(j,k)+& $\mean{A_{jk}}_{q(\matris(A)}$ & \eqref{Amean} \\
+\ST       \verb+W.est.Amean(j,k)+& $\mean{A_{jk}}_{q(\matris A)}$ & \eqref{Amean} \\
       \hline
 \ST       \verb+W.est.Astd(j,k)+& $\std[A_{jk\;q(\matris{A})}]$ & \eqref{Avar} \\
       \hline
-\ST       \verb+W.est.lnAmean(k,j)+&$e^{\verb+W.est.lnAmean+}=\mean{\matris{A}}$ & approx. rate matrix [$\Delta t^{-1}$]\\
+\ST       \verb+W.est.lnAmean(k,j)+&$e^{\verb+W.est.lnAmean+}=\mean{\matris{A}}$ 
+          & approx. rate matrix [$\Delta t^{-1}$]\\
       \hline
-\ST       \verb+W.est.lnAmode(k,j)+&$e^{\verb+W.est.lnAmode+}=\matris{A}^*$ &approx. rate matrix [$\Delta t^{-1}$]\\
+\ST       \verb+W.est.dwellMean(j)+& $\mean{\tau_j}=\mean{a_{j}^{-1}}_{q(\vec a)} $ 
+          & mean dwell time, \eqref{eq:dwellmean} \\
       \hline
-\ST       \verb+W.est.dwellMean(j)+& $(1-\mean{A_{jj}})^{-1} $ & dwell time \\
-      \hline
-\ST       \verb+W.est.dwellMode(j)+& $(1-A^*_{jj})^{-1} $ & dwell time \\
+\ST       \verb+W.est.dwellMode(j)+& $\tau_{j}^*$ 
+          & dwell time \eqref{eq:dwellmode}\\
       \hline
 \ST       \verb+W.est.gMean(j)+& $\mean{\gamma_j}_{q(\vec\gamma)}$ & \eqref{gammaprop} \\
       \hline

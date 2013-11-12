@@ -81,7 +81,8 @@ not hurt convergence.\\ [0.5ex]
 \hline \hline
 
 \texttt{prior\_type\_D} & string & Type of parameterization for
-diffusion constant. Default: 'mean\_strength'. \\ [0.5 ex] \hline
+diffusion constant. Default: 'mean\_strength' (used by
+\citet{Persson2013}). \\ [0.5 ex] \hline
 
 'mean\_strength':
 \texttt{prior\_D} & real & Diffusion coefficient prior mean value, in
@@ -94,8 +95,8 @@ coefficient prior. Recommended default value: 5.\\ [0.5ex]
 \hline\hline
 
 \texttt{prior\_type\_Pi} & string & Type of parameterization for
-initial state prior. Alternatives: 'flat' (default), and
-'natmet13'. \\ [0.5 ex] \hline
+initial state prior. Alternatives: 'flat', and 'natmet13' (default,
+used by \citet{Persson2013}). \\ [0.5 ex] \hline
 
 'flat': no parameteres needed. && A flat Dirichlet prior;
 $\tilde w_j^{(\vec{\pi})}=1$. \\ [0.5 ex] \hline
@@ -108,8 +109,8 @@ Default value: 5.  \\ [0.5ex]
 \hline\hline
 
 \texttt{prior\_type\_A}& string & Type of parameterization for
-transition matrix. Alternatives: 'dwell\_Bflat' (default),
-'natmet13'.\\ [0.5 ex] \hline
+transition matrix. Alternatives: 'dwell\_Bflat', and 'natmet13'
+(default, used by \citet{Persson2013}).\\ [0.5 ex] \hline
 
 'dwell\_Bflat' & & Specifies mean value and standard deviation of the
 prior mean dwell times (same for all states) to specify $\tilde
