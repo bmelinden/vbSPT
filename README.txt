@@ -6,7 +6,7 @@
  questions can be found at 'sourceforge.net/projects/vbspt/'.
 
  ========================================================================= 
- Copyright (C) 2012 Martin Lindén, Fredrik Persson, and Johan Elf
+ Copyright (C) 2013 Martin Lindén, Fredrik Persson, and Johan Elf
  
  E-mail: 
  bmelinden@gmail.com, freddie.persson@gmail.com, johan.elf@gmail.com
@@ -31,22 +31,19 @@
  Lindén (in HMMcore/, see copyright in individual files).
 
  =========================================================================
-v 1.1 (2013-11-08): 
+v 1.1 (2013-11-12): code speed-up
  - better representation of data leads to a significantly faster
    execution (~10-fold on our test data).
  - A new parameterization of the transition rates, allowing more
-   flexible priors (for advanced user, see manual).
-
-Changes since v1.1 -- beta 1
- - reverted to natmet13 as the default prior
+   flexible priors for advanced users (See manual). For non-advanced
+   users, the old priors (Nat. Meth 2013 paper) are still default.
  - updated VB3_displayHMMmodel and VB3_getTrjStats to the new model format.
  - deleted VB3_reorder.m (obsolete, replaced by VB3_sortModel.m)
 --------------------------------------------------------------------------
-v 1.1 -- beta 1
-Changes since v 1.0 (Nat. Meth. 2013)
- - bugfix in HMMcore/getDwellTRJ.m
- - reparameterization of transition rates, to make the choice of
-   priors more transparent (see documentation).
- - bugfix in Viterbi algorithm
-
- 
+ v 1.0.1 (2013-05-31): bugfix release
+ - getDwellTRJ.m : consistent function name in m-file, and better handling 
+   trajectories with not all states present.
+ - VB3_HMManalysis.m : added functionaly to create non-existent target
+   folders.
+ - VBviterbi_log.c   : fixed bug in viterbi algorithm.
+--------------------------------------------------------------------------
