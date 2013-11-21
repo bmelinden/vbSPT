@@ -470,7 +470,7 @@ but with identical observable properties.
 This means that the extracted transition probabilities are not unique,
 and also that the mean-field approximation might not work well, since
 the variational distributions might not approximate the complicated
-posterior density well.
+posterior density well. This feature has not yet been tested.
 
 If two states $i,j$ are aggregated, they have the same diffusion
 constant. We implement that by defining $N_A\le N$ aggregated states,
@@ -499,16 +499,7 @@ the $i\to j$ transition is forbidden.
 There is no general recipe for which canonical forms to use. It is
 generally assumed that the best choice is to find the canonical form
 with the least number of free parameters\cite{Kienker1989,Bruno2005},
-a problem that is not generally solved. From a Bayesian standpoint, I
-think the correct approach is instead to do the evidence integrals,
-parameter degeneracy or not, and then the problem is to integrate over
-a potentially complex set of degenerate transition probability
-values. I suspect that the variational approximation might be worse
-for this case than for identifiable models, but this remains to be
-tested.
-
-
-
+a problem that is not generally solved.
 
 \subsection{Matlab notation}
 \label{Sec:matlabNotation}
