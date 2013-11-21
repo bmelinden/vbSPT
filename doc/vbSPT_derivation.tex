@@ -14,7 +14,7 @@ with constraints
 \end{equation}
 that is, $a_i=p(s_{t+1}\ne i|s_t=i)$ is the probability to exit state $i$, and
 $B_{ij}=p(s_{t+1}=j|s_t=i,i\ne j)$ is a matrix of jump probabilities,
-conditional on a jump actually occuring.
+conditional on a jump actually occurring.
 
 
 To start with, we will combine the model
@@ -141,8 +141,8 @@ w_{j2}^{(\vec{a})}=&\tilde w_{j2}^{(\vec{a})}
 \label{VBM_a}
 \end{align}
 with where $\tilde w_j^{(\vec{\pi})}$, $\tilde w_{jk}^{(\matris{B})}$,
-and $\tilde w_{jk}^{(\vec{a})}$ are pseudocounts in the prior
-distributions.  The total number of pseudocounts (for each
+and $\tilde w_{jk}^{(\vec{a})}$ are pseudo-counts in the prior
+distributions.  The total number of pseudo-counts (for each
 distribution) is called the prior strength. The following average and
 mode values will be needed:
 \begin{align}
@@ -463,11 +463,11 @@ constant. Models that describe this are known as aggregated Markov
 models in the
 literature\cite{Fredkin1986,Kienker1989,Bruno2005,Flomenbom2006}. vbSPT
 can fit aggregated models, but care must be taken, since aggregation
-can lead to unidentifiable models grouped in equivalnce classes, where
+can lead to unidentifiable models grouped in equivalence classes, where
 each class is a set of models with different transition probabilities
 but with identical observable properties.
 
-This means that the extracted tranision probabilities are not unique,
+This means that the extracted transition probabilities are not unique,
 and also that the mean-field approximation might not work well, since
 the variational distributions might not approximate the complicated
 posterior density well.
@@ -488,21 +488,21 @@ $j$. In addition, the lower bound only gets one diffusion constant
 contribution per aggregate.
 
 One suggested solution to the unidentifiability problem is to fit the
-data only to special members, canoncial
+data only to special members, canonical
 forms\cite{Kienker1989,Bruno2005}, of each equivalence classes, where
 certain transitions probabilities are set to zero, so as to make the
 remaining transition probabilities non-degenerate. vbSPT supports
 this, and transitions can be disallowed by adding zeros to the jump
-matrix pseudocount matrix: $\tilde w_{ij}^{(\matris{B})}=0$ means that
+matrix pseudo-count matrix: $\tilde w_{ij}^{(\matris{B})}=0$ means that
 the $i\to j$ transition is forbidden. 
 
-There is no general recipe for which canoncial forms to use. It is
-generally assumed that the best choice is to find the canoncial form
+There is no general recipe for which canonical forms to use. It is
+generally assumed that the best choice is to find the canonical form
 with the least number of free parameters\cite{Kienker1989,Bruno2005},
 a problem that is not generally solved. From a Bayesian standpoint, I
 think the correct approach is instead to do the evidence integrals,
 parameter degeneracy or not, and then the problem is to integrate over
-a poentially complex set of degenerate transition probability
+a potentially complex set of degenerate transition probability
 values. I suspect that the variational approximation might be worse
 for this case than for identifiable models, but this remains to be
 tested.
@@ -514,7 +514,7 @@ tested.
 \label{Sec:matlabNotation}
 For future reference, we end by listing a translation table between
 the notation used in this derivation and the variable names used in
-the VB3 code, with the matlab model object named \texttt{W}.
+the VB3 code, with the Matlab model object named \texttt{W}.
 
 \begin{itemize}
 \item The parameters of the parameter variational distributions are
@@ -523,7 +523,7 @@ the VB3 code, with the matlab model object named \texttt{W}.
   by the algorithm. If the \texttt{W.E} field is present, then
   the \texttt{W.M} field is overwritten in the first iteration (and
   hence the \texttt{W.E} field must be deleted if one wants to use
-  the \texttt{W.M} field to parametrize an initial guess).
+  the \texttt{W.M} field to parameterize an initial guess).
 \begin{center}\begin{tabular}{r|l|r|l|c}
   \textbf{Matlab VB3}& \textbf{This note} & \textbf{Matlab VB3} & \textbf{This note} & \textbf{Eq.} \\
   \hline
