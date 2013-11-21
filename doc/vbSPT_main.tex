@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage{amsmath}
-\usepackage[numbers,sort&compress,super]{natbib}
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage{hyperref}
 \usepackage{doi}
 \usepackage{graphicx}
@@ -12,6 +12,7 @@
 \graphicspath{{SI_figures/}}
 \usepackage{vbSPTdoc}
 
+%\renewcommand{\citet}[1]{\cite{#}}
 %% these lines makes it possible to cross-reference items in the main
 %% text by commands like \ref{MT:label}
 %\usepackage{xr}
@@ -63,6 +64,7 @@ Lind\'en, and by Jan-Willem van de Meent. See individual files for
 copyright and detailed origin.
 
 \tableofcontents
+\addcontentsline{toc}{section}{Contents}
 \newpage
 \section{vbSPT software user manual}
 \label{Sec:userManual}
@@ -90,7 +92,7 @@ copyright and detailed origin.
 
 
 
-\clearpage
+\newpage
 \bibliographystyle{unsrtnat} 
 \bibliography{VB-HMM}
 \addcontentsline{toc}{section}{References}
