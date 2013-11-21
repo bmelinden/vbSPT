@@ -12,11 +12,12 @@ constants, which we analyze by an approximate approach to a maximum
 evidence model selection, known as variational Bayes or ensemble
 learning \cite{Mackay2003,Bishop2006}. Variational algorithms for HMMs
 have been derived
-earlier \cite{Mackay1997,Ghahramani2002,Beal2003,Bronson2009,Bronson2010},
+earlier \cite{Mackay1997,Ghahramani2002,Beal2003,Bronson2009,Bronson2010,Okamoto2012},
 and applied successfully in a biophysical setting to \textit{e.g.}
-single molecule FRET data \cite{Bronson2009,Bronson2010}. The main
-advantage of the variational maximum evidence approach over the more
-common maximum likelihood approach to HMMs is the inherent complexity
+single molecule FRET
+data \cite{Bronson2009,Bronson2010,Okamoto2012}. The main advantage of
+the variational maximum evidence approach over the more common maximum
+likelihood approach to HMMs is the inherent complexity
 control, \textit{i.e.} the ability to not only learn parameter values
 from data, but also to make model selection and learn the number of
 hidden states \cite{Bronson2010}.
@@ -76,13 +77,13 @@ where we also re-wrote the joint probability in the form
 $p(\theta,N)=p(\theta|N)p(N)$.
 
 If we further assume that $p(N)$ is constant, \textit{i.e.} that all models
-(in some interval $0<N\le N_\text{max}$) are equally probable \emph{a
+(in some interval $0<N\le N_{\text{max}}$) are equally probable \emph{a
 priori}, and note that the denominator $p(x)$ is independent of
 parameters and models, then the best model is the one that maximizes the
 numerator in \Eq{eq:pnx}, also known as the \emph{evidence},
 \begin{equation}\label{eq:MEdef}
-N_\text{ME}=
-\mathrm{argmax}_N \int d\theta\sum_s p(x,s|\theta,N)p(\theta|N),
+N_{\mathrm{ME}}=
+{\mathrm{argmax}}_N \int d\theta\sum_s p(x,s|\theta,N)p(\theta|N),
 \end{equation}
 where argmax$_y$ $f(y)$ denotes the value of $y$ that maximizes the
 function $f$. 
@@ -92,7 +93,7 @@ function $f$.
 %notation and assumed a constant prior density $p(\theta)$ can be
 %written
 %\begin{equation}
-%\theta_\text{ML}=\mathrm{argmax}_\theta \sum_s p(x,s|\theta).
+%\theta_\mathrm{ML}=\mathrm{argmax}_\theta \sum_s p(x,s|\theta).
 %\end{equation}
 
 %\FPR{ML: Dropped any reference to maximum likelihood. OK?}
@@ -178,11 +179,12 @@ where $Z_\theta$ and $Z_s$ are normalization constants, and
 $\mean{\cdot}_{q(\cdot)}$ denotes an average with respect to
 $q(\cdot)$. As it turns out, these averages can be computed for our
 model. Following earlier variational treatments of
-HMMs \cite{Mackay1997,Beal2003,Bronson2009}, we solve these equations
-iteratively, by alternatingly updating $q(s)$ and $q(\theta)$ for fixed
-$q(\theta)$ and $q(s)$, respectively. The resulting algorithm greatly resembles the
-well-known expectation-maximization procedure for maximum-likelihood
-optimization in HMMs \cite{Ghahramani2002,Rabiner1989,Baum1972} (see
+HMMs \cite{Mackay1997,Beal2003,Bronson2009,Okamoto2012}, we solve
+these equations iteratively, by alternatingly updating $q(s)$ and
+$q(\theta)$ for fixed $q(\theta)$ and $q(s)$, respectively. The
+resulting algorithm greatly resembles the well-known
+expectation-maximization procedure for maximum-likelihood optimization
+in HMMs \cite{Ghahramani2002,Rabiner1989,Baum1972} (see
 Sec.~\ref{Sec:derivation} for details).
 
 \subsection{Diffusion model}
@@ -207,7 +209,7 @@ $\matris{A}$, and initial state probabilities
 $\vec{\pi}$, \textit{i.e.}
 \begin{equation}\label{eq:Aij}
 p(s_1=j)=\pi_j,\quad 
-p(s_t=j|s_{t-1}=i)=A_{ij}\text{, for $t>1$},
+p(s_t=j|s_{t-1}=i)=A_{ij}{\text{, for }} t>1,
 \end{equation}
 where normalization demands
 $\sum_{k=1}^N\pi_k=\sum_{k=1}^NA_{jk}=1$. The number of hidden states

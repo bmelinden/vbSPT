@@ -1,39 +1,22 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage{amsmath}
 \usepackage[numbers,sort&compress,super]{natbib}
-\usepackage{url}
+\usepackage{hyperref}
+\usepackage{doi}
 \usepackage{graphicx}
 \usepackage{color}
-\usepackage{MLHMM}
 \usepackage{upgreek}
 \usepackage{longtable}
 \usepackage{array}
-\usepackage[singlelinecheck=off]{caption}
+%\usepackage[singlelinecheck=off]{caption}
 \graphicspath{{SI_figures/}}
+\usepackage{vbSPTdoc}
 
 %% these lines makes it possible to cross-reference items in the main
 %% text by commands like \ref{MT:label}
 %\usepackage{xr}
 %\externaldocument[MT:]{Manuscript}
 
-
-%shorthand notation for referencing etc
-\newcommand{\dc}{$~\upmu$m$^2$~s$^{-1} $}
-\newcommand{\eq}[1]{Eq.~\eqref{#1}}
-\newcommand{\fig}[1]{Fig.~\ref{Fig:#1}}
-\newcommand*{\subfig}[2]{Fig.~\ref{Fig:#1}(#2)}
-\newcommand{\FP}[1]{\textcolor{blue}{#1}}
-\newcommand\ST{\rule[-0.75em]{0pt}{2.0em}} % a strut to uncrowd some tables
-
-\newcommand{\FPR}[1]{#1}
-\newcommand{\ML}[1]{\textcolor{red}{#1}}
-\newcommand{\MLcolorOn}{}
-\newcommand{\MLcolorOff}{}
-% numbering w prefix
-%\renewcommand{\thesection}{S\arabic{section}}  
-%\renewcommand{\thetable}{S\arabic{table}}  
-%\renewcommand{\thefigure}{S\arabic{figure}}
-\renewcommand{\theequation}{S\arabic{equation}}
 
 \title{vbSPT (Variational Bayes for Single Particle Tracking) -- User-guide and Documentation}
 
@@ -53,7 +36,7 @@ trajectories, where the diffusion constants switch randomly according
 to a discrete Markov process. The program runs on Matlab, but uses
 compiled C-code to speed up the most computer intensive loops.  The
 latest version of the software as well as a forum for discussion and
-questions can be found at \verb+sourceforge.net/projects/vbspt/+.\medskip\\
+questions can be found at \texttt{sourceforge.net/projects/vbspt/}.\medskip\\
 
 \noindent Copyright \copyright \  2013 Martin Lind\'en, Fredrik Persson, and
 Johan Elf.\medskip\\
@@ -107,9 +90,8 @@ copyright and detailed origin.
 
 
 
-\newpage
-
-
-
-\bibliographystyle{unsrtnat} \bibliography{VB-HMM}
+\clearpage
+\bibliographystyle{unsrtnat} 
+\bibliography{VB-HMM}
+\addcontentsline{toc}{section}{References}
 \end{document}
