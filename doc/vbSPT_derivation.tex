@@ -1,9 +1,9 @@
 We now derive the core elements of the variational algorithm for
 single trajectories, following earlier Variational Bayesian/Ensemble
-learning treatments of HMMs\cite{Bronson2010,Mackay1997,Beal2003}.  To
-make it easier to choose prior distributions however, we
-reparameterize the transition matrix to separate out dwell time
-distributions, and write
+learning treatments of
+HMMs\cite{Bronson2010,Mackay1997,Beal2003}.  To make it
+easier to choose prior distributions however, we reparameterize the
+transition matrix to separate out dwell time distributions, and write
 \begin{equation}\label{eq:aBdef}
 A_{ij}=\delta_{ij}(1-a_i)+(1-\delta_{ij})a_iB_{ij}=
 (1-a_i)^{\delta_{ij}}a_i^{1-\delta_{ij}}B_{ij}^{1-\delta_{ij}},
@@ -100,8 +100,8 @@ interpretation of the prior distribution in terms of fictitious
 
 \paragraph{Initial state and transition rates:}
 Following earlier
-work\cite{Mackay1997,Beal2003,Bronson2009,Persson2013}, we choose
-Dirichlet (a multivariate version of the beta
+work\cite{Mackay1997,Beal2003,Bronson2009,Okamoto2012,Persson2013}, we
+choose Dirichlet (a multivariate version of the beta
 distribution\cite{wiki:dirichlet}) priors for the initial state
 distribution and for each row of the transition matrix $\matris{B}$,
 and beta distributions for the elements of $\vec a$. This makes the
@@ -129,7 +129,7 @@ w_j^{(\vec{\pi})}+\mean{\delta_{j,s_1}}_{q(s)},
   q(\matris{B})=\prod_j
   \Dir(B_{j,:}|w_{j,:}^{(\matris{B})}),\quad
 w_{jk}^{(\matris{B})}=\tilde w_{jk}^{(\matris{B})}
-  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s)}\text{, ($k\ne j$),}
+  +\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}_{q(s)},\; (k\ne j),
 \end{equation}
 \begin{align}
   q(\vec{a})=&\prod_j \beta(a_j|w_{j1}^{(\vec{a})},w_{j2}^{(\vec{a})}),&
@@ -231,7 +231,7 @@ w_{j2}^{(\vec{a})}=&w_{j0}^{(\vec{a})}\frac{\mean{\tau_j}-1}{\mean{\tau_j}}
 \paragraph{Diffusion constants:}
 The terms involving $\gamma_j$ in \Eq{Maverage} are
 \begin{equation}
-  \ln q(\gamma_j)=\text{const.}
+  \ln q(\gamma_j)=\mathrm{const.}
   +\ln p(\gamma_j|N)+\sum_{t=1}^{T-1}
   \frac d2\mean{\delta_{j,s_t}}\ln\frac{\gamma_j}{\pi}
   -\mean{\delta_{j,s_t}}(\x_{t+1}-\x_t)^2\gamma_j.
@@ -518,28 +518,29 @@ the VB3 code, with the matlab model object named \texttt{W}.
 
 \begin{itemize}
 \item The parameters of the parameter variational distributions are
-  collected in the \texttt{W.M} and \texttt{W.PM} fields. These are the only fields needed
-  to start iterating, all the rest are computed by the algorithm. If
-  the \texttt{W.E} field is present, then the \texttt{W.M} field is overwritten in the first
-  iteration (and hence the \texttt{W.E} field must be deleted if one wants to use
+  collected in the \texttt{W.M} and \texttt{W.PM} fields. These are
+  the only fields needed to start iterating, all the rest are computed
+  by the algorithm. If the \texttt{W.E} field is present, then
+  the \texttt{W.M} field is overwritten in the first iteration (and
+  hence the \texttt{W.E} field must be deleted if one wants to use
   the \texttt{W.M} field to parametrize an initial guess).
 \begin{center}\begin{tabular}{r|l|r|l|c}
   \textbf{Matlab VB3}& \textbf{This note} & \textbf{Matlab VB3} & \textbf{This note} & \textbf{Eq.} \\
   \hline
-\ST  \verb+W.M.wPi(i)+ & $w^{(\vec\pi)}_i$        &
-  \verb+W.PM.wPi(i)+& $\tilde w^{(\vec\pi)}_i$ & \eqref{VBM_pi} \\
+\ST  \texttt{W.M.wPi(i)} & $w^{(\vec\pi)}_i$        &
+  \texttt{W.PM.wPi(i)}& $\tilde w^{(\vec\pi)}_i$ & \eqref{VBM_pi} \\
   \hline
-\ST  \verb+W.M.wB(j,k)+ & $w^{(\matris{B})}_{jk}$        &
-  \verb+W.PM.wB(j,k)+& $\tilde w^{(\matris{B})}_{jk}$ & \eqref{VBM_B}\\
+\ST  \texttt{W.M.wB(j,k)} & $w^{(\matris{B})}_{jk}$        &
+  \texttt{W.PM.wB(j,k)}& $\tilde w^{(\matris{B})}_{jk}$ & \eqref{VBM_B}\\
   \hline
-\ST  \verb+W.M.wa(j,k)+ & $w^{(\vec{a})}_{jk}$        &
-  \verb+W.PM.wa(j,k)+& $\tilde w^{(\vec{a})}_{jk}$ & \eqref{VBM_a}\\
+\ST  \texttt{W.M.wa(j,k)} & $w^{(\vec{a})}_{jk}$        &
+  \texttt{W.PM.wa(j,k)}& $\tilde w^{(\vec{a})}_{jk}$ & \eqref{VBM_a}\\
 \hline
-  \verb+W.M.n(j)+ & $n_j$ & 
-  \verb+W.PM.n(j)+& $\tilde n_j$ & \eqref{VBM_gamma}\\
-  \verb+W.M.c(j)+ & $c_j$ & \texttt{W.PM.c(j)} & $\tilde c_j$ & \\
+  \texttt{W.M.n(j)} & $n_j$ & 
+  \texttt{W.PM.n(j)}& $\tilde n_j$ & \eqref{VBM_gamma}\\
+  \texttt{W.M.c(j)} & $c_j$ & \texttt{W.PM.c(j)} & $\tilde c_j$ & \\
 \hline
-  \verb+W.M.SA+ & \multicolumn{3}{l}{State $j$ is in
+  \texttt{W.M.SA} & \multicolumn{3}{l}{State $j$ is in
   aggregate \texttt{W.M.SA(j)}.}&\\
 \hline
 \end{tabular}\end{center}
@@ -550,27 +551,27 @@ the VB3 code, with the matlab model object named \texttt{W}.
 \begin{center}\begin{tabular}{r|l|c}
 \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
 \hline
-\ST  \verb+W.E(m).wPi(j)+ & $\mean{\delta_{j,s_1}}$ & \eqref{VBM_pi} \\
+\ST  \texttt{W.E(m).wPi(j)} & $\mean{\delta_{j,s_1}}$ & \eqref{VBM_pi} \\
   \hline
-\ST  \verb+W.E(m).wA(j,k)+& $\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}$ & \eqref{VBM_B},\eqref{VBM_a}\\
+\ST  \texttt{W.E(m).wA(j,k)}& $\sum_{t=1}^{T-2}\mean{\delta_{j,s_t}\delta_{k,s_{t+1}}}$ & \eqref{VBM_B},\eqref{VBM_a}\\
   \hline
-\ST  \verb+W.E(m).n(j) +  & $\frac d2\sum_{t=1}^{T-1}\mean{\delta_{j,s_t}}$ & \eqref{VBM_gamma}\\
+\ST  \texttt{W.E(m).n(j) }  & $\frac d2\sum_{t=1}^{T-1}\mean{\delta_{j,s_t}}$ & \eqref{VBM_gamma}\\
   \hline
-\ST  \verb+W.E(m).c(j) +  & $\sum_{t=1}^{T-1}\mean{\delta_{j,s_t}}(\x_{t+1}-\x_t)^2$ & \eqref{VBM_gamma}\\
+\ST  \texttt{W.E(m).c(j) }  & $\sum_{t=1}^{T-1}\mean{\delta_{j,s_t}}(\x_{t+1}-\x_t)^2$ & \eqref{VBM_gamma}\\
   \hline
 \end{tabular}\end{center}
 \item Misc fields:
 \begin{center}\begin{tabular}{l|l}
 \hline
-\verb+W.N+ & Number of hidden states $N$.\\
+\texttt{W.N} & Number of hidden states $N$.\\
 \hline
-\verb+W.F+ & Total lower bound $F$.\\
+\texttt{W.F} & Total lower bound $F$.\\
 \hline
-\verb+W.Fterms+ & Various contributions to $F$ (for debugging). \\
+\texttt{W.Fterms} & Various contributions to $F$ (for debugging). \\
 \hline
-\verb+W.T(m)+ & Length of trajectory $m$. Note that this counts \\
+\texttt{W.T(m)} & Length of trajectory $m$. Note that this counts \\
               &the number of positions, and hence trajectory j will\\
-              & contain \verb+W.T(m)-1+ steps, and \verb+W.T(m)-2+
+              & contain \texttt{W.T(m)-1} steps, and \texttt{W.T(m)-2}
               transitions.\\
 \hline
 \end{tabular}\end{center}
@@ -587,42 +588,42 @@ the VB3 code, with the matlab model object named \texttt{W}.
   \begin{center}\begin{tabular}{l|l|c}
       \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
       \hline
-\ST      \verb+W.est.lnQ(j,k)+ & $\ln Q_{j,k}$ & \eqref{VBE_qs}\\
+\ST      \texttt{W.est.lnQ(j,k)} & $\ln Q_{j,k}$ & \eqref{VBE_qs}\\
       \hline
-\ST      \verb+W.est.Q(j,k)+   & $Q_{j,k}/\max_{j,k}(Q_{j,k})$ & \\
+\ST      \texttt{W.est.Q(j,k)}   & $Q_{j,k}/\max_{j,k}(Q_{j,k})$ & \\
       \hline
-\ST       \verb+W.est.Ts(j)+& $\sum_t\mean{\delta_{j,s_t}}$ & \\
+\ST       \texttt{W.est.Ts(j)}& $\sum_t\mean{\delta_{j,s_t}}$ & \\
       \hline
-\ST       \verb+W.est.Ps+& \verb+W.est.Ts/sum(W.est.Ts)+ & \\
+\ST       \texttt{W.est.Ps}& \texttt{W.est.Ts/sum(W.est.Ts)} & \\
       \hline
-\ST       \verb+W.est.Amean(j,k)+& $\mean{A_{jk}}_{q(\matris A)}$ & \eqref{Amean} \\
+\ST       \texttt{W.est.Amean(j,k)}& $\mean{A_{jk}}_{q(\matris A)}$ & \eqref{Amean} \\
       \hline
-\ST       \verb+W.est.Astd(j,k)+& $\std[A_{jk\;q(\matris{A})}]$ & \eqref{Avar} \\
+\ST       \texttt{W.est.Astd(j,k)}& $\std[A_{jk\;q(\matris{A})}]$ & \eqref{Avar} \\
       \hline
-\ST       \verb+W.est.lnAmean(k,j)+&$e^{\verb+W.est.lnAmean+}=\mean{\matris{A}}$ 
+\ST       \texttt{W.est.lnAmean(k,j)}&$e^{\texttt{W.est.lnAmean}}=\mean{\matris{A}}$ 
           & approx. rate matrix [$\Delta t^{-1}$]\\
       \hline
-\ST       \verb+W.est.dwellMean(j)+& $\mean{\tau_j}=\mean{a_{j}^{-1}}_{q(\vec a)} $ 
+\ST       \texttt{W.est.dwellMean(j)}& $\mean{\tau_j}=\mean{a_{j}^{-1}}_{q(\vec a)} $ 
           & mean dwell time, \eqref{eq:dwellmean} \\
       \hline
-\ST       \verb+W.est.dwellMode(j)+& $\tau_{j}^*$ 
+\ST       \texttt{W.est.dwellMode(j)}& $\tau_{j}^*$ 
           & dwell time \eqref{eq:dwellmode}\\
       \hline
-\ST       \verb+W.est.gMean(j)+& $\mean{\gamma_j}_{q(\vec\gamma)}$ & \eqref{gammaprop} \\
+\ST       \texttt{W.est.gMean(j)}& $\mean{\gamma_j}_{q(\vec\gamma)}$ & \eqref{gammaprop} \\
       \hline
 \end{tabular}\end{center}
 \begin{center}\begin{tabular}{l|l|c}
     \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
     \hline
-    \verb+W.est2.lnH{m}(t,j)+&$\ln H_{t,j} $ & \eqref{VBE_qs} \\
+    \texttt{W.est2.lnH{m}(t,j)}&$\ln H_{t,j} $ & \eqref{VBE_qs} \\
     \hline
-    \verb+W.est2.H{m}(t,j)+& $H_{t,j}/ \max_k(H_{t,k})$ & \\
+    \texttt{W.est2.H{m}(t,j)}& $H_{t,j}/ \max_k(H_{t,k})$ & \\
     \hline      
-    \verb+W.est2.viterbi{m}+& $ $ & Viterbi path, trj. $m$. \\
+    \texttt{W.est2.viterbi{m}}& $ $ & Viterbi path, trj. $m$. \\
     \hline
-    \verb+W.est2.sMaxP{m}(j)+& $\mathrm{argmax}_{s_t^m}\mean{\delta_{j,s_t^m}} $ & Most likely states.  \\
+    \texttt{W.est2.sMaxP{m}(j)}& $\mathrm{argmax}_{s_t^m}\mean{\delta_{j,s_t^m}} $ & Most likely states.  \\
     \hline
-    \verb+W.est.pst{m}(t,j)+& $\mean{\delta_{j,s_t^m}}$ & Occupation probability $p(s_t^m=j)$.\\
+    \texttt{W.est.pst{m}(t,j)}& $\mean{\delta_{j,s_t^m}}$ & Occupation probability $p(s_t^m=j)$.\\
 \hline
    
 \end{tabular}\end{center}
