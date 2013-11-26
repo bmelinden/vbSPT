@@ -470,7 +470,7 @@ but with identical observable properties.
 This means that the extracted transition probabilities are not unique,
 and also that the mean-field approximation might not work well, since
 the variational distributions might not approximate the complicated
-posterior density well. This feature has not yet been tested.
+posterior density well. 
 
 If two states $i,j$ are aggregated, they have the same diffusion
 constant. We implement that by defining $N_A\le N$ aggregated states,
@@ -485,7 +485,9 @@ c_j=\tilde c_j+\sum_{t=1}^{T-1}\sum_{m\in \alpha(j)}
 \end{equation}
 where $\alpha(j)$ is the set of states in the same aggregate as state
 $j$. In addition, the lower bound only gets one diffusion constant
-contribution per aggregate.
+contribution per aggregate. This feature has not yet been
+systematically tested for model selection with aggregated models, and
+aggregated models are not part of the automated model search.
 
 One suggested solution to the unidentifiability problem is to fit the
 data only to special members, canonical
