@@ -576,7 +576,7 @@ the VB3 code, with the Matlab model object named \texttt{W}.
   contain quantities that are either large or expensive to compute,
   and therefore only supplied when the iterator algorithm is called
   with the \texttt{'estimate'} argument. When given, the
-  index \texttt{m} refers to trajectory number. 
+  cell index \texttt{\{m\}} refers to trajectory number. 
   
   \begin{center}\begin{tabular}{l|l|c}
       \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
@@ -608,15 +608,15 @@ the VB3 code, with the Matlab model object named \texttt{W}.
 \begin{center}\begin{tabular}{l|l|c}
     \textbf{Matlab VB3}& \textbf{This note} & \textbf{Eq.}\\
     \hline
-    \texttt{W.est2.lnH{m}(t,j)}&$\ln H_{t,j} $ & \eqref{VBE_qs} \\
+    \texttt{W.est2.lnH{\{m\}}(t,j)}&$\ln H_{t,j} $ & \eqref{VBE_qs} \\
     \hline
-    \texttt{W.est2.H{m}(t,j)}& $H_{t,j}/ \max_k(H_{t,k})$ & \\
+    \texttt{W.est2.H{\{m\}}(t,j)}& $H_{t,j}/ \max_k(H_{t,k})$ & \\
     \hline      
-    \texttt{W.est2.viterbi{m}}& $ $ & Viterbi path, trj. $m$. \\
+    \texttt{W.est2.viterbi{\{m\}}}& $ $ & Viterbi path, trj. $m$. \\
     \hline
-    \texttt{W.est2.sMaxP{m}(j)}& $\mathrm{argmax}_{s_t^m}\mean{\delta_{j,s_t^m}} $ & Most likely states.  \\
+    \texttt{W.est2.sMaxP{\{m\}}(j)}& $\mathrm{argmax}_{s_t^m}\mean{\delta_{j,s_t^m}} $ & Most likely states.  \\
     \hline
-    \texttt{W.est.pst{m}(t,j)}& $\mean{\delta_{j,s_t^m}}$ & Occupation probability $p(s_t^m=j)$.\\
+    \texttt{W.est.pst{\{m\}}(t,j)}& $\mean{\delta_{j,s_t^m}}$ & Occupation probability $p(s_t^m=j)$.\\
 \hline
    
 \end{tabular}\end{center}
