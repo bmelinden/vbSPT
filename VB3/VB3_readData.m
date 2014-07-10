@@ -6,6 +6,8 @@ function X=VB3_readData(runinput)
 % Only trajectories longer than trjLmin (specified in opt) are returned. 
 %
 
+% ML 2014-07-10 : handle runinput files without the .m suffix
+
 %% copyright notice
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % VB3_readData.m, reads position data fo use with the vbSPT package
@@ -35,7 +37,7 @@ function X=VB3_readData(runinput)
 
 %% parse input
 % if an existing file, generate options structure
-if(ischar(runinput) && exist(runinput, 'file')==2)
+if(ischar(runinput))% && exist(runinput, 'file')==2)
     runinputfile = runinput;
     opt=VB3_getOptions(runinputfile);
     disp(['Read runinput file ' runinputfile])
