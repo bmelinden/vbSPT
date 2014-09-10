@@ -36,6 +36,7 @@ v 1.1.1 (2014-10-11): minor bugfix release
   (the faulty terms was gammaln of the total prior weight, and so very 
    unlikely to make any practical difference).
  - corrected some internal function names to be consistent with file names.
+ - made VB3_readData handle input files without the .m ending
 --------------------------------------------------------------------------
 v 1.1 (2013-11-12): code speed-up
  - better representation of data leads to a significantly faster
