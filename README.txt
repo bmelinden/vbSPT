@@ -31,7 +31,7 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
-v 1.1.1 (2014-10-11): bugfix release
+v 1.1.1 (2014-10-11): minor bugfix release
  - corrected a sign error in the KL divergence of the initial state vector 
   (the faulty terms was gammaln of the total prior weight, and so very 
    unlikely to make any practical difference).
