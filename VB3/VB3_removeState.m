@@ -38,6 +38,7 @@ M.n  =  w.M.n(sk);
 M.c  =  w.M.c(sk);
 M.wa =  w.M.wa(sk,:);
 M.SA =  w.M.SA(sk);
+M.SA(M.SA>s)=M.SA(M.SA>s)-1; % decrease aggregation indices
 
 % transfer observed transitions
 wB =w.M.wB -w.PM.wB;
