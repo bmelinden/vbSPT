@@ -31,6 +31,11 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
+current master branch:
+
+VB3 fixed bugs:
+ - corrected aggregation indices in VB3_removeState.m
+--------------------------------------------------------------------------
 v 1.1.1 (2014-10-11): minor bugfix release
  - corrected a sign error in the KL divergence of the initial state vector 
   (the faulty terms was gammaln of the total prior weight, and so very 
