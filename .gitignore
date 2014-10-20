@@ -5,6 +5,12 @@
 *.swp
 *.out
 ._*
+## ignore temporary files from latex compilation
+doc/*aux
+doc/*blg
+doc/*bbl
+doc/*toc
+doc/*log
 ## compressed packages
 *.7z
 *.dmg

@@ -33,8 +33,11 @@
  =========================================================================
 current master branch:
 
-VB3 fixed bugs:
+VB3 fixed bugs for future release:
  - corrected aggregation indices in VB3_removeState.m
+ - corrected typo in Eq S69 of vbSPT manual (n_j -> \tilde n_j in the
+   first KL term for \gamma). Note that the code was correct all the
+   time, so computational results are not affected.
 --------------------------------------------------------------------------
 v 1.1.1 (2014-10-11): minor bugfix release
  - corrected a sign error in the KL divergence of the initial state vector 
