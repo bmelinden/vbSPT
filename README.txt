@@ -6,7 +6,7 @@
  questions can be found at 'sourceforge.net/projects/vbspt/'.
 
  ========================================================================= 
- Copyright (C) 2013 Martin Lindén, Fredrik Persson, and Johan Elf
+ Copyright (C) 2014 Martin Lindén, Fredrik Persson, and Johan Elf
  
  E-mail: 
  bmelinden@gmail.com, freddie.persson@gmail.com, johan.elf@gmail.com
@@ -32,7 +32,6 @@
  files.
  =========================================================================
 v 1.1.2 (2014-11-19): minor bugfix, mainly to satisfy new mex compiler
-
  - removed C++ style comments in HMMcore*.c files to please the mex
    compiler. 
  - corrected handling of aggregation indices in VB3_removeState.m
