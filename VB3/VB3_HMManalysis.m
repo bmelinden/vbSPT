@@ -180,6 +180,7 @@ parfor iter=1:opt.runs
                 % if this did not help, try adding more transition counts and reconverge.
                 
                 if(w.N>1)
+                    
                     tx0=tic;
                     %disp(['Iter ' int2str(iter) ': simple removal did not help. Trying to add some extra transitions'])
                     w=VB3_createPrior(opt,w0.N-1);

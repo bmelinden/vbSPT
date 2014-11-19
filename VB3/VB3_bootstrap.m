@@ -70,7 +70,7 @@ end
 if(~exist('NB','var') || isempty(NB)); NB=100;end
 %% bootstrap fits
 L=length(X);
-tic
+tBootStrapFit=tic;
 parfor k=1:NB
     %tic
     if(hasindices)
@@ -93,7 +93,7 @@ parfor k=1:NB
     wbs(k).ind=ind;
     disp(['bootstrap iter ' int2str(k) ' finished'])
 end
-disp(['bootstrap : ' int2str(NB) ' resampling in ' num2str(toc) ' s.'])
+disp(['bootstrap : ' int2str(NB) ' resampling in ' num2str(toc(tBootStrapFit)) ' s.'])
 %% default bootstrap analysis
 Wmean=struct;
 Wstd=struct;
