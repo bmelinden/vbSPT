@@ -1,7 +1,7 @@
 % Matlab script to compile all c files in this folder.
 % M.L. 2011
 
-mex -setup
+mex -setup C
 
 ff=dir('*.c');
 
