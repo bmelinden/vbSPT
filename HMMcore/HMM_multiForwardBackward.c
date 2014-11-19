@@ -2,7 +2,7 @@
  * HMM_multiForwardBackward.c
  * =========================================================================
  *
- * Copyright (C) 2013 Martin Lindén, E-mail: bmelinden@gmail.com
+ * Copyright (C) 2014 Martin Lindén, E-mail: bmelinden@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -128,8 +128,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
         tEnd=(int)(iEnd[n]);
         
         /* forward sweep */
-        //Za=sum(H(tStart,:));
-        //alpha(tStart,:)=H(tStart,:)/Za;
+        /*Za=sum(H(tStart,:));*/
+        /*alpha(tStart,:)=H(tStart,:)/Za;*/
         Za=0.0;
         for(j=0;j<N;j++){
             Za=Za+H[tStart+T*j];}
@@ -137,8 +137,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
             alpha[tStart+T*j]=H[tStart+T*j]/Za;}
         lnZ[0]=lnZ[0]+log(Za);
         for(t=tStart+1;t<tEnd;t++){
-            // alpha(t,:)=(alpha(t-1,:)*Q).*qst(t,:);
-            // Za=sum(alpha(t,:));
+            /* alpha(t,:)=(alpha(t-1,:)*Q).*qst(t,:);*/
+            /* Za=sum(alpha(t,:));*/
             Za=0;
             for(j=0;j<N;j++){
                 for(k=0;k<N;k++){
@@ -146,22 +146,22 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 }
                 Za=Za+alpha[t+j*T];
             }
-            // alpha(t,:)=alpha(t,:)/Za(t); */
+            /* alpha(t,:)=alpha(t,:)/Za(t); */
             for(j=0;j<N;j++){
                 alpha[t+j*T]=alpha[t+j*T]/Za;}
-            // lnZ=lnZ+log(Za);
+            /* lnZ=lnZ+log(Za);*/
             lnZ[0]=lnZ[0]+log(Za);
         }
         /*  backward sweep */
         if(doBackward>0){
-            //beta(tEnd,:)=ones(1,N)/N;
+            /*beta(tEnd,:)=ones(1,N)/N;*/
             for(j=0;j<N;j++){
                 beta[tEnd-1+j*T]=1.0/N;
             }
             for (t=tEnd-2;t>=tStart;t--){
-                // beta(t,:)=(beta(t+1,:).*H(t+1,:))*QT;
-                // Zb=sum(beta(t,:));
-                // beta(t,:)=beta(t,:)/Zb;
+                /* beta(t,:)=(beta(t+1,:).*H(t+1,:))*QT;
+                /* Zb=sum(beta(t,:));
+                /* beta(t,:)=beta(t,:)/Zb;*/
                 Zb=0;
                 for(j=0;j<N;j++){
                     for(k=0;k<N;k++){
@@ -194,7 +194,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
     
     /* do occupation probability if asked for */
     if(doOccProb>0){
-        // pst = rowNormalize(alpha.*beta);
+        /* pst = rowNormalize(alpha.*beta);*/
         for(t=0;t<T*N;t++){
             pst[t]=alpha[t]*beta[t];
         }

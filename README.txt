@@ -31,10 +31,11 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
-current master branch:
+v 1.1.2 (2014-11-19): minor bugfix, mainly to satisfy new mex compiler
 
-VB3 fixed bugs for future release:
- - corrected aggregation indices in VB3_removeState.m
+ - removed C++ style comments in HMMcore*.c files to please the mex
+   compiler. 
+ - corrected handling of aggregation indices in VB3_removeState.m
  - corrected typo in Eq S69 of vbSPT manual (n_j -> \tilde n_j in the
    first KL term for \gamma). Note that the code was correct all the
    time, so computational results are not affected.
