@@ -159,9 +159,9 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 beta[tEnd-1+j*T]=1.0/N;
             }
             for (t=tEnd-2;t>=tStart;t--){
-                /* beta(t,:)=(beta(t+1,:).*H(t+1,:))*QT;
-                /* Zb=sum(beta(t,:));
-                /* beta(t,:)=beta(t,:)/Zb;*/
+	      /* beta(t,:)=(beta(t+1,:).*H(t+1,:))*QT; */
+	      /* Zb=sum(beta(t,:)); */
+	      /* beta(t,:)=beta(t,:)/Zb;*/
                 Zb=0;
                 for(j=0;j<N;j++){
                     for(k=0;k<N;k++){
