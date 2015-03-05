@@ -48,7 +48,15 @@ else
 end
 
 %% Start of actual code
-res=load(opt.outputfile);
+try
+    res=load(opt.outputfile);
+catch me
+    if(~exist(opt.outputfile)) % then try to build the full path
+        res=load(fullfile(fileparts(fullfile(opt.localroot,opt.runinputfile)),opt.outputfile));
+    else
+        me.rethrow;
+    end
+end
 
 %% Present results in the Matlab prompt
 
