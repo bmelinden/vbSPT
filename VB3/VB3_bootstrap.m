@@ -91,7 +91,7 @@ parfor k=1:NB
     wbs(k).est=ww.est;
     wbs(k).F=ww.F;    
     wbs(k).ind=ind;
-    disp(['bootstrap iter ' int2str(k) ' finished'])
+    %disp(['bootstrap iter ' int2str(k) ' finished'])
 end
 disp(['bootstrap : ' int2str(NB) ' resampling in ' num2str(toc) ' s.'])
 %% default bootstrap analysis
