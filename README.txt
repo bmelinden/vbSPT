@@ -6,7 +6,7 @@
  questions can be found at 'sourceforge.net/projects/vbspt/'.
 
  ========================================================================= 
- Copyright (C) 2013 Martin Lindén, Fredrik Persson, and Johan Elf
+ Copyright (C) 2014 Martin Lindén, Fredrik Persson, and Johan Elf
  
  E-mail: 
  bmelinden@gmail.com, freddie.persson@gmail.com, johan.elf@gmail.com
@@ -31,10 +31,15 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
-current master branch:
-
-VB3 fixed bugs for future release:
- - corrected aggregation indices in VB3_removeState.m
+to be released:
+ - VB3_getResult.m handles calls with runinput files in different folders
+--------------------------------------------------------------------------
+v 1.1.2 (2014-11-19): minor bugfix, mainly to satisfy new mex compiler
+ - removed C++ style comments in HMMcore*.c files to please the mex
+   compiler. 
+ - recompiled 64bit mex binaries for linux, mac, and windows 7
+ - corrected handling of aggregation indices in VB3_removeState.m (not
+   relevant for standard usage)
  - corrected typo in Eq S69 of vbSPT manual (n_j -> \tilde n_j in the
    first KL term for \gamma). Note that the code was correct all the
    time, so computational results are not affected.

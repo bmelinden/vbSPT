@@ -2,7 +2,7 @@
  HMM_multiViterbi_log.c
  =========================================================================
  
- Copyright (C) 2013 Martin Lindén, E-mail: bmelinden@gmail.com
+ Copyright (C) 2014 Martin Lindén, E-mail: bmelinden@gmail.com
 
  This program is free software: you can redistribute it and/or modify it
  under the terms of the GNU General Public License as published by the
@@ -108,14 +108,14 @@ void mexFunction(int nlhs, mxArray *plhs[],
     for(n=0;n<Nends;n++){
         tEnd=(int)(iEnd[n]);   
 
-        //lnP1=lnH(tStart,:); % initial probability, not normalized
+        /*lnP1=lnH(tStart,:); % initial probability, not normalized*/
         for(k=0;k<N;k++){
             lnp1[k]=lnH[tStart+k*T];}
         
-        //for tV=(tStart+1):tEnd  
+        /*for tV=(tStart+1):tEnd  */
         for(t=tStart+1;t<tEnd;t++){
             Z=0.0;
-            for(k=0;k<N;k++){//lnP0=lnP1-mean(lnP1); lnP1=zeros(1,N);
+            for(k=0;k<N;k++){/*lnP0=lnP1-mean(lnP1); lnP1=zeros(1,N);*/
                 lnp0[k]=lnp1[k];
                 Z=Z+lnp0[k]/N;
                 lnp1[k]=0.0;
@@ -126,7 +126,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
                     
             for(j=0;j<N;j++){
                 for(k=0;k<N;k++){
-                    // lnPP(kV)=lnP0(kV)+lnQ(kV,jV)+lnH(tV,jV); 
+                    /* lnPP(kV)=lnP0(kV)+lnQ(kV,jV)+lnH(tV,jV); */
                     lnpp[k]=lnp0[k]+lnQ[k+j*N]+lnH[t+j*T];
                 }
                 /* probability of previous state before ending up at jV.
@@ -141,7 +141,7 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 }
             }
         }
-        // [~,S(tEnd)]=max(lnP1);
+        /* [~,S(tEnd)]=max(lnP1);*/
         s[tEnd-1]=0;
         Z=lnp1[0];
         for(k=1;k<N;k++){
@@ -150,8 +150,8 @@ void mexFunction(int nlhs, mxArray *plhs[],
                 s[tEnd-1]=k;
             }
         }
-        //  for tV=tEnd-1:-1:tStart
-        //      S(tV)=MaxPrev(tV+1,S(tV+1)); end
+        /*  for tV=tEnd-1:-1:tStart*/
+        /*      S(tV)=MaxPrev(tV+1,S(tV+1)); end*/
         for(t=tEnd-2;t>=tStart;t--){
             ss=s[t+1];
             s[t]=MaxPrev[t+1+T*ss];
