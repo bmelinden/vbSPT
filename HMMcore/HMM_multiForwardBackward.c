@@ -32,7 +32,9 @@
 #include <math.h>
 #include <stdio.h>
 #include "mex.h"
+#ifndef OCTAVE
 #include "matrix.h"
+#endif
 
 /* Input Arguments */
 #define	Q_IN    prhs[0]

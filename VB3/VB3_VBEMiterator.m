@@ -367,7 +367,12 @@ while(runMore)
         end
         C.dFrel=(W.F-Wm1.F)/abs(W.F); % convergence statistic for F
         % convergence statistics for parameters
-        fM=fields(W.M);
+        isOctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+        if (isOctave)
+            fM=fieldnames(W.M);
+        else
+            fM=fields(W.M);
+        end
         C.dPrel=-Inf;
         C.limitPar='';
         for k=1:length(fM)

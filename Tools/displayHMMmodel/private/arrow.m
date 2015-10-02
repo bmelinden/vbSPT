@@ -587,7 +587,12 @@ while (any(axnotdone)),
 		axl(ii,[1 2])=-axl(ii,[2 1]);
 	end;
 	% compute the range of 2-D values
-	curT = get(curax,'Xform');
+	isOctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+        if (isOctave)
+	        curT = eye (4);
+        else
+		curT = get(curax,'Xform');
+	end
 	lim = curT*[0 1 0 1 0 1 0 1;0 0 1 1 0 0 1 1;0 0 0 0 1 1 1 1;1 1 1 1 1 1 1 1];
 	lim = lim(1:2,:)./([1;1]*lim(4,:));
 	curlimmin = min(lim')';
@@ -1155,7 +1160,12 @@ function arrow_fixlimits(axlimits)
 
 function out = arrow_WarpToFill(notstretched,manualcamera,curax)
 % check if we are in "WarpToFill" mode.
-	out = strcmp(get(curax,'WarpToFill'),'on');
+	isOctave = exist('OCTAVE_VERSION', 'builtin') ~= 0;
+        if (isOctave)
+	        out = ~( any(notstretched) & any(manualcamera) );
+        else
+		out = strcmp(get(curax,'WarpToFill'),'on');
+	end
 	% 'WarpToFill' is undocumented, so may need to replace this by
 	% out = ~( any(notstretched) & any(manualcamera) );
 
