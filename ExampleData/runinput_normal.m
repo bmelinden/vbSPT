@@ -15,8 +15,8 @@ trajectoryfield = 'finalTraj';
 
 % Computing strategy
 parallelize_config = 1;
-parallel_start = 'matlabpool open';  % executed before the parallelizable loop.
-parallel_end = 'matlabpool close'; % executed after the parallelizable loop.
+parallel_start = 'theVBpool=gcp';  % executed before the parallelizable loop.
+parallel_end = 'delete(theVBpool)'; % executed after the parallelizable loop.
 
 % Saving options
 outputfile = './Results/testresult_vbSPT_HMM_normal.mat';

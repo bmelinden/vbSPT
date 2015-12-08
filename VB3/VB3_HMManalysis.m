@@ -105,9 +105,7 @@ Witer  =cell(1,opt.runs); % save all models generated in each run
 
 % setup distributed computation toolbox
 if(opt.parallelize_config)
-    if(matlabpool('size')>0) % disable existing setting
-        matlabpool close
-    end
+    delete(gcp('nocreate'))
     eval(opt.parallel_start)
 end
 

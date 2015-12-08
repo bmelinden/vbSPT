@@ -31,8 +31,10 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
-to be released:
+v 1.1.3 (2015-12-08): 
  - VB3_getResult.m handles calls with runinput files in different folders
+ - changed how parallellization in handled, to adhere to the new set
+   of commands (parpool, gcp) in matlab R2015b.
 --------------------------------------------------------------------------
 v 1.1.2 (2014-11-19): minor bugfix, mainly to satisfy new mex compiler
  - removed C++ style comments in HMMcore*.c files to please the mex
