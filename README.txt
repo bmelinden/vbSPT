@@ -31,6 +31,8 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
+ - changed vbSPTstart so that it can be called from any folder
+--------------------------------------------------------------------------
 v 1.1.3 (2015-12-08): 
  - VB3_getResult.m handles calls with runinput files in different folders
  - changed how parallellization in handled, to adhere to the new set

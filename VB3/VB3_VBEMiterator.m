@@ -217,7 +217,6 @@ while(runMore)
     T=W.T;N=W.N;dim=W.dim;
     WMn=W.M.n;
     WMc=W.M.c;
-
     %% trial emission priobability q(s,t)
     % variational pointwise contributions, notation as in ML1 notes
     % except perhaps an off-by-one difference in time index
