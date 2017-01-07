@@ -31,7 +31,9 @@
  */
 #include <math.h>
 #include "mex.h"
+#ifndef OCTAVE
 #include "matrix.h"
+#endif
 
 /* Input Arguments */
 #define	ALPHA_IN prhs[0]

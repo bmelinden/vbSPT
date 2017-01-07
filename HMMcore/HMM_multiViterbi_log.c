@@ -37,7 +37,9 @@
 
 #include <math.h>
 #include "mex.h"
+#ifndef OCTAVE
 #include "matrix.h"
+#endif
 
 /* input Arguments */
 #define	LNQ_IN  prhs[0]
