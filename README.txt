@@ -32,6 +32,7 @@
  files.
  =========================================================================
  - changed vbSPTstart so that it can be called from any folder.
+ - new function to plot model+bootstrap s.e.m: VB3_printModel.m
 --------------------------------------------------------------------------
 v 1.1.3 (2015-12-08): 
  - VB3_getResult.m handles calls with runinput files in different folders
