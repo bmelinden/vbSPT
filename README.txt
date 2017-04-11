@@ -6,7 +6,7 @@
  questions can be found at 'sourceforge.net/projects/vbspt/'.
 
  ========================================================================= 
- Copyright (C) 2014 Martin Lindén, Fredrik Persson, and Johan Elf
+ Copyright (C) 2017 Martin Lindén, Fredrik Persson, and Johan Elf
  
  E-mail: 
  bmelinden@gmail.com, freddie.persson@gmail.com, johan.elf@gmail.com
@@ -31,9 +31,10 @@
  and by Jan-Willem van de Meent (in external/), see copyright in individual 
  files.
  =========================================================================
+v 1.1.4 (bugfix, 2017-04-11):
  - changed vbSPTstart so that it can be called from any folder.
  - new function to plot model+bootstrap s.e.m: VB3_printModel.m
- - bugfix in displayHMMTrajs.m
+ - adopt displayHMMTrajs.m to current trajectory format
 --------------------------------------------------------------------------
 v 1.1.3 (2015-12-08): 
  - VB3_getResult.m handles calls with runinput files in different folders
