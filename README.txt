@@ -5,13 +5,13 @@
  latest version of the software as well as a forum for discussion and
  questions can be found at 'sourceforge.net/projects/vbspt/'.
 
- ========================================================================= 
+ ==========================================================================
  Copyright (C) 2013-2020 Martin Lindén, Fredrik Persson, and Johan Elf
  
  E-mail: 
  bmelinden@gmail.com, freddie.persson@gmail.com, johan.elf@gmail.com
- =========================================================================
-
+ ==========================================================================
+ 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or any
@@ -31,8 +31,8 @@
  HMMcore/), by Jan-Willem van de Meent (in external/), and by Erik
  A.~Johnson (Tools/displayHMMmodel/private/arrow.m). See copyright in
  individual files.
- =========================================================================
-- updated arrow.m for compatibility with R2014b and later (2020-01-30)
+ ==========================================================================
+ - updated arrow.m for compatibility with R2014b and later (2020-01-30)
  --------------------------------------------------------------------------
  v 1.1.4 (bugfix, 2017-04-11): - changed vbSPTstart so that it can be
  called from any folder.  - new function to plot model+bootstrap
