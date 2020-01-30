@@ -135,6 +135,13 @@ function [h,yy,zz] = arrow(varargin)
 % Permission is granted to Dr. Josef Bigun to distribute ARROW with his
 % software to reproduce the figures in his image analysis text.
 
+% This file,(c) Erik Johnson (2020), was retrieved from MATLAB Central
+% File Exchange on January 30, 2020.
+% https://www.mathworks.com/matlabcentral/fileexchange/278-arrow
+% License: see arrow_license.txt
+
+				   
+						  
 % global variable initialization
 persistent ARROW_PERSP_WARN ARROW_STRETCH_WARN ARROW_AXLIMITS ARROW_AX
 if isempty(ARROW_PERSP_WARN  ), ARROW_PERSP_WARN  =1; end;
